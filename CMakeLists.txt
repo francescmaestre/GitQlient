@@ -173,68 +173,68 @@ set(CPACK_CREATE_DESKTOP_LINKS cmake-gui)
 
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-   set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install/usr/share)
-   install(
-       TARGETS ${PROJECT_NAME}
-       RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
-       BUNDLE DESTINATION "${CMAKE_INSTALL_PREFIX}"
-       LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}"
-   )
-
    target_link_options(${PROJECT_NAME} PUBLIC "-no-pie")
+   
+   set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
+   set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install/usr)
 
+   install(
+      FILES ${CMAKE_BUILD_DIR}/bin/${PROJECT_NAME}
+      DESTINATION "bin"
+      RENAME "gitqlient"
+   )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/gitqlient.desktop
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/applications"
+      DESTINATION "share/applications"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo.svg
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/scalable/apps"
+      DESTINATION "share/icons/hicolor/scalable/apps"
       RENAME "gitqlient.svg"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo16.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/16x16/apps"
+      DESTINATION "share/icons/hicolor/16x16/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo24.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/24x24/apps"
+      DESTINATION "share/icons/hicolor/24x24/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo32.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/32x32/apps"
+      DESTINATION "share/icons/hicolor/32x32/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo48.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/48x48/apps"
+      DESTINATION "share/icons/hicolor/48x48/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo64.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/64x64/apps"
+      DESTINATION "share/icons/hicolor/64x64/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo96.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/96x96/apps"
+      DESTINATION "share/icons/hicolor/96x96/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo128.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/128x128/apps"
+      DESTINATION "share/icons/hicolor/128x128/apps"
       RENAME "gitqlient"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo256.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/256x256/apps"
+      DESTINATION "share/icons/hicolor/256x256/apps"
       RENAME "gitqlient.png"
    )
    install(
       FILES ${CMAKE_SOURCE_DIR}/src/resources/icons/GitQlientLogo512.png
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/icons/hicolor/512x512/apps"
+      DESTINATION "share/icons/hicolor/512x512/apps"
       RENAME "gitqlient.png"
    )
 
@@ -246,6 +246,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
     set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
     set(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+    SET(CPACK_DEBIAN_COMPONENT_INSTALL YES)
+    SET(CPACK_DEB_COMPONENT_INSTALL YES)
 
     # RPM-specific configuration
     set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
