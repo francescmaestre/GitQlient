@@ -77,7 +77,7 @@ jobs:
           fetch-depth: 0
 
       - name: Delete previous dev-latest release
-        continue-on-error: true
+        continue-on-error: false
         if: github.ref == 'refs/heads/master'
         run: |
           gh release delete "dev-latest" -y
