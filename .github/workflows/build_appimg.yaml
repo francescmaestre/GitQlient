@@ -51,7 +51,8 @@ jobs:
         - name: Build AppImage
           run: |
             export VERSION=`git describe --always`
-            mv build/install/usr/share/bin/GitQlient build/install/usr/share/bin/gitqlient
+            mkdir build/install/usr/share/bin
+            mv build/install/usr/bin/gitqlient build/install/usr/share/bin/gitqlient
             wget -q -O linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
             chmod +x linuxdeployqt
             ./linuxdeployqt build/install/usr/share/applications/*.desktop -appimage -no-translations -extra-plugins=iconengines,imageformats
