@@ -53,6 +53,7 @@ jobs:
 
       - name: Build DEB package
         run: |
+          chmod +x build/install/usr/bin/gitqlient
           cmake --build build --target package
 
       - name: Test install
