@@ -49,7 +49,7 @@ jobs:
       - name: Build DMG
         run: |
           macdeployqt build/app/*.app
-          /opt/homebrew/bin/create-dmg --volname "GitQlient" --volicon "resources/icon.icns" --background "resources/dmg_bg.png" --icon "GitQlient.app" 125 220 --icon-size 100 --window-size 600 450 --app-drop-link 475 220 "GitQlient-`git describe --always`-arm64.dmg" "build/app/GitQlient.app"
+          /opt/homebrew/bin/create-dmg --volname "GitQlient" --volicon "app/resources/icon.icns" --background "app/resources/dmg_bg.png" --icon "GitQlient.app" 125 220 --icon-size 100 --window-size 600 450 --app-drop-link 475 220 "GitQlient-`git describe --always`-arm64.dmg" "build/app/GitQlient.app"
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
