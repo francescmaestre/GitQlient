@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 project(GitQlient VERSION 2.0 LANGUAGES CXX)
 
-option(BUILD_TESTS "Build the tests instead of the application" OFF)
+option(EXCLUDE_TESTS "Exclude the tests fromt he build" OFF)
 
 add_subdirectory(app)
-add_subdirectory(tests)
+
+if(!EXCLUDE_TESTS)
+    add_subdirectory(tests)
+endif()
