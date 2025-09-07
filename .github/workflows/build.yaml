@@ -70,12 +70,6 @@ jobs:
     needs: [BuildDeb, BuildRpm, BuildWin, BuildMac, BuildAppImage]
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out the code
-        uses: actions/checkout@v4
-        with:
-          submodules: 'true'
-          fetch-depth: 0
-
       - name: Delete previous dev-latest release
         continue-on-error: false
         if: github.ref == 'refs/heads/master'
