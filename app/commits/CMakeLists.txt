@@ -16,4 +16,5 @@ target_link_libraries(commits
     Qt::Core
     Qt::Widgets
     cache
+    big_widgets
 )

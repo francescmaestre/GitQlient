@@ -1,8 +1,11 @@
 #include <TemporalLoom.h>
 
-#include <GitExecResult.h>
-
 #include <QStringList>
+
+namespace
+{
+static const QString ZERO_SHA = "0000000000000000000000000000000000000000";
+}
 
 namespace Graph
 {

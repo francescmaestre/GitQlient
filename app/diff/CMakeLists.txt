@@ -13,6 +13,7 @@ target_link_libraries(diff
     Qt::Core
     Qt::Widgets
     AuxiliarCustomWidgets
+    aux_widgets
     cache
 )
 

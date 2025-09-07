@@ -21,5 +21,6 @@ target_link_libraries(big_widgets
     commits
     history
     config
+    Graph
     QPinnableTabWidget
 )

@@ -14,6 +14,7 @@
 #include <GitQlientStyles.h>
 #include <GitRepoLoader.h>
 #include <GitWip.h>
+#include <GraphCache.h>
 #include <RevisionFiles.h>
 #include <UnstagedMenu.h>
 #include <WipHelper.h>
@@ -301,9 +302,9 @@ void CommitChangesWidget::commitWipChanges()
                const auto message = msg.split("\n\n");
 
                Commit newCommit { currentSha,
-                                      { lastShaBeforeCommit },
-                                      std::chrono::seconds(QDateTime::currentDateTime().toSecsSinceEpoch()),
-                                      ui->leCommitTitle->text() };
+                                  { lastShaBeforeCommit },
+                                  std::chrono::seconds(QDateTime::currentDateTime().toSecsSinceEpoch()),
+                                  ui->leCommitTitle->text() };
 
                newCommit.committer = QString("%1<%2>").arg(committer.mUserName, committer.mUserEmail);
                newCommit.author = QString("%1<%2>").arg(committer.mUserName, committer.mUserEmail);

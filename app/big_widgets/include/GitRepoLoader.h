@@ -30,10 +30,12 @@
 #include <QSharedPointer>
 #include <QVector>
 
-struct WipRevisionInfo;
 class GitBase;
 class GitCache;
-namespace Graph { class Cache; }
+namespace Graph
+{
+class Cache;
+}
 class GitQlientSettings;
 class GitTags;
 class GitRequestorProcess;

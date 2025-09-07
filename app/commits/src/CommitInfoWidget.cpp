@@ -1,8 +1,10 @@
+#include <CommitInfoWidget.h>
+
 #include <Commit.h>
 #include <CommitInfoPanel.h>
-#include <CommitInfoWidget.h>
 #include <FileListWidget.h>
 #include <GitCache.h>
+#include <GitExecResult.h>
 
 #include <QDateTime>
 #include <QLabel>

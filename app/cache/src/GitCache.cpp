@@ -1,7 +1,7 @@
 #include "GitCache.h"
 
+#include <GitExecResult.h>
 #include <QLogger.h>
-#include <WipRevisionInfo.h>
 
 using namespace QLogger;
 

@@ -9,7 +9,7 @@
 #include <GitRequestorProcess.h>
 #include <GitTags.h>
 #include <GitWip.h>
-
+#include <GraphCache.h>
 #include <QLogger.h>
 
 #include <QDir>

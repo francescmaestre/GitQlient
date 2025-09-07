@@ -14,6 +14,7 @@
 #include <GitQlientStyles.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
+#include <GraphCache.h>
 #include <PullDlg.h>
 #include <SquashDlg.h>
 #include <TagDlg.h>
@@ -578,9 +579,9 @@ void CommitHistoryContextMenu::revertCommit()
          committer = gitConfig->getGlobalUserInfo();
 
       Commit newCommit { currentSha,
-                             { previousSha },
-                             std::chrono::seconds(QDateTime::currentDateTime().toSecsSinceEpoch()),
-                             tr("Revert \"%1\"").arg(revertedCommit.shortLog) };
+                         { previousSha },
+                         std::chrono::seconds(QDateTime::currentDateTime().toSecsSinceEpoch()),
+                         tr("Revert \"%1\"").arg(revertedCommit.shortLog) };
 
       newCommit.committer = QString("%1<%2>").arg(committer.mUserName, committer.mUserEmail);
       newCommit.author = QString("%1<%2>").arg(committer.mUserName, committer.mUserEmail);
