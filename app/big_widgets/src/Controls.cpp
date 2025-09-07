@@ -15,6 +15,7 @@
 
 #include <QApplication>
 #include <QButtonGroup>
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
@@ -22,7 +23,6 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QToolButton>
-#include <qwidget.h>
 
 using namespace QLogger;
 
