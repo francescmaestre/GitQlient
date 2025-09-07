@@ -32,6 +32,7 @@
 #include <QSharedPointer>
 
 #include <optional>
+#include <span>
 
 class GitCache : public QObject
 {
