@@ -13,7 +13,6 @@ target_link_libraries(Graph
     PUBLIC
     Qt::Core
     QLogger
-    cache
 )
 
 target_include_directories(Graph PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
