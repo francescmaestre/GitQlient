@@ -5,6 +5,6 @@ option(EXCLUDE_TESTS "Exclude the tests fromt he build" OFF)
 
 add_subdirectory(app)
 
-if(!EXCLUDE_TESTS)
+if(NOT EXCLUDE_TESTS)
     add_subdirectory(tests)
 endif()
