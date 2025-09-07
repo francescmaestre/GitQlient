@@ -14,6 +14,7 @@ target_link_libraries(history
     Qt::Widgets
     aux_widgets
     AuxiliarCustomWidgets
+    branches
     cache
     Graph
 )

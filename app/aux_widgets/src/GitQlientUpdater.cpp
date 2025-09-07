@@ -1,6 +1,5 @@
 #include "GitQlientUpdater.h"
 
-#include <GitQlientStyles.h>
 #include <QLogger.h>
 
 #include <QDesktopServices>
@@ -17,8 +16,9 @@
 
 using namespace QLogger;
 
-GitQlientUpdater::GitQlientUpdater(QObject *parent)
+GitQlientUpdater::GitQlientUpdater(const QString &styles, QObject *parent)
    : QObject(parent)
+   , mStyles(styles)
    , mManager(new QNetworkAccessManager())
 {
 }
@@ -34,7 +34,7 @@ void GitQlientUpdater::checkNewGitQlientVersion()
    request.setRawHeader("User-Agent", "GitQlient");
    request.setRawHeader("X-Custom-User-Agent", "GitQlient");
    request.setRawHeader("Content-Type", "application/json");
-   request.setUrl(QUrl("https://github.com/francescmm/ci-utils/releases/download/gq_update/updates.json"));
+   request.setUrl(QUrl("https://github.com/francescmaestre/ci-utils/releases/download/gq_update/updates.json"));
    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, true);
 
    const auto reply = mManager->get(request);
@@ -51,11 +51,11 @@ void GitQlientUpdater::showInfoMessage()
        QMessageBox::Ok | QMessageBox::Close, qobject_cast<QWidget *>(parent()));
    msgBox.addButton(tr("Go to GitHub"), QMessageBox::ButtonRole::YesRole);
    msgBox.setDetailedText(mChangeLog);
-   msgBox.setStyleSheet(GitQlientStyles::getStyles());
+   msgBox.setStyleSheet(mStyles);
 
    if (msgBox.exec() == QMessageBox::Ok)
    {
-      QString url = QString::fromUtf8("https://github.com/francescmm/GitQlient/releases/tag/v%1").arg(mLatestGitQlient);
+      QString url = QString::fromUtf8("https://github.com/francescmaestre/GitQlient/releases/tag/v%1").arg(mLatestGitQlient);
       QDesktopServices::openUrl(QUrl(url));
    }
 }

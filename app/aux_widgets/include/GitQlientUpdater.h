@@ -35,13 +35,14 @@ signals:
    void newVersionAvailable();
 
 public:
-   explicit GitQlientUpdater(QObject *parent = nullptr);
+   explicit GitQlientUpdater(const QString &styles, QObject *parent = nullptr);
    ~GitQlientUpdater();
 
    void checkNewGitQlientVersion();
    void showInfoMessage();
 
 private:
+   QString mStyles;
    QNetworkAccessManager *mManager = nullptr;
    QProgressDialog *mDownloadLog = nullptr;
    QString mLatestGitQlient;
