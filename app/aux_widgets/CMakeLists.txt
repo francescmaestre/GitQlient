@@ -15,7 +15,6 @@ target_link_libraries(aux_widgets
     Qt::Network
     AuxiliarCustomWidgets
     git
-    big_widgets
     cache
 )
 

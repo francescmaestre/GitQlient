@@ -15,6 +15,7 @@
 
 #include <QApplication>
 #include <QButtonGroup>
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
@@ -22,7 +23,6 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QToolButton>
-#include <qwidget.h>
 
 using namespace QLogger;
 
@@ -40,7 +40,7 @@ Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<G
    , mVersionCheck(new QToolButton(this))
    , mMergeWarning(
          new QPushButton(tr("WARNING: There is a merge pending to be committed! Click here to solve it."), this))
-   , mUpdater(new GitQlientUpdater(this))
+   , mUpdater(new GitQlientUpdater(GitQlientStyles::getStyles(), this))
    , mLastSeparator(new QFrame(this))
 {
    GitQlientSettings settings(mGit->getGitDir());

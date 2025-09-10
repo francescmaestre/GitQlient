@@ -4,17 +4,15 @@ file(GLOB SRC_FILES
 )
 
 add_library(
-    cache
+    Graph
     STATIC
     ${SRC_FILES}
 )
 
-target_link_libraries(cache
+target_link_libraries(Graph
     PUBLIC
     Qt::Core
     QLogger
-    git
-    Graph
 )
 
-target_include_directories(cache PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(Graph PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

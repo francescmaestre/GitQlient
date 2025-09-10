@@ -22,6 +22,7 @@
 #include <GitRemote.h>
 #include <GitRepoLoader.h>
 #include <GitWip.h>
+#include <GraphCache.h>
 #include <RepositoryViewDelegate.h>
 #include <WipHelper.h>
 

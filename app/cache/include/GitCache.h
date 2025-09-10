@@ -23,11 +23,8 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
-#include "GraphCache.h"
 #include <Commit.h>
-#include <GitExecResult.h>
 #include <RevisionFiles.h>
-#include <TemporalLoom.h>
 
 #include <QHash>
 #include <QMutex>
@@ -35,8 +32,7 @@
 #include <QSharedPointer>
 
 #include <optional>
-
-struct WipRevisionInfo;
+#include <span>
 
 class GitCache : public QObject
 {

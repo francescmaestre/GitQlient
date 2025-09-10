@@ -66,18 +66,12 @@ jobs:
 
   UpdateAssets:
     name: Release new binaries
-    if: github.repository_owner == 'francescmm'
+    if: github.repository_owner == 'francescmaestre'
     needs: [BuildDeb, BuildRpm, BuildWin, BuildMac, BuildAppImage]
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out the code
-        uses: actions/checkout@v4
-        with:
-          submodules: 'true'
-          fetch-depth: 0
-
       - name: Delete previous dev-latest release
-        continue-on-error: true
+        continue-on-error: false
         if: github.ref == 'refs/heads/master'
         run: |
           gh release delete "dev-latest" -y
@@ -98,6 +92,7 @@ jobs:
           tag_name: "dev-latest"
           body: "Build with the latest changes in master."
           draft: false
+          prerelease: true
           files: |
             appimage/GitQlient*.AppImage
             linux_deb*/gitqlient*.deb
