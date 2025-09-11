@@ -179,7 +179,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install/usr)
 
    install(
-      FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
+      PROGRAMS ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
       DESTINATION "bin"
       RENAME "gitqlient"
    )
