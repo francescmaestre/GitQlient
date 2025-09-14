@@ -13,6 +13,7 @@ target_link_libraries(diff-widgets
     PUBLIC
     Qt::Core
     Qt::Widgets
+    commit-widgets
     core
     dialogs
     main-widgets

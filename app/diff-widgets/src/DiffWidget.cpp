@@ -1,8 +1,9 @@
 #include <diff-widgets/DiffWidget.h>
 
-#include <CommitInfoPanel.h>
-#include <FileListWidget.h>
+#include <commit-widgets/FileListWidget.h>
+
 #include <GitHistory.h>
+#include <commit-widgets/CommitInfoPanel.h>
 #include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>
 #include <diff-widgets/FileDiffWidget.h>

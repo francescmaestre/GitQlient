@@ -5,8 +5,6 @@
 #include "RepositoryViewDelegate.h"
 
 #include <CheckBox.h>
-#include <CommitChangesWidget.h>
-#include <CommitInfoWidget.h>
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitConfig.h>
@@ -15,6 +13,8 @@
 #include <GitMerge.h>
 #include <GitRemote.h>
 #include <GitWip.h>
+#include <commit-widgets/CommitChangesWidget.h>
+#include <commit-widgets/CommitInfoWidget.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/cache/GraphCache.h>

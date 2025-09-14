@@ -1,16 +1,16 @@
-#include <CommitChangesWidget.h>
+#include <commit-widgets/CommitChangesWidget.h>
 
+#include "FileWidget.h"
+#include "UnstagedMenu.h"
 #include "ui_CommitChangesWidget.h"
 
 #include <ClickableFrame.h>
-#include <FileWidget.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitWip.h>
 #include <RevisionFiles.h>
-#include <UnstagedMenu.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/cache/GraphCache.h>

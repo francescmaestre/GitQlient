@@ -1,4 +1,4 @@
-#include <CommitInfoPanel.h>
+#include <commit-widgets/CommitInfoPanel.h>
 
 #include <ButtonLink.h>
 #include <core/cache/Commit.h>

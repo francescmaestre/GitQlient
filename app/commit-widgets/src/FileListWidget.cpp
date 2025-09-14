@@ -1,7 +1,8 @@
-#include "FileListWidget.h"
+#include <commit-widgets/FileListWidget.h>
 
-#include <FileContextMenu.h>
-#include <FileListDelegate.h>
+#include "FileContextMenu.h"
+#include "FileListDelegate.h"
+
 #include <GitBase.h>
 #include <GitHistory.h>
 #include <RevisionFiles.h>

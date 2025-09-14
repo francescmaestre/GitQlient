@@ -47,6 +47,7 @@ file(GLOB SRC_FILES
    AuxiliarCustomWidgets/*.qrc
 )
 
+add_subdirectory(commit-widgets)
 add_subdirectory(core)
 add_subdirectory(dialogs)
 add_subdirectory(diff-widgets)
@@ -55,7 +56,6 @@ add_subdirectory(history-widgets)
 add_subdirectory(ref-widgets)
 
 add_subdirectory(AuxiliarCustomWidgets)
-add_subdirectory(commits)
 add_subdirectory(git)
 add_subdirectory(QLogger)
 add_subdirectory(QPinnableTabWidget)

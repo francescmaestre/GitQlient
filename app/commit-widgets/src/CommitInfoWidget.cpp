@@ -1,8 +1,8 @@
-#include <CommitInfoWidget.h>
+#include <commit-widgets/CommitInfoPanel.h>
+#include <commit-widgets/CommitInfoWidget.h>
 
-#include <CommitInfoPanel.h>
-#include <FileListWidget.h>
 #include <GitExecResult.h>
+#include <commit-widgets/FileListWidget.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 
