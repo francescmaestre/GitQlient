@@ -4,7 +4,6 @@
 #include "UnstagedMenu.h"
 #include "ui_CommitChangesWidget.h"
 
-#include <ClickableFrame.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitHistory.h>
@@ -18,6 +17,7 @@
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
+#include <custom-widgets/ClickableFrame.h>
 
 #include <QCheckBox>
 #include <QDir>

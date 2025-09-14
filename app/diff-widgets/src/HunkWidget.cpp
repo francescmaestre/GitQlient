@@ -1,11 +1,11 @@
 #include "HunkWidget.h"
 
-#include <FileDiffView.h>
 #include <GitPatches.h>
-#include <LineNumberArea.h>
 #include <core/cache/GitCache.h>
 #include <core/system/Colors.h>
 #include <core/system/GitQlientSettings.h>
+#include <custom-widgets/FileDiffView.h>
+#include <custom-widgets/LineNumberArea.h>
 
 #include <QAction>
 #include <QGridLayout>

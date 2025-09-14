@@ -196,15 +196,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>ClickableFrame</class>
-   <extends>QFrame</extends>
-   <header>ClickableFrame.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>CheckBox</class>
    <extends>QCheckBox</extends>
-   <header>CheckBox.h</header>
+   <header>custom-widgets/CheckBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableFrame</class>
+   <extends>QFrame</extends>
+   <header>custom-widgets/ClickableFrame.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

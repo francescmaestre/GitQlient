@@ -1,7 +1,6 @@
 #include "dialogs/SquashDlg.h"
 #include "ui_SquashDlg.h"
 
-#include <CheckBox.h>
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitLocal.h>
@@ -10,6 +9,7 @@
 #include <core/cache/GitCache.h>
 #include <core/graph/WipHelper.h>
 #include <core/system/GitQlientSettings.h>
+#include <custom-widgets/CheckBox.h>
 
 #include <QLabel>
 #include <QMessageBox>

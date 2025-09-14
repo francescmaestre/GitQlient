@@ -23,7 +23,7 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
-#include <FileDiffView.h>
+#include <custom-widgets/FileDiffView.h>
 
 class FileDiffEditor : public FileDiffView
 {
@@ -39,6 +39,6 @@ private:
     * @brief highlightCurrentLine Highlights the current line where the cursor is placed.
     */
    void highlightCurrentLine();
-   
+
    QTextEdit::ExtraSelection prevSelection;
 };

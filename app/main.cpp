@@ -4,7 +4,7 @@
 #include <QTimer>
 #include <QTranslator>
 
-#include <GitQlient.h>
+#include "GitQlient.h"
 
 #include <QLogger>
 #include <core/system/GitQlientSettings.h>

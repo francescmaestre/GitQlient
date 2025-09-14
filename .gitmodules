@@ -4,9 +4,6 @@
 [submodule "app/QLogger"]
 	path = app/QLogger
 	url = ../QLogger.git
-[submodule "app/AuxiliarCustomWidgets"]
-	path = app/AuxiliarCustomWidgets
-	url = ../AuxiliarCustomWidgets.git
 [submodule "app/git"]
 	path = app/git
 	url = ../git.git

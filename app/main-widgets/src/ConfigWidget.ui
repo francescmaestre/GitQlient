@@ -93,7 +93,7 @@
    <item row="1" column="0" rowspan="2">
     <widget class="QTabWidget" name="tabWidget_2">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="gitQlientTab">
       <attribute name="title">
@@ -146,7 +146,7 @@
                   <string>Select folder</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../AuxiliarCustomWidgets/resources.qrc">
+                  <iconset>
                    <normaloff>:/icons/open_repo</normaloff>:/icons/open_repo</iconset>
                  </property>
                 </widget>
@@ -157,7 +157,7 @@
                   <string>Reset to default value</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../../AuxiliarCustomWidgets/resources.qrc">
+                  <iconset>
                    <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
                  </property>
                 </widget>
@@ -438,7 +438,7 @@
                <item>
                 <widget class="QPushButton" name="pbSelectEditor">
                  <property name="icon">
-                  <iconset resource="../../AuxiliarCustomWidgets/resources.qrc">
+                  <iconset>
                    <normaloff>:/icons/go_to</normaloff>:/icons/go_to</iconset>
                  </property>
                 </widget>
@@ -594,8 +594,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>420</width>
-            <height>795</height>
+            <width>511</width>
+            <height>794</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1311,12 +1311,12 @@
   <customwidget>
    <class>CheckBox</class>
    <extends>QCheckBox</extends>
-   <header>CheckBox.h</header>
+   <header>custom-widgets/CheckBox.h</header>
   </customwidget>
   <customwidget>
    <class>ButtonLink</class>
    <extends>QLabel</extends>
-   <header>ButtonLink.h</header>
+   <header>custom-widgets/ButtonLink.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1348,9 +1348,7 @@
   <tabstop>chDevMode</tabstop>
   <tabstop>tabWidget</tabstop>
  </tabstops>
- <resources>
-  <include location="../../resources/AuxiliarCustomWidgets/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
  <slots>
   <slot>saveConfig()</slot>

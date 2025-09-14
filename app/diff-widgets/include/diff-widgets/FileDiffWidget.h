@@ -25,8 +25,8 @@
 
 #include <diff-widgets/IDiffWidget.h>
 
-#include <DiffInfo.h>
 #include <QFrame>
+#include <custom-widgets/DiffInfo.h>
 
 class FileDiffView;
 class QPushButton;

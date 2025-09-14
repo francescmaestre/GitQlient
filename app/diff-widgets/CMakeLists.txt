@@ -17,7 +17,6 @@ target_link_libraries(diff-widgets
     core
     dialogs
     main-widgets
-    AuxiliarCustomWidgets
 )
 
 target_include_directories(diff-widgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

@@ -67,10 +67,10 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
@@ -80,7 +80,7 @@
   <customwidget>
    <class>CheckBox</class>
    <extends>QCheckBox</extends>
-   <header>CheckBox.h</header>
+   <header>custom-widgets/CheckBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

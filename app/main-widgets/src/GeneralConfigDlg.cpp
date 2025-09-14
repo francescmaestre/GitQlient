@@ -1,10 +1,10 @@
 #include "GeneralConfigDlg.h"
 
-#include <ButtonLink.h>
-#include <CheckBox.h>
+#include <QLogger>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
-#include <QLogger>
+#include <custom-widgets/ButtonLink.h>
+#include <custom-widgets/CheckBox.h>
 
 #include <QComboBox>
 #include <QFileDialog>

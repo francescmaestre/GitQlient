@@ -4,7 +4,6 @@
 #include "CommitHistoryView.h"
 #include "RepositoryViewDelegate.h"
 
-#include <CheckBox.h>
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitConfig.h>
@@ -22,6 +21,7 @@
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
+#include <custom-widgets/CheckBox.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FileEditor.h>
 #include <diff-widgets/FullDiffWidget.h>

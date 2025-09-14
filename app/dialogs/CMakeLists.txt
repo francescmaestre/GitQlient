@@ -15,8 +15,7 @@ target_link_libraries(dialogs
     Qt::Widgets
     Qt::Network
     core
-
-    AuxiliarCustomWidgets
+    custom-widgets
     git
 )
 

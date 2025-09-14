@@ -2,19 +2,19 @@
 
 #include "HunkWidget.h"
 
-#include <ButtonLink.h>
-#include <CheckBox.h>
-#include <DiffHelper.h>
-#include <FileDiffView.h>
 #include <GitBase.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitPatches.h>
-#include <LineNumberArea.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/system/Colors.h>
 #include <core/system/GitQlientSettings.h>
+#include <custom-widgets/ButtonLink.h>
+#include <custom-widgets/CheckBox.h>
+#include <custom-widgets/DiffHelper.h>
+#include <custom-widgets/FileDiffView.h>
+#include <custom-widgets/LineNumberArea.h>
 #include <diff-widgets/FileEditor.h>
 
 #include <QApplication>

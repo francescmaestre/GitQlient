@@ -1,12 +1,12 @@
 #include "ui_ConfigWidget.h"
 #include <main-widgets/ConfigWidget.h>
 
-#include <CheckBox.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitCredentials.h>
 #include <QLogger>
 #include <core/system/GitQlientSettings.h>
+#include <custom-widgets/CheckBox.h>
 #include <dialogs/CredentialsDlg.h>
 #include <dialogs/NewVersionInfoDlg.h>
 #include <diff-widgets/FileEditor.h>

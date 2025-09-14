@@ -1,9 +1,9 @@
 #include "FileDiffEditor.h"
 
-#include <LineNumberArea.h>
 #include <core/system/Colors.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
+#include <custom-widgets/LineNumberArea.h>
 
 FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget *parent)
    : FileDiffView(additionColor, removalColor, commentColor, parent)

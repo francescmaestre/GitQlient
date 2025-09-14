@@ -26,8 +26,7 @@ add_compile_definitions(SHA_VER="${GQ_SHA}")
 add_compile_definitions(VER="${VERSION}")
 add_compile_definitions(QT_DEPRECATED_WARNINGS)
 
-if (NOT EXISTS "${PROJECT_SOURCE_DIR}/app/AuxiliarCustomWidgets/.git" OR
-    NOT EXISTS "${PROJECT_SOURCE_DIR}/app/QLogger/.git" OR
+if (NOT EXISTS "${PROJECT_SOURCE_DIR}/app/QLogger/.git" OR
     NOT EXISTS "${PROJECT_SOURCE_DIR}/app/QPinnableTabWidget/.git" OR
     NOT EXISTS "${PROJECT_SOURCE_DIR}/app/git/.git")
     message(STATUS "Submodule update:")
@@ -44,18 +43,17 @@ find_package(Qt6 COMPONENTS Core Widgets Network REQUIRED)
 file(GLOB SRC_FILES
    ${MACOS_APP_ICON_GITQLIENT}
    GitQlient.qrc
-   AuxiliarCustomWidgets/*.qrc
 )
 
 add_subdirectory(commit-widgets)
 add_subdirectory(core)
+add_subdirectory(custom-widgets)
 add_subdirectory(dialogs)
 add_subdirectory(diff-widgets)
 add_subdirectory(main-widgets)
 add_subdirectory(history-widgets)
 add_subdirectory(ref-widgets)
 
-add_subdirectory(AuxiliarCustomWidgets)
 add_subdirectory(git)
 add_subdirectory(QLogger)
 add_subdirectory(QPinnableTabWidget)
@@ -74,8 +72,6 @@ qt_add_executable(
     GitQlient.h
     GitQlient.cpp
     ${SRC_FILES})
-
-target_include_directories(AuxiliarCustomWidgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(
    ${PROJECT_NAME}
