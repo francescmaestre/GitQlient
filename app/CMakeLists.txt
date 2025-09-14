@@ -71,7 +71,11 @@ endif()
 qt_add_executable(
     ${PROJECT_NAME}
     main.cpp
+    GitQlient.h
+    GitQlient.cpp
     ${SRC_FILES})
+
+target_include_directories(AuxiliarCustomWidgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(
    ${PROJECT_NAME}

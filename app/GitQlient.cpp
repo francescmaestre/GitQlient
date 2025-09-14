@@ -1,6 +1,4 @@
-#include <main-widgets/GitQlient.h>
-
-#include "InitScreen.h"
+#include "GitQlient.h"
 
 #include <GitBase.h>
 #include <GitConfig.h>
@@ -12,6 +10,7 @@
 #include <dialogs/NewVersionInfoDlg.h>
 #include <dialogs/ProgressDlg.h>
 #include <main-widgets/GitQlientRepo.h>
+#include <main-widgets/InitScreen.h>
 
 #include <QApplication>
 #include <QCommandLineParser>

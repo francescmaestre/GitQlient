@@ -1,4 +1,5 @@
-﻿#include "InitScreen.h"
+﻿#include <main-widgets/InitScreen.h>
+
 #include "GeneralConfigDlg.h"
 
 #include <ButtonLink.h>
