@@ -30,7 +30,7 @@ target_link_libraries(
     PRIVATE
     Qt::Gui
     Qt::Test
-    cache
+    core
 )
 
 target_include_directories(Tests_Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
