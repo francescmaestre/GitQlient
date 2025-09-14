@@ -1,6 +1,7 @@
 #include "CommitHistoryModel.h"
 
-#include <CommitHistoryColumns.h>
+#include "CommitHistoryColumns.h"
+
 #include <GitBase.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>

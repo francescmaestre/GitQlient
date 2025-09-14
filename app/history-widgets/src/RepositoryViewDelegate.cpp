@@ -1,8 +1,9 @@
 #include "RepositoryViewDelegate.h"
 
-#include <CommitHistoryColumns.h>
-#include <CommitHistoryModel.h>
-#include <CommitHistoryView.h>
+#include "CommitHistoryColumns.h"
+#include "CommitHistoryModel.h"
+#include "CommitHistoryView.h"
+
 #include <GitBase.h>
 #include <GitLocal.h>
 #include <core/cache/Commit.h>

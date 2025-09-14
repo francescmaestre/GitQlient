@@ -1,9 +1,11 @@
-#include <main-widgets/HistoryWidget.h>
+#include <history-widgets/HistoryWidget.h>
+
+#include "CommitHistoryModel.h"
+#include "CommitHistoryView.h"
+#include "RepositoryViewDelegate.h"
 
 #include <CheckBox.h>
 #include <CommitChangesWidget.h>
-#include <CommitHistoryModel.h>
-#include <CommitHistoryView.h>
 #include <CommitInfoWidget.h>
 #include <FileDiffWidget.h>
 #include <FileEditor.h>
@@ -16,7 +18,6 @@
 #include <GitMerge.h>
 #include <GitRemote.h>
 #include <GitWip.h>
-#include <RepositoryViewDelegate.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/cache/GraphCache.h>

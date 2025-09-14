@@ -50,6 +50,7 @@ file(GLOB SRC_FILES
 add_subdirectory(core)
 add_subdirectory(dialogs)
 add_subdirectory(main-widgets)
+add_subdirectory(history-widgets)
 add_subdirectory(ref-widgets)
 
 add_subdirectory(AuxiliarCustomWidgets)
@@ -57,7 +58,6 @@ add_subdirectory(commits)
 add_subdirectory(config)
 add_subdirectory(diff)
 add_subdirectory(git)
-add_subdirectory(history)
 add_subdirectory(QLogger)
 add_subdirectory(QPinnableTabWidget)
 

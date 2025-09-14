@@ -1,11 +1,12 @@
 #include "CommitHistoryView.h"
 
-#include <CommitHistoryColumns.h>
-#include <CommitHistoryContextMenu.h>
-#include <CommitHistoryModel.h>
+#include "CommitHistoryColumns.h"
+#include "CommitHistoryContextMenu.h"
+#include "CommitHistoryModel.h"
+#include "ShaFilterProxyModel.h"
+
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <ShaFilterProxyModel.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>

@@ -20,7 +20,7 @@ target_link_libraries(main-widgets
     AuxiliarCustomWidgets
     diff
     commits
-    history
+    history-widgets
     config
     QPinnableTabWidget
 )

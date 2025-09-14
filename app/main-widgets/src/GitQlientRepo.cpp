@@ -1,6 +1,5 @@
 #include <main-widgets/GitQlientRepo.h>
 
-#include <CommitHistoryColumns.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitConfigDlg.h>
@@ -19,11 +18,11 @@
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
 #include <dialogs/WaitingDlg.h>
-#include <main-widgets/BlameWidget.h>
+#include <history-widgets/BlameWidget.h>
+#include <history-widgets/HistoryWidget.h>
 #include <main-widgets/ConfigWidget.h>
 #include <main-widgets/Controls.h>
 #include <main-widgets/DiffWidget.h>
-#include <main-widgets/HistoryWidget.h>
 #include <main-widgets/MergeWidget.h>
 #include <ref-widgets/BranchesWidget.h>
 

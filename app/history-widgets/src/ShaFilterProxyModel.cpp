@@ -1,6 +1,6 @@
 #include "ShaFilterProxyModel.h"
 
-#include <CommitHistoryColumns.h>
+#include "CommitHistoryColumns.h"
 
 ShaFilterProxyModel::ShaFilterProxyModel(QObject *parent)
    : QSortFilterProxyModel(parent)

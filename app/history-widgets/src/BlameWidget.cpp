@@ -1,11 +1,12 @@
-#include <main-widgets/BlameWidget.h>
+#include <history-widgets/BlameWidget.h>
 
-#include <CommitHistoryColumns.h>
-#include <CommitHistoryModel.h>
-#include <CommitHistoryView.h>
+#include "CommitHistoryColumns.h"
+#include "CommitHistoryModel.h"
+#include "CommitHistoryView.h"
+#include "RepositoryViewDelegate.h"
+
 #include <FileBlameWidget.h>
 #include <GitHistory.h>
-#include <RepositoryViewDelegate.h>
 #include <core/cache/Commit.h>
 #include <core/system/GitQlientSettings.h>
 
