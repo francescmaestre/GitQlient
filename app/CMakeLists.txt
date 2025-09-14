@@ -49,7 +49,7 @@ file(GLOB SRC_FILES
 
 add_subdirectory(core)
 add_subdirectory(dialogs)
-add_subdirectory(main_widgets)
+add_subdirectory(main-widgets)
 add_subdirectory(ref-widgets)
 
 add_subdirectory(AuxiliarCustomWidgets)
@@ -80,7 +80,7 @@ target_link_libraries(
    Qt::Core
    Qt::Widgets
    Qt::Network
-   mainWidgets
+   main-widgets
  )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")

@@ -1,11 +1,11 @@
-#include "DiffWidget.h"
+#include <main-widgets/DiffWidget.h>
 
 #include <CommitInfoPanel.h>
 #include <FileDiffWidget.h>
 #include <FileListWidget.h>
 #include <FullDiffWidget.h>
-#include <core/cache/GitCache.h>
 #include <GitHistory.h>
+#include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>
 
 #include <QLogger>

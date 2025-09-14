@@ -1,4 +1,4 @@
-#include "HistoryWidget.h"
+#include <main-widgets/HistoryWidget.h>
 
 #include <CheckBox.h>
 #include <CommitChangesWidget.h>

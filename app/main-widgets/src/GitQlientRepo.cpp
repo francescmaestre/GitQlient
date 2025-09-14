@@ -1,10 +1,6 @@
-#include "GitQlientRepo.h"
+#include <main-widgets/GitQlientRepo.h>
 
-#include <BlameWidget.h>
 #include <CommitHistoryColumns.h>
-#include <ConfigWidget.h>
-#include <Controls.h>
-#include <DiffWidget.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitConfigDlg.h>
@@ -14,8 +10,6 @@
 #include <GitSubmodules.h>
 #include <GitTags.h>
 #include <GitWip.h>
-#include <HistoryWidget.h>
-#include <MergeWidget.h>
 #include <QLogger>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
@@ -25,6 +19,12 @@
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
 #include <dialogs/WaitingDlg.h>
+#include <main-widgets/BlameWidget.h>
+#include <main-widgets/ConfigWidget.h>
+#include <main-widgets/Controls.h>
+#include <main-widgets/DiffWidget.h>
+#include <main-widgets/HistoryWidget.h>
+#include <main-widgets/MergeWidget.h>
 #include <ref-widgets/BranchesWidget.h>
 
 #include <QApplication>

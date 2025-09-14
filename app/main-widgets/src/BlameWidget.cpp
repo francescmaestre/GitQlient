@@ -1,4 +1,4 @@
-#include "BlameWidget.h"
+#include <main-widgets/BlameWidget.h>
 
 #include <CommitHistoryColumns.h>
 #include <CommitHistoryModel.h>

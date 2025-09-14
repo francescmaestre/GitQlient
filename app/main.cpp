@@ -4,9 +4,9 @@
 #include <QTimer>
 #include <QTranslator>
 
-#include <GitQlient.h>
-#include <core/system/GitQlientSettings.h>
 #include <QLogger>
+#include <core/system/GitQlientSettings.h>
+#include <main-widgets/GitQlient.h>
 
 using namespace QLogger;
 

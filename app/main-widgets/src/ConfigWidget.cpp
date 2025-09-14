@@ -1,15 +1,15 @@
-#include "ConfigWidget.h"
 #include "ui_ConfigWidget.h"
+#include <main-widgets/ConfigWidget.h>
 
 #include <CheckBox.h>
-#include <dialogs/CredentialsDlg.h>
 #include <FileEditor.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitCredentials.h>
-#include <core/system/GitQlientSettings.h>
-#include <dialogs/NewVersionInfoDlg.h>
 #include <QLogger>
+#include <core/system/GitQlientSettings.h>
+#include <dialogs/CredentialsDlg.h>
+#include <dialogs/NewVersionInfoDlg.h>
 
 #include <QApplication>
 #include <QDir>

@@ -1,4 +1,4 @@
-#include "MergeWidget.h"
+#include <main-widgets/MergeWidget.h>
 
 #include <FileDiffWidget.h>
 #include <FileEditor.h>
