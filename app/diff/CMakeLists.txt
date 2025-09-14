@@ -12,9 +12,9 @@ target_link_libraries(diff
     PUBLIC
     Qt::Core
     Qt::Widgets
+    core
     AuxiliarCustomWidgets
-    aux_widgets
-    cache
+    dialogs
 )
 
 target_include_directories(diff PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

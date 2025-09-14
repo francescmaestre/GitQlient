@@ -1,18 +1,23 @@
 file(GLOB SRC_FILES
+    include/dialogs/*.h
     include/*.h
     src/*.cpp
     src/*.ui
 )
 
-add_library(GitQlientDialogs STATIC
+add_library(dialogs STATIC
     ${SRC_FILES}
 )
 
-target_link_libraries(GitQlientDialogs
+target_link_libraries(dialogs
     PUBLIC
     Qt::Core
     Qt::Widgets
-    aux_widgets
+    Qt::Network
+    core
+
+    AuxiliarCustomWidgets
+    git
 )
 
-target_include_directories(GitQlientDialogs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(dialogs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

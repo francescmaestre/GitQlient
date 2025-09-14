@@ -2,9 +2,9 @@
 
 #include <ButtonLink.h>
 #include <CheckBox.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
-#include <QLogger.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
+#include <QLogger>
 
 #include <QComboBox>
 #include <QFileDialog>

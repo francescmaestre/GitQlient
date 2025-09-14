@@ -3,7 +3,7 @@
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QCloseEvent>
 #include <QKeyEvent>

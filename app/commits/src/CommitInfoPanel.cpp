@@ -1,7 +1,7 @@
 #include <CommitInfoPanel.h>
 
 #include <ButtonLink.h>
-#include <Commit.h>
+#include <core/cache/Commit.h>
 
 #include <QApplication>
 #include <QClipboard>

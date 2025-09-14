@@ -1,9 +1,9 @@
 #include "CommitHistoryModel.h"
 
 #include <CommitHistoryColumns.h>
-#include <Commit.h>
 #include <GitBase.h>
-#include <GitCache.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
 
 #include <QDateTime>
 #include <QLocale>

@@ -1,17 +1,15 @@
-#include "InputShaDlg.h"
+#include "dialogs/InputShaDlg.h"
 #include "ui_InputShaDlg.h"
 
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
 #include <GitConfig.h>
-#include <GitQlientStyles.h>
 #include <GitStashes.h>
+#include <core/cache/GitCache.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QFile>
 #include <QMessageBox>
-
-#include <utility>
 
 InputShaDlg::InputShaDlg(const QString &branch, QSharedPointer<GitBase> git, QWidget *parent)
    : QDialog(parent)

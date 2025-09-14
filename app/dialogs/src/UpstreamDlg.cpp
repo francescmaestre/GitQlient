@@ -1,9 +1,9 @@
-#include "UpstreamDlg.h"
+#include "dialogs/UpstreamDlg.h"
 #include "ui_PullDlg.h"
 
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QMessageBox>
 #include <QPushButton>

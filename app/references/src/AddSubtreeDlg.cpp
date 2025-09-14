@@ -2,10 +2,10 @@
 #include "ui_AddSubtreeDlg.h"
 
 #include <GitBase.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 #include <GitSubtree.h>
-#include <QLogger.h>
+#include <QLogger>
 
 #include <QMessageBox>
 

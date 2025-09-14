@@ -1,24 +1,24 @@
 #include "CommitHistoryContextMenu.h"
 
-#include <BranchDlg.h>
-#include <Commit.h>
+#include <dialogs/BranchDlg.h>
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
 #include <GitConfig.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
 #include <GitPatches.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
-#include <GraphCache.h>
-#include <PullDlg.h>
-#include <SquashDlg.h>
+#include <dialogs/PullDlg.h>
+#include <dialogs/SquashDlg.h>
 #include <TagDlg.h>
-#include <WipHelper.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/cache/GraphCache.h>
+#include <core/graph/WipHelper.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -28,7 +28,7 @@
 #include <QProcess>
 #include <QRegularExpression>
 
-#include <QLogger.h>
+#include <QLogger>
 
 using namespace QLogger;
 

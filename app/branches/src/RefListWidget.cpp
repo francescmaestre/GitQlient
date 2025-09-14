@@ -1,7 +1,7 @@
 #include "RefListWidget.h"
 #include "ClickableFrame.h"
 #include "GitBase.h"
-#include "GitQlientSettings.h"
+#include <core/system/GitQlientSettings.h>
 
 #include <QListWidget>
 #include <QVBoxLayout>

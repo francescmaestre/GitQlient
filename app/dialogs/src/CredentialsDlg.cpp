@@ -1,4 +1,4 @@
-#include "CredentialsDlg.h"
+#include "dialogs/CredentialsDlg.h"
 #include "ui_CredentialsDlg.h"
 
 #include <GitCredentials.h>

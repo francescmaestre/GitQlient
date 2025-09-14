@@ -321,78 +321,78 @@
 <context>
     <name>BranchDlg</name>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="26"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="26"/>
         <source>Dialog</source>
         <translation>对话框</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="136"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="136"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="129"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="129"/>
         <source>Set the branch name</source>
         <translation>设置分支名称</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="69"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="69"/>
         <source>Current branch:</source>
         <translation>当前分支：</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="99"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="99"/>
         <source>Create</source>
         <translation>创建</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="122"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="122"/>
         <source>Same as remote branch name</source>
         <translation>与远程分支名称相同</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="56"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="56"/>
         <source>Create branch</source>
         <translation>创建分支</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="59"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="59"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="63"/>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="71"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="63"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="71"/>
         <source>Create and checkout branch</source>
         <translation>创建并切换分支</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="67"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="67"/>
         <source>Create branch at commit</source>
         <translation>在提交时创建分支</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="75"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="75"/>
         <source>Stash branch</source>
         <translation>贮藏分支</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="81"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="81"/>
         <source>Push upstream branch</source>
         <translation>推送上游分支</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="82"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="82"/>
         <source>Push</source>
         <translation>推送</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="225"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="225"/>
         <source>Error on branch action!</source>
         <translation>分支操作错误！</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="226"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="226"/>
         <source>There were problems during the branch operation. Please, see the detailed description for more information.</source>
         <translation>分支操作过程中出现了一些问题。请查看详细描述以获取更多信息。</translation>
     </message>
@@ -1009,7 +1009,7 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>CommitInfoPanel</name>
     <message>
-        <location filename="../../aux_widgets/CommitInfoPanel.cpp" line="61"/>
+        <location filename="../../dialogs/CommitInfoPanel.cpp" line="61"/>
         <source>Copied!</source>
         <translation>复制！</translation>
     </message>
@@ -1788,82 +1788,82 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>CreateRepoDlg</name>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="71"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="71"/>
         <source>Open repository after %1</source>
         <translation>在 %1 之后打开仓库</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="20"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="20"/>
         <source>Browse...</source>
         <translation>浏览</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="54"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="54"/>
         <source>Config Git user for this repo</source>
         <translation>为仓库配置 Git 用户</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="95"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="95"/>
         <source>Git user name</source>
         <translation>Git 用户名</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="109"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="109"/>
         <source>Us as default clone directory </source>
         <translation>作为默认的克隆目录</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="88"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="88"/>
         <source>Repository destination</source>
         <translation>仓库目的地</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="102"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="102"/>
         <source>URL</source>
         <translation>链接</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="27"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="27"/>
         <source>Repository name</source>
         <translation>仓库名</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="64"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="64"/>
         <source>Accept</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="34"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="34"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="81"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="81"/>
         <source>Git user email</source>
         <translation>Git 用户电子邮箱</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="41"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="41"/>
         <source>%1 repository</source>
         <translation>%1 仓库</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="42"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="42"/>
         <source>Initialize</source>
         <translation>初始化</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="42"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="42"/>
         <source>Clone</source>
         <translation>克隆</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="157"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="157"/>
         <source>You need to provider a URL to clone a repository.</source>
         <translation>需要提供一个链接来克隆仓库。</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="176"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="176"/>
         <source>Error when %1: 
  %2</source>
         <translation>%1 时出错：
@@ -1873,7 +1873,7 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>CredentialsDlg</name>
     <message>
-        <location filename="../../aux_widgets/CredentialsDlg.ui" line="26"/>
+        <location filename="../../dialogs/CredentialsDlg.ui" line="26"/>
         <source>Credentials</source>
         <translation>凭证</translation>
     </message>
@@ -2440,17 +2440,17 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>GitQlientUpdater</name>
     <message>
-        <location filename="../../aux_widgets/GitQlientUpdater.cpp" line="46"/>
+        <location filename="../../dialogs/GitQlientUpdater.cpp" line="46"/>
         <source>New version of GitQlient!</source>
         <translation>GitQlient 的新版本！</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/GitQlientUpdater.cpp" line="47"/>
+        <location filename="../../dialogs/GitQlientUpdater.cpp" line="47"/>
         <source>There is a new version of GitQlient available. Your current version is {%1} and the new one is {%2}. You can read more about the new changes in the detailed description.</source>
         <translation>GitQlient 有新版本。当前版本为 {%1}，新版本为 {%2}。可在详细描述中阅读更多关于新变化的信息。</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/GitQlientUpdater.cpp" line="51"/>
+        <location filename="../../dialogs/GitQlientUpdater.cpp" line="51"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
@@ -2536,17 +2536,17 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>HunkWidget</name>
     <message>
-        <location filename="../../aux_widgets/HunkWidget.cpp" line="253"/>
+        <location filename="../../dialogs/HunkWidget.cpp" line="253"/>
         <source>Stage line</source>
         <translation>暂存行</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/HunkWidget.cpp" line="254"/>
+        <location filename="../../dialogs/HunkWidget.cpp" line="254"/>
         <source>Discard line</source>
         <translation>丢弃行</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/HunkWidget.cpp" line="262"/>
+        <location filename="../../dialogs/HunkWidget.cpp" line="262"/>
         <source>Revert line</source>
         <translation>撤销行</translation>
     </message>
@@ -2628,92 +2628,92 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>InitialRepoConfig</name>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="26"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="26"/>
         <source>Repo config</source>
         <translation>仓库配置</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="99"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="99"/>
         <source> last commits</source>
         <translation> 最新提交</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="64"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="64"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="32"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="32"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the first time you open this repository. GitQlient includes some parameters to help you to configure the it. Please, take a moment to change them if you&apos;d like.&lt;/p&gt;&lt;p&gt;If you already have configured some of them, they will show the already set value.&lt;/p&gt;&lt;p&gt;You can modify these values at any moment using the &lt;span style=&quot; font-style:italic;&quot;&gt;Config &lt;/span&gt;button in the top icons list of GitQlient.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;首次打开此仓库。GitQlient 包含一些参数来帮助配置它。如果愿意的话，请花点时间更改一下。&lt;/p&gt;&lt;p&gt;如果已经配置了其中的一些，它们应当显示已经设置的值。&lt;/p&gt;&lt;p&gt;随时可以使用 GitQlient 顶部图标列表中的&lt;span style=&quot; font-style:italic;&quot;&gt;配置&lt;/span&gt;按钮修改这些值。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="96"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="96"/>
         <source>All commits</source>
         <translation>所有提交</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="115"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="115"/>
         <source>Max. commits to retrieve (0 for all)</source>
         <translation>最大检索提交（0 为全部）</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="162"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="162"/>
         <source>Never</source>
         <translation>不自动拉取</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="178"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="178"/>
         <source>Update submodules when pull</source>
         <translation>拉取合并时更新子模块</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="185"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="185"/>
         <source>Credentials configuration</source>
         <translation>凭证</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="206"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="206"/>
         <source>Storage</source>
         <translation>存储空间</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="216"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="216"/>
         <source>Store credentials using GitQlient (Current session or in Storage)</source>
         <translation>使用 GitQlient 存储凭证（当前会话或存储空间中）</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="226"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="226"/>
         <source>Cache</source>
         <translation>缓存</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="244"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="244"/>
         <source>Timeout:</source>
         <translation>超时</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="251"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="251"/>
         <source> mins.</source>
         <translation> 分钟</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="165"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="165"/>
         <source> minutes</source>
         <translation> 分钟</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="132"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="132"/>
         <source>Auto-Fetch interval</source>
         <translation>自动拉取间隔</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="139"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="139"/>
         <source>The interval is expected to be in minutes. Choose a value between 0 (for disabled) and 60.</source>
         <translation>设置间隔几分钟。在0（表示禁用）和60之间选择一个值。</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="73"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="73"/>
         <source>Prune when fetch</source>
         <translation>拉取时清理</translation>
     </message>
@@ -2721,32 +2721,32 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>InputShaDlg</name>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="26"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="26"/>
         <source>Dialog</source>
         <translation>对话框</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="32"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="32"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="39"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="39"/>
         <source>Commit SHA to reset the branch</source>
         <translation>提交安全散列算法值重置分支</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="75"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="75"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.cpp" line="47"/>
+        <location filename="../../dialogs/InputShaDlg.cpp" line="47"/>
         <source>Reset failed</source>
         <translation>重置失败</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.cpp" line="48"/>
+        <location filename="../../dialogs/InputShaDlg.cpp" line="48"/>
         <source>There were some problems while fetching. Please try again.</source>
         <translation>拉取时出现了一些问题。请重试。</translation>
     </message>
@@ -2847,97 +2847,97 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>NewVersionInfoDlg</name>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="14"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="14"/>
         <source>What&apos;s new in GitQlient?</source>
         <translation>GitQlient 有什么新功能?</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="95"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="95"/>
         <source>Don&apos;t show again (accessible through the config)</source>
         <translation>不再显示（可通过配置访问）</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="115"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="115"/>
         <source>Previous</source>
         <translation>上一个</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="122"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="122"/>
         <source>Next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="129"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="129"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="16"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="16"/>
         <source>1. Plugins support</source>
         <translation>1. 插件支持</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="17"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="17"/>
         <source>After some months of work and refactor, GitQlient can be extended with plugins!&lt;br&gt;&lt;br&gt;The plugin system works by deploying &lt;a style=&apos;color: #D89000&apos; href=&apos;https://doc.qt.io/qt-6/plugins-howto.html&apos;&gt;Qt plugins&lt;/a&gt; into the selected folder. GitQlient will automatically read the metadata for the plugins on every restart and list the available plugins (those that are valid) in the installed plugins panel.&lt;br&gt;&lt;br&gt;All the GitQlient plugins are downloaded from their official GitHub repo page and stored in the folder selected. Once they are downloaded, a list with checkbox will be shown in the &lt;em&gt;Installed plugins&lt;/em&gt; section where you can enable/disable them. In addition, the icon will be shown in the Controls panel for an easy access.&lt;br&gt;&lt;br&gt;</source>
         <translation>经过几个月的工作和重构，GitQlient 可以用插件进行扩展！&lt;br&gt;&lt;br&gt;插件系统通过 &lt;a style=&apos;color: #D89000&apos; href=&apos;https://doc.qt.io/qt-6/plugins-howto.html&apos;&gt;Qt 插件&lt;/a&gt; 部署到所选文件夹中来工作。GitQlient 将在每次重新启动时自动读取插件的元数据，并在已安装的插件面板中列出可用的插件（那些有效的）。&lt;br&gt;&lt;br&gt;所有 GitQlient 插件都是从官方 GitHub 仓库页面下载并存储在选定的文件夹中。下载后，在&lt;em&gt;已安装插件&lt;/em&gt;部分将显示一个带有复选框的列表，可以在其中启用/禁用它们。此外，该图标将显示在控制面板中，以便于访问。&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="28"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="28"/>
         <source>2. New terminal widget (Linux/MacOS)</source>
         <translation>2. 新的终端小部件（Linux/MacOS）</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="29"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="29"/>
         <source>If you are a Linux or MacOS user, you are lucky!&lt;br&gt;&lt;br&gt;GitQlient now supports the terminal plugin where you can access the same functionalities you have in your usual terminal. It also keeps the history of commands so now you can take advantage of a shortcut to update and generate your projects.&lt;br&gt;&lt;br&gt;Once the plugin is enabled, it will show an icon in the Controls panel to access it directly. In addition, in the &lt;em&gt;GitQlient&lt;/em&gt; section of the configuration, you will find a combo box to select your preferred color scheme for the terminal widget based on the ones available in your OS.</source>
         <translation>幸运的 Linux 或 MacOS 用户！&lt;br&gt;&lt;br&gt;GitQlient 现已支持终端插件，其拥有常用终端相同的功能。它还保留了命令的历史记录，因此现在可以利用快捷方式来更新和生成项目。&lt;br&gt;&lt;br&gt;一旦插件被启用，它将在控制面板中显示一个图标来直接访问它。此外，在配置的&lt;em&gt;GitQlient&lt;/em&gt;部分中，有一个组合框，可以根据操作系统中可用的颜色为终端小部件选择首选配色方案。</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="38"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="38"/>
         <source>3. GitHub and Jenkins become plugins</source>
         <translation>3. GitHub 和 Jenkins 变成了插件</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="39"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="39"/>
         <source>The old GitServer view (to connect to GitHub) and Jenkins view (to show and trigger Jenkins jobs and builds) have been converted into plugins and are now available to be downloaded from their release page in their own GitHub repo. By having this views detached, GitQlient takes less dependencies (WebEngine, WebChannel, etc.), allows the release of the GitQlientPlugin for QtCreator and in addition, makes it possible to improve those plugins independently to GitQlient.&lt;br&gt;&lt;br&gt;</source>
         <translation>旧的 Git 服务器视图（连接到 GitHub）和 Jenkins 视图（显示和触发 Jenkins 作业和构建）已经转换为插件，现在可以从 GitHub 仓库的发布页面下载。通过分离这些视图，GitQlient 需要更少的依赖（WebEngine，WebChannel 等），允许为 QtCreator 发布 GitQlientPlugin，此外，还可以独立改进这些插件到 GitQlient。&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="45"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="45"/>
         <source>4. Hunks view</source>
         <translation>4. 块视图</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="46"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="46"/>
         <source>Now it&apos;s possible to stage by hunk or by line!&lt;br&gt;&lt;br&gt;There is a new view in when showing the diff of a file where GitQlient will show the changes ordered by hunks. Each hunk has its own Discard/Stage buttons to apply the changes individually.&lt;br&gt;&lt;br&gt;In addition, by using the right button of the mouse, you will be able to stage or discard changes by line.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="53"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="53"/>
         <source>5. Foldable branches panel</source>
         <translation>5. 可折叠分支面板</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="54"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="54"/>
         <source>From now on, all the panels of the Branches widget are foldable. This has been a long requested feature that is now included in GitQlient.&lt;br&gt;&lt;br&gt;This will help you to save a lot of space if you work with small screens. Fold and unfold is as easy as clicking in the plus sign, but you can also do it from the config widget.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="60"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="60"/>
         <source>6. Shortcuts</source>
         <translation>6. 快捷键</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="61"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="61"/>
         <source>In this new version of GitQlient, some shortcuts have been introduced so you don&apos;t need to navigate with the mouse the whole time.&lt;br&gt;&lt;br&gt;For now, the shortcuts are used in the Controls panel and in the branches panel (in this case to use toggle the minimal/normal view). The shortcuts are:&lt;ul&gt;&lt;li&gt;Graph view: &lt;strong&gt;Ctrl+1&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Diff view: &lt;strong&gt;Ctrl+2&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Blame view: &lt;strong&gt;Ctrl+3&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Pull: &lt;strong&gt;Ctrl+4&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Push: &lt;strong&gt;Ctrl+5&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Config view: &lt;strong&gt;Ctrl+6&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Refresh/Update: &lt;strong&gt;F5&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Terminal (if enabled): &lt;strong&gt;Ctrl+7&lt;strong&gt;&lt;/li&gt;&lt;li&gt;GitHub (if enabled): &lt;strong&gt;Ctrl+8&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Jenkins (if enabled): &lt;strong&gt;Ctrl+9&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="75"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="75"/>
         <source>7. New version notification</source>
         <translation>7. 新版本通知</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="76"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="76"/>
         <source>Until now, whenever a new version of GitQlient was released, the app would notify making it available for download.&lt;br&gt;&lt;br&gt;This will change from now on since GitQlient is available through different ways: DEB and &lt;a style=&apos;color: #D89000&apos; href=&apos;https://src.fedoraproject.org/rpms/gitqlient&apos;&gt;RPM&lt;/a&gt; packages, AppImage, installer for Windows, and DMG/ports for MacOS. Since it&apos;s quite hard and error prone to verify what binary is being used, the icon will notify that a new version have been released but it the download will have to happen manually.&lt;br&gt;&lt;br&gt;You can of course download the latest version &lt;a style=&apos;color: #D89000&apos; href=&apos;https://github.com/francescmm/GitQlient/releases&apos;&gt;from the official GitHub repo&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2945,12 +2945,12 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PluginsDownloader</name>
     <message>
-        <location filename="../../aux_widgets/PluginsDownloader.cpp" line="97"/>
+        <location filename="../../dialogs/PluginsDownloader.cpp" line="97"/>
         <source>Downloading...</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PluginsDownloader.cpp" line="97"/>
+        <location filename="../../dialogs/PluginsDownloader.cpp" line="97"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -2958,39 +2958,39 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PomodoroButton</name>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="26"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="26"/>
         <source>Pomodoro</source>
         <translation>番茄钟</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="30"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="30"/>
         <source>Options...</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="43"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="43"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="249"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="249"/>
         <source>Time for a break!</source>
         <translation>休息一下吧！</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="249"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="249"/>
         <source>It&apos;s time to do a break. Are you ready?</source>
         <translation>是时候休息一下了。准备好了吗？</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="289"/>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="321"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="289"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="321"/>
         <source>Time to work!</source>
         <translation>该工作了！</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="289"/>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="321"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="289"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="321"/>
         <source>It&apos;s time to go back to work. Are you ready?</source>
         <translation>该回去工作了。准备好了吗？</translation>
     </message>
@@ -2998,74 +2998,74 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PomodoroConfigDlg</name>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="14"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="14"/>
         <source>Pomodoro configuration</source>
         <translation>番茄钟配置</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="41"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="41"/>
         <source>Pomodoro duration</source>
         <translation>番茄钟时间</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="61"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="61"/>
         <source>25</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="68"/>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="125"/>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="179"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="68"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="125"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="179"/>
         <source>minutes</source>
         <translation>分钟</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="98"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="98"/>
         <source>Break duration</source>
         <translation>休息时间</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="118"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="118"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="152"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="152"/>
         <source>Long break duration</source>
         <translation>长休息时间</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="172"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="172"/>
         <source>15</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="209"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="209"/>
         <source>Long break after:</source>
         <translation>多少次之后进入长休息时间</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="216"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="216"/>
         <source> pomodoros</source>
         <translation> 次番茄钟</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="239"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="239"/>
         <source>Enable alarm sound:</source>
         <translation>启用闹钟声音</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="253"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="253"/>
         <source>Reset counter when stop:</source>
         <translation>停止时复位计数器</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="274"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="274"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="294"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="294"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
@@ -3073,22 +3073,22 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PullDlg</name>
     <message>
-        <location filename="../../aux_widgets/PullDlg.ui" line="14"/>
+        <location filename="../../dialogs/PullDlg.ui" line="14"/>
         <source>Dialog</source>
         <translation>对话框</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PullDlg.cpp" line="20"/>
+        <location filename="../../dialogs/PullDlg.cpp" line="20"/>
         <source>&lt;strong&gt;Would you like to pull the last changes?&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;拉取合并最新的更改？&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PullDlg.cpp" line="57"/>
+        <location filename="../../dialogs/PullDlg.cpp" line="57"/>
         <source>Error while pulling</source>
         <translation>拉取合并时出错</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PullDlg.cpp" line="58"/>
+        <location filename="../../dialogs/PullDlg.cpp" line="58"/>
         <source>There were problems during the pull operation. Please, see the detailed description for more information.</source>
         <translation>在拉取合并过程中出现了一些问题。请查看详细描述以获取更多信息。</translation>
     </message>
@@ -3125,23 +3125,23 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>SquashDlg</name>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="26"/>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="150"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="26"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="150"/>
         <source>Squash</source>
         <translation>压缩</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="96"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="96"/>
         <source>Summary</source>
         <translation>概要</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="119"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="119"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="130"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="130"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3416,17 +3416,17 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>UpstreamDlg</name>
     <message>
-        <location filename="../../aux_widgets/UpstreamDlg.cpp" line="19"/>
+        <location filename="../../dialogs/UpstreamDlg.cpp" line="19"/>
         <source>&lt;strong&gt;Would you like to reconfigure the upstream and push the branch?&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;是否重新配置上游并推送分支？&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/UpstreamDlg.cpp" line="47"/>
+        <location filename="../../dialogs/UpstreamDlg.cpp" line="47"/>
         <source>Error while pulling</source>
         <translation>拉取合并时出错</translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/UpstreamDlg.cpp" line="48"/>
+        <location filename="../../dialogs/UpstreamDlg.cpp" line="48"/>
         <source>There were problems during the pull operation. Please, see the detailed description for more information.</source>
         <translation>拉取合并操作过程出现了一些问题。请查看详细描述以获取更多信息。</translation>
     </message>

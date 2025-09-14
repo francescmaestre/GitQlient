@@ -1,18 +1,18 @@
 #include "MergeWidget.h"
 
-#include <Commit.h>
 #include <FileDiffWidget.h>
 #include <FileEditor.h>
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
-#include <GitQlientStyles.h>
 #include <GitRemote.h>
 #include <GitWip.h>
 #include <QPinnableTabWidget.h>
 #include <RevisionFiles.h>
-#include <WipHelper.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/graph/WipHelper.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QFile>
 #include <QLabel>
@@ -162,7 +162,6 @@ void MergeWidget::configureForCherryPick(const RevisionFiles &files, const QStri
 
 void MergeWidget::configureForRebase()
 {
-
 }
 
 void MergeWidget::fillButtonFileList(const RevisionFiles &files)

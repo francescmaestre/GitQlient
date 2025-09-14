@@ -3,21 +3,21 @@
 #include "ui_CommitChangesWidget.h"
 
 #include <ClickableFrame.h>
-#include <Commit.h>
 #include <FileWidget.h>
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitConfig.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
-#include <GitRepoLoader.h>
 #include <GitWip.h>
-#include <GraphCache.h>
 #include <RevisionFiles.h>
 #include <UnstagedMenu.h>
-#include <WipHelper.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/cache/GraphCache.h>
+#include <core/graph/WipHelper.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
+#include <core/system/GitRepoLoader.h>
 
 #include <QCheckBox>
 #include <QDir>
@@ -33,7 +33,7 @@
 #include <QTextStream>
 #include <QToolTip>
 
-#include <QLogger.h>
+#include <QLogger>
 
 using namespace QLogger;
 

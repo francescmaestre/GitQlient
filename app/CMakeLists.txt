@@ -47,16 +47,17 @@ file(GLOB SRC_FILES
    AuxiliarCustomWidgets/*.qrc
 )
 
+add_subdirectory(core)
+
 add_subdirectory(AuxiliarCustomWidgets)
-add_subdirectory(aux_widgets)
+add_subdirectory(dialogs)
 add_subdirectory(big_widgets)
 add_subdirectory(branches)
-add_subdirectory(cache)
+
 add_subdirectory(commits)
 add_subdirectory(config)
 add_subdirectory(diff)
 add_subdirectory(git)
-add_subdirectory(graph)
 add_subdirectory(history)
 add_subdirectory(QLogger)
 add_subdirectory(QPinnableTabWidget)
@@ -81,17 +82,14 @@ target_link_libraries(
    Qt::Widgets
    Qt::Network
    AuxiliarCustomWidgets
-   aux_widgets
    big_widgets
    branches
-   cache
    commits
    config
    diff
    git
    history
    QLogger
-   Graph
    QPinnableTabWidget
  )
 

@@ -2,8 +2,8 @@
 #include "ui_AddSubmoduleDlg.h"
 
 #include <GitBase.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 #include <GitRemote.h>
 
 #include <QMessageBox>

@@ -1,9 +1,9 @@
 #include "SubmodulesContextMenu.h"
 
 #include <AddSubmoduleDlg.h>
-#include <BranchDlg.h>
+#include <dialogs/BranchDlg.h>
 #include <GitBase.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientStyles.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
 

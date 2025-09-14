@@ -1,13 +1,13 @@
-#include "CreateRepoDlg.h"
+#include "dialogs/CreateRepoDlg.h"
 #include "ui_CreateRepoDlg.h"
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QFileDialog>
-#include <QLogger.h>
+#include <QLogger>
 #include <QMessageBox>
 
 using namespace QLogger;

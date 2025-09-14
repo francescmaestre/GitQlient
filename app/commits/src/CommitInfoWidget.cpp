@@ -1,16 +1,16 @@
 #include <CommitInfoWidget.h>
 
-#include <Commit.h>
 #include <CommitInfoPanel.h>
 #include <FileListWidget.h>
-#include <GitCache.h>
 #include <GitExecResult.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
 
 #include <QDateTime>
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include <QLogger.h>
+#include <QLogger>
 
 using namespace QLogger;
 

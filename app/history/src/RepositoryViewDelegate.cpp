@@ -1,18 +1,18 @@
 #include "RepositoryViewDelegate.h"
 
-#include <Colors.h>
-#include <Commit.h>
 #include <CommitHistoryColumns.h>
 #include <CommitHistoryModel.h>
 #include <CommitHistoryView.h>
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitLocal.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
-#include <GraphCache.h>
-#include <State.h>
-#include <StateType.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/cache/GraphCache.h>
+#include <core/graph/State.h>
+#include <core/graph/StateType.h>
+#include <core/system/Colors.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QClipboard>

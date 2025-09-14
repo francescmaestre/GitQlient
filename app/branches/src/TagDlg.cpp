@@ -2,7 +2,7 @@
 #include "ui_TagDlg.h"
 
 #include <GitTags.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QFile>
 

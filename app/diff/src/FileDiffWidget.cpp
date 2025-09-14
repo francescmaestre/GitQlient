@@ -2,18 +2,19 @@
 
 #include <ButtonLink.h>
 #include <CheckBox.h>
-#include <Commit.h>
 #include <DiffHelper.h>
 #include <FileDiffView.h>
 #include <FileEditor.h>
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitPatches.h>
-#include <GitQlientSettings.h>
 #include <HunkWidget.h>
 #include <LineNumberArea.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/system/Colors.h>
+#include <core/system/GitQlientSettings.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -44,10 +45,7 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase> &git, QSharedPointe
    , mRevert(new QPushButton())
    , mFileNameLabel(new ButtonLink())
    , mTitleFrame(new QFrame())
-   , mUnifiedFile(new FileDiffView())
-   , mNewFile(new FileDiffView())
    , mSearchOld(new QLineEdit())
-   , mOldFile(new FileDiffView())
    , mFileEditor(new FileEditor())
    , mHunksLayout(new QVBoxLayout())
    , mHunksFrame(new QFrame())
@@ -56,10 +54,18 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase> &git, QSharedPointe
 {
    mCurrentSha = ZERO_SHA;
 
-   mUnifiedFile->addNumberArea(new LineNumberArea(mUnifiedFile, false, true));
+   const auto colorScheme = QSettings().value("colorSchema", 0).toInt();
+   const auto additionColor = colorScheme == 0 ? editorGreenShadowDark : editorGreenShadowBright;
+   const auto removalColor = colorScheme == 0 ? editorRedShadowDark : editorRedShadowBright;
+   const auto textColor = QSettings().value("colorSchema", 0).toInt() == 1 ? textColorBright : textColorDark;
+   mUnifiedFile = new FileDiffView(additionColor, removalColor, graphOrange);
+   mNewFile = new FileDiffView(additionColor, removalColor, graphOrange);
+   mOldFile = new FileDiffView(additionColor, removalColor, graphOrange);
 
-   mNewFile->addNumberArea(new LineNumberArea(mNewFile));
-   mOldFile->addNumberArea(new LineNumberArea(mOldFile));
+   mUnifiedFile->addNumberArea(new LineNumberArea(mUnifiedFile, textColor, false, QColor(), true));
+
+   mNewFile->addNumberArea(new LineNumberArea(mNewFile, textColor));
+   mOldFile->addNumberArea(new LineNumberArea(mOldFile, textColor));
 
    mNewFile->setObjectName("newFile");
    mOldFile->setObjectName("oldFile");

@@ -1,6 +1,6 @@
-#include "WaitingDlg.h"
+#include "dialogs/WaitingDlg.h"
 
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QLabel>
 #include <QHBoxLayout>

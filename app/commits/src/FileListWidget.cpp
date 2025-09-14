@@ -3,10 +3,10 @@
 #include <FileContextMenu.h>
 #include <FileListDelegate.h>
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitHistory.h>
-#include <GitQlientStyles.h>
 #include <RevisionFiles.h>
+#include <core/cache/GitCache.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QDrag>

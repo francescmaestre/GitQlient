@@ -4,10 +4,10 @@
 #include <BranchContextMenu.h>
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
+#include <core/cache/GitCache.h>
 #include <GitQlientBranchItemRole.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 #include <GitRemote.h>
 #include <PullDlg.h>
 

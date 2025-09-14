@@ -1,11 +1,11 @@
 #include "FullDiffWidget.h"
 
-#include <Commit.h>
 #include <DiffHelper.h>
-#include <GitCache.h>
 #include <GitHistory.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QLineEdit>
 #include <QPushButton>

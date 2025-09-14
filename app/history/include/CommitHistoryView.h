@@ -25,12 +25,15 @@
 
 #include <QTreeView>
 
-#include <Commit.h>
 #include <GitExecResult.h>
+#include <core/cache/Commit.h>
 
 class GitCache;
 class GitBase;
-namespace Graph { class Cache; }
+namespace Graph
+{
+class Cache;
+}
 class CommitHistoryModel;
 class ShaFilterProxyModel;
 class GitQlientSettings;

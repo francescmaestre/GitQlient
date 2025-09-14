@@ -2,7 +2,6 @@
 
 #include <BranchesWidget.h>
 #include <CheckBox.h>
-#include <Commit.h>
 #include <CommitChangesWidget.h>
 #include <CommitHistoryModel.h>
 #include <CommitHistoryView.h>
@@ -12,21 +11,22 @@
 #include <FullDiffWidget.h>
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
 #include <GitConfig.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
 #include <GitRemote.h>
-#include <GitRepoLoader.h>
 #include <GitWip.h>
-#include <GraphCache.h>
 #include <RepositoryViewDelegate.h>
-#include <WipHelper.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/cache/GraphCache.h>
+#include <core/graph/WipHelper.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
+#include <core/system/GitRepoLoader.h>
 
-#include <QLogger.h>
+#include <QLogger>
 
 #include <QApplication>
 #include <QGridLayout>

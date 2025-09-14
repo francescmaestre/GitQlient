@@ -321,78 +321,78 @@
 <context>
     <name>BranchDlg</name>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="26"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="26"/>
         <source>Dialog</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="136"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="136"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="129"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="129"/>
         <source>Set the branch name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="69"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="69"/>
         <source>Current branch:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="99"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="99"/>
         <source>Create</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.ui" line="122"/>
+        <location filename="../../dialogs/BranchDlg.ui" line="122"/>
         <source>Same as remote branch name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="56"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="56"/>
         <source>Create branch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="59"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="59"/>
         <source>Rename</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="63"/>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="71"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="63"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="71"/>
         <source>Create and checkout branch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="67"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="67"/>
         <source>Create branch at commit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="75"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="75"/>
         <source>Stash branch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="81"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="81"/>
         <source>Push upstream branch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="82"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="82"/>
         <source>Push</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="225"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="225"/>
         <source>Error on branch action!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/BranchDlg.cpp" line="226"/>
+        <location filename="../../dialogs/BranchDlg.cpp" line="226"/>
         <source>There were problems during the branch operation. Please, see the detailed description for more information.</source>
         <translation></translation>
     </message>
@@ -1005,7 +1005,7 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>CommitInfoPanel</name>
     <message>
-        <location filename="../../aux_widgets/CommitInfoPanel.cpp" line="61"/>
+        <location filename="../../dialogs/CommitInfoPanel.cpp" line="61"/>
         <source>Copied!</source>
         <translation></translation>
     </message>
@@ -1784,82 +1784,82 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>CreateRepoDlg</name>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="71"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="71"/>
         <source>Open repository after %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="20"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="20"/>
         <source>Browse...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="54"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="54"/>
         <source>Config Git user for this repo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="95"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="95"/>
         <source>Git user name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="109"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="109"/>
         <source>Us as default clone directory </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="88"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="88"/>
         <source>Repository destination</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="102"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="102"/>
         <source>URL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="27"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="27"/>
         <source>Repository name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="64"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="64"/>
         <source>Accept</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="34"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="34"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.ui" line="81"/>
+        <location filename="../../dialogs/CreateRepoDlg.ui" line="81"/>
         <source>Git user email</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="41"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="41"/>
         <source>%1 repository</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="42"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="42"/>
         <source>Initialize</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="42"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="42"/>
         <source>Clone</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="157"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="157"/>
         <source>You need to provider a URL to clone a repository.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/CreateRepoDlg.cpp" line="176"/>
+        <location filename="../../dialogs/CreateRepoDlg.cpp" line="176"/>
         <source>Error when %1: 
  %2</source>
         <translation></translation>
@@ -1868,7 +1868,7 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>CredentialsDlg</name>
     <message>
-        <location filename="../../aux_widgets/CredentialsDlg.ui" line="26"/>
+        <location filename="../../dialogs/CredentialsDlg.ui" line="26"/>
         <source>Credentials</source>
         <translation></translation>
     </message>
@@ -2435,17 +2435,17 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>GitQlientUpdater</name>
     <message>
-        <location filename="../../aux_widgets/GitQlientUpdater.cpp" line="46"/>
+        <location filename="../../dialogs/GitQlientUpdater.cpp" line="46"/>
         <source>New version of GitQlient!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/GitQlientUpdater.cpp" line="47"/>
+        <location filename="../../dialogs/GitQlientUpdater.cpp" line="47"/>
         <source>There is a new version of GitQlient available. Your current version is {%1} and the new one is {%2}. You can read more about the new changes in the detailed description.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/GitQlientUpdater.cpp" line="51"/>
+        <location filename="../../dialogs/GitQlientUpdater.cpp" line="51"/>
         <source>Download</source>
         <translation></translation>
     </message>
@@ -2531,17 +2531,17 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>HunkWidget</name>
     <message>
-        <location filename="../../aux_widgets/HunkWidget.cpp" line="253"/>
+        <location filename="../../dialogs/HunkWidget.cpp" line="253"/>
         <source>Stage line</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/HunkWidget.cpp" line="254"/>
+        <location filename="../../dialogs/HunkWidget.cpp" line="254"/>
         <source>Discard line</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/HunkWidget.cpp" line="262"/>
+        <location filename="../../dialogs/HunkWidget.cpp" line="262"/>
         <source>Revert line</source>
         <translation></translation>
     </message>
@@ -2623,92 +2623,92 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>InitialRepoConfig</name>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="26"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="26"/>
         <source>Repo config</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="99"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="99"/>
         <source> last commits</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="64"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="64"/>
         <source>Save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="32"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="32"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the first time you open this repository. GitQlient includes some parameters to help you to configure the it. Please, take a moment to change them if you&apos;d like.&lt;/p&gt;&lt;p&gt;If you already have configured some of them, they will show the already set value.&lt;/p&gt;&lt;p&gt;You can modify these values at any moment using the &lt;span style=&quot; font-style:italic;&quot;&gt;Config &lt;/span&gt;button in the top icons list of GitQlient.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="96"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="96"/>
         <source>All commits</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="115"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="115"/>
         <source>Max. commits to retrieve (0 for all)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="162"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="162"/>
         <source>Never</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="178"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="178"/>
         <source>Update submodules when pull</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="185"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="185"/>
         <source>Credentials configuration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="206"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="206"/>
         <source>Storage</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="216"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="216"/>
         <source>Store credentials using GitQlient (Current session or in Storage)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="226"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="226"/>
         <source>Cache</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="244"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="244"/>
         <source>Timeout:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="251"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="251"/>
         <source> mins.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="165"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="165"/>
         <source> minutes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="132"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="132"/>
         <source>Auto-Fetch interval</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="139"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="139"/>
         <source>The interval is expected to be in minutes. Choose a value between 0 (for disabled) and 60.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InitialRepoConfig.ui" line="73"/>
+        <location filename="../../dialogs/InitialRepoConfig.ui" line="73"/>
         <source>Prune when fetch</source>
         <translation></translation>
     </message>
@@ -2716,32 +2716,32 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>InputShaDlg</name>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="26"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="26"/>
         <source>Dialog</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="32"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="32"/>
         <source>Reset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="39"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="39"/>
         <source>Commit SHA to reset the branch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.ui" line="75"/>
+        <location filename="../../dialogs/InputShaDlg.ui" line="75"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.cpp" line="47"/>
+        <location filename="../../dialogs/InputShaDlg.cpp" line="47"/>
         <source>Reset failed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/InputShaDlg.cpp" line="48"/>
+        <location filename="../../dialogs/InputShaDlg.cpp" line="48"/>
         <source>There were some problems while fetching. Please try again.</source>
         <translation></translation>
     </message>
@@ -2842,97 +2842,97 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>NewVersionInfoDlg</name>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="14"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="14"/>
         <source>What&apos;s new in GitQlient?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="95"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="95"/>
         <source>Don&apos;t show again (accessible through the config)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="115"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="115"/>
         <source>Previous</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="122"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="122"/>
         <source>Next</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.ui" line="129"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.ui" line="129"/>
         <source>Close</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="16"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="16"/>
         <source>1. Plugins support</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="17"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="17"/>
         <source>After some months of work and refactor, GitQlient can be extended with plugins!&lt;br&gt;&lt;br&gt;The plugin system works by deploying &lt;a style=&apos;color: #D89000&apos; href=&apos;https://doc.qt.io/qt-6/plugins-howto.html&apos;&gt;Qt plugins&lt;/a&gt; into the selected folder. GitQlient will automatically read the metadata for the plugins on every restart and list the available plugins (those that are valid) in the installed plugins panel.&lt;br&gt;&lt;br&gt;All the GitQlient plugins are downloaded from their official GitHub repo page and stored in the folder selected. Once they are downloaded, a list with checkbox will be shown in the &lt;em&gt;Installed plugins&lt;/em&gt; section where you can enable/disable them. In addition, the icon will be shown in the Controls panel for an easy access.&lt;br&gt;&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="28"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="28"/>
         <source>2. New terminal widget (Linux/MacOS)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="29"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="29"/>
         <source>If you are a Linux or MacOS user, you are lucky!&lt;br&gt;&lt;br&gt;GitQlient now supports the terminal plugin where you can access the same functionalities you have in your usual terminal. It also keeps the history of commands so now you can take advantage of a shortcut to update and generate your projects.&lt;br&gt;&lt;br&gt;Once the plugin is enabled, it will show an icon in the Controls panel to access it directly. In addition, in the &lt;em&gt;GitQlient&lt;/em&gt; section of the configuration, you will find a combo box to select your preferred color scheme for the terminal widget based on the ones available in your OS.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="38"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="38"/>
         <source>3. GitHub and Jenkins become plugins</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="39"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="39"/>
         <source>The old GitServer view (to connect to GitHub) and Jenkins view (to show and trigger Jenkins jobs and builds) have been converted into plugins and are now available to be downloaded from their release page in their own GitHub repo. By having this views detached, GitQlient takes less dependencies (WebEngine, WebChannel, etc.), allows the release of the GitQlientPlugin for QtCreator and in addition, makes it possible to improve those plugins independently to GitQlient.&lt;br&gt;&lt;br&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="45"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="45"/>
         <source>4. Hunks view</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="46"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="46"/>
         <source>Now it&apos;s possible to stage by hunk or by line!&lt;br&gt;&lt;br&gt;There is a new view in when showing the diff of a file where GitQlient will show the changes ordered by hunks. Each hunk has its own Discard/Stage buttons to apply the changes individually.&lt;br&gt;&lt;br&gt;In addition, by using the right button of the mouse, you will be able to stage or discard changes by line.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="53"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="53"/>
         <source>5. Foldable branches panel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="54"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="54"/>
         <source>From now on, all the panels of the Branches widget are foldable. This has been a long requested feature that is now included in GitQlient.&lt;br&gt;&lt;br&gt;This will help you to save a lot of space if you work with small screens. Fold and unfold is as easy as clicking in the plus sign, but you can also do it from the config widget.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="60"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="60"/>
         <source>6. Shortcuts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="61"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="61"/>
         <source>In this new version of GitQlient, some shortcuts have been introduced so you don&apos;t need to navigate with the mouse the whole time.&lt;br&gt;&lt;br&gt;For now, the shortcuts are used in the Controls panel and in the branches panel (in this case to use toggle the minimal/normal view). The shortcuts are:&lt;ul&gt;&lt;li&gt;Graph view: &lt;strong&gt;Ctrl+1&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Diff view: &lt;strong&gt;Ctrl+2&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Blame view: &lt;strong&gt;Ctrl+3&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Pull: &lt;strong&gt;Ctrl+4&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Push: &lt;strong&gt;Ctrl+5&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Config view: &lt;strong&gt;Ctrl+6&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Refresh/Update: &lt;strong&gt;F5&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Terminal (if enabled): &lt;strong&gt;Ctrl+7&lt;strong&gt;&lt;/li&gt;&lt;li&gt;GitHub (if enabled): &lt;strong&gt;Ctrl+8&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;Jenkins (if enabled): &lt;strong&gt;Ctrl+9&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="75"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="75"/>
         <source>7. New version notification</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/NewVersionInfoDlg.cpp" line="76"/>
+        <location filename="../../dialogs/NewVersionInfoDlg.cpp" line="76"/>
         <source>Until now, whenever a new version of GitQlient was released, the app would notify making it available for download.&lt;br&gt;&lt;br&gt;This will change from now on since GitQlient is available through different ways: DEB and &lt;a style=&apos;color: #D89000&apos; href=&apos;https://src.fedoraproject.org/rpms/gitqlient&apos;&gt;RPM&lt;/a&gt; packages, AppImage, installer for Windows, and DMG/ports for MacOS. Since it&apos;s quite hard and error prone to verify what binary is being used, the icon will notify that a new version have been released but it the download will have to happen manually.&lt;br&gt;&lt;br&gt;You can of course download the latest version &lt;a style=&apos;color: #D89000&apos; href=&apos;https://github.com/francescmm/GitQlient/releases&apos;&gt;from the official GitHub repo&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2940,12 +2940,12 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PluginsDownloader</name>
     <message>
-        <location filename="../../aux_widgets/PluginsDownloader.cpp" line="97"/>
+        <location filename="../../dialogs/PluginsDownloader.cpp" line="97"/>
         <source>Downloading...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PluginsDownloader.cpp" line="97"/>
+        <location filename="../../dialogs/PluginsDownloader.cpp" line="97"/>
         <source>Close</source>
         <translation></translation>
     </message>
@@ -2953,39 +2953,39 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PomodoroButton</name>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="26"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="26"/>
         <source>Pomodoro</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="30"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="30"/>
         <source>Options...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="43"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="43"/>
         <source>Options</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="249"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="249"/>
         <source>Time for a break!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="249"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="249"/>
         <source>It&apos;s time to do a break. Are you ready?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="289"/>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="321"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="289"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="321"/>
         <source>Time to work!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="289"/>
-        <location filename="../../aux_widgets/PomodoroButton.cpp" line="321"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="289"/>
+        <location filename="../../dialogs/PomodoroButton.cpp" line="321"/>
         <source>It&apos;s time to go back to work. Are you ready?</source>
         <translation></translation>
     </message>
@@ -2993,74 +2993,74 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PomodoroConfigDlg</name>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="14"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="14"/>
         <source>Pomodoro configuration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="41"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="41"/>
         <source>Pomodoro duration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="61"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="61"/>
         <source>25</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="68"/>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="125"/>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="179"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="68"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="125"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="179"/>
         <source>minutes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="98"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="98"/>
         <source>Break duration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="118"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="118"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="152"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="152"/>
         <source>Long break duration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="172"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="172"/>
         <source>15</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="209"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="209"/>
         <source>Long break after:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="216"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="216"/>
         <source> pomodoros</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="239"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="239"/>
         <source>Enable alarm sound:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="253"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="253"/>
         <source>Reset counter when stop:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="274"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="274"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PomodoroConfigDlg.ui" line="294"/>
+        <location filename="../../dialogs/PomodoroConfigDlg.ui" line="294"/>
         <source>Save</source>
         <translation></translation>
     </message>
@@ -3068,22 +3068,22 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>PullDlg</name>
     <message>
-        <location filename="../../aux_widgets/PullDlg.ui" line="14"/>
+        <location filename="../../dialogs/PullDlg.ui" line="14"/>
         <source>Dialog</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PullDlg.cpp" line="20"/>
+        <location filename="../../dialogs/PullDlg.cpp" line="20"/>
         <source>&lt;strong&gt;Would you like to pull the last changes?&lt;/strong&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PullDlg.cpp" line="57"/>
+        <location filename="../../dialogs/PullDlg.cpp" line="57"/>
         <source>Error while pulling</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/PullDlg.cpp" line="58"/>
+        <location filename="../../dialogs/PullDlg.cpp" line="58"/>
         <source>There were problems during the pull operation. Please, see the detailed description for more information.</source>
         <translation></translation>
     </message>
@@ -3120,23 +3120,23 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>SquashDlg</name>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="26"/>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="150"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="26"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="150"/>
         <source>Squash</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="96"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="96"/>
         <source>Summary</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="119"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="119"/>
         <source>Description</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/SquashDlg.ui" line="130"/>
+        <location filename="../../dialogs/SquashDlg.ui" line="130"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -3411,17 +3411,17 @@ To enable, go to the Configuration panel, Repository tab.</source>
 <context>
     <name>UpstreamDlg</name>
     <message>
-        <location filename="../../aux_widgets/UpstreamDlg.cpp" line="19"/>
+        <location filename="../../dialogs/UpstreamDlg.cpp" line="19"/>
         <source>&lt;strong&gt;Would you like to reconfigure the upstream and push the branch?&lt;/strong&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/UpstreamDlg.cpp" line="47"/>
+        <location filename="../../dialogs/UpstreamDlg.cpp" line="47"/>
         <source>Error while pulling</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../aux_widgets/UpstreamDlg.cpp" line="48"/>
+        <location filename="../../dialogs/UpstreamDlg.cpp" line="48"/>
         <source>There were problems during the pull operation. Please, see the detailed description for more information.</source>
         <translation></translation>
     </message>

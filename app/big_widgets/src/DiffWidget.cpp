@@ -4,11 +4,11 @@
 #include <FileDiffWidget.h>
 #include <FileListWidget.h>
 #include <FullDiffWidget.h>
-#include <GitCache.h>
+#include <core/cache/GitCache.h>
 #include <GitHistory.h>
-#include <GitQlientSettings.h>
+#include <core/system/GitQlientSettings.h>
 
-#include <QLogger.h>
+#include <QLogger>
 #include <QPinnableTabWidget.h>
 
 #include <QHBoxLayout>

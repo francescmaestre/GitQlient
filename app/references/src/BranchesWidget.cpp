@@ -2,9 +2,9 @@
 #include <BranchesWidget.h>
 #include <BranchesWidgetMinimal.h>
 #include <GitBase.h>
-#include <GitCache.h>
+#include <core/cache/GitCache.h>
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
+#include <core/system/GitQlientSettings.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
 #include <GitSubtree.h>
@@ -20,7 +20,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <QLogger.h>
+#include <QLogger>
 #include <qlistwidget.h>
 
 using namespace QLogger;

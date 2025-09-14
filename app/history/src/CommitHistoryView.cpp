@@ -3,17 +3,17 @@
 #include <CommitHistoryColumns.h>
 #include <CommitHistoryContextMenu.h>
 #include <CommitHistoryModel.h>
-#include <Commit.h>
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
 #include <ShaFilterProxyModel.h>
+#include <core/cache/Commit.h>
+#include <core/cache/GitCache.h>
+#include <core/system/GitQlientSettings.h>
 
 #include <QDateTime>
 #include <QHeaderView>
 
-#include <QLogger.h>
+#include <QLogger>
 using namespace QLogger;
 
 CommitHistoryView::CommitHistoryView(const QSharedPointer<GitCache> &cache, const QSharedPointer<Graph::Cache> &graphCache, const QSharedPointer<GitBase> &git,

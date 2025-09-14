@@ -1,7 +1,7 @@
 #include "BranchesWidgetMinimal.h"
 
 #include <GitBase.h>
-#include <GitCache.h>
+#include <core/cache/GitCache.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
 

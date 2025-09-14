@@ -4,10 +4,10 @@
 #include <CommitHistoryColumns.h>
 #include <CommitHistoryModel.h>
 #include <CommitHistoryView.h>
-#include <Commit.h>
+#include <core/cache/Commit.h>
 #include <FileBlameWidget.h>
 #include <GitHistory.h>
-#include <GitQlientSettings.h>
+#include <core/system/GitQlientSettings.h>
 #include <RepositoryViewDelegate.h>
 
 #include <QApplication>

@@ -1,17 +1,17 @@
 #include "Controls.h"
 
-#include <BranchDlg.h>
+#include <dialogs/BranchDlg.h>
 #include <ConfigWidget.h>
 #include <GitBase.h>
-#include <GitCache.h>
+#include <core/cache/GitCache.h>
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
-#include <GitQlientUpdater.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
+#include <core/system/GitQlientUpdater.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
 #include <PomodoroButton.h>
-#include <QLogger.h>
+#include <QLogger>
 
 #include <QApplication>
 #include <QButtonGroup>

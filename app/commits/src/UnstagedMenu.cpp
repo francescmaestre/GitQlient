@@ -2,9 +2,9 @@
 
 #include <GitBase.h>
 #include <GitLocal.h>
-#include <GitQlientSettings.h>
+#include <core/system/GitQlientSettings.h>
 #include <GitSyncProcess.h>
-#include <QLogger.h>
+#include <QLogger>
 
 #include <QDir>
 #include <QFile>

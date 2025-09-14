@@ -1,9 +1,10 @@
 #include "FileEditor.h"
 
 #include <FileDiffEditor.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
 #include <Highlighter.h>
+#include <core/system/Colors.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QFile>
 #include <QMessageBox>
@@ -11,8 +12,12 @@
 
 FileEditor::FileEditor(bool highlighter, QWidget *parent)
    : QFrame(parent)
-   , mFileEditor(new FileDiffEditor())
 {
+   const auto colorScheme = QSettings().value("colorSchema", 0).toInt();
+   auto additionColor = colorScheme == 0 ? editorGreenShadowDark : editorGreenShadowBright;
+   auto removalColor = colorScheme == 0 ? editorRedShadowDark : editorRedShadowBright;
+   mFileEditor = new FileDiffEditor(additionColor, removalColor, graphOrange);
+
    if (highlighter)
       mHighlighter = new Highlighter(mFileEditor->document());
 

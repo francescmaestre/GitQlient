@@ -5,8 +5,8 @@
 #include <QTranslator>
 
 #include <GitQlient.h>
-#include <GitQlientSettings.h>
-#include <QLogger.h>
+#include <core/system/GitQlientSettings.h>
+#include <QLogger>
 
 using namespace QLogger;
 

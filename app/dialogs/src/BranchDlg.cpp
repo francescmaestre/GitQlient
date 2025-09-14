@@ -1,14 +1,14 @@
-#include "BranchDlg.h"
+#include "dialogs/BranchDlg.h"
 #include "ui_BranchDlg.h"
 
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
+#include <core/cache/GitCache.h>
 
 #include <QFile>
 #include <QMessageBox>

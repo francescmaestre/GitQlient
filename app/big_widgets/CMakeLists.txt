@@ -14,13 +14,14 @@ target_link_libraries(big_widgets
     PUBLIC
     Qt::Core
     Qt::Widgets
+    core
+    dialogs
+
     AuxiliarCustomWidgets
-    aux_widgets
     branches
     diff
     commits
     history
     config
-    Graph
     QPinnableTabWidget
 )

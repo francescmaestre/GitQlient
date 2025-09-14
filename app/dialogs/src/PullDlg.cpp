@@ -1,9 +1,9 @@
-#include "PullDlg.h"
+#include "dialogs/PullDlg.h"
 #include "ui_PullDlg.h"
 
 #include <GitBase.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 #include <GitRemote.h>
 
 #include <QMessageBox>

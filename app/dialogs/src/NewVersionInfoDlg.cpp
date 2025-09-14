@@ -1,7 +1,7 @@
-#include "NewVersionInfoDlg.h"
+#include "dialogs/NewVersionInfoDlg.h"
 #include "ui_NewVersionInfoDlg.h"
 
-#include <GitQlientSettings.h>
+#include <core/system/GitQlientSettings.h>
 #include <QScrollArea>
 #include <QLabel>
 

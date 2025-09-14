@@ -4,9 +4,9 @@
 #include <BranchesViewDelegate.h>
 #include <ClickableFrame.h>
 #include <GitBase.h>
-#include <GitCache.h>
+#include <core/cache/GitCache.h>
 #include <GitQlientBranchItemRole.h>
-#include <GitQlientSettings.h>
+#include <core/system/GitQlientSettings.h>
 
 #include <QHeaderView>
 #include <QTreeWidgetItem>

@@ -1,15 +1,15 @@
 #include "GitQlient.h"
 
-#include <CreateRepoDlg.h>
+#include <dialogs/CreateRepoDlg.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitQlientRepo.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 #include <InitScreen.h>
 #include <InitialRepoConfig.h>
-#include <NewVersionInfoDlg.h>
-#include <ProgressDlg.h>
+#include <dialogs/NewVersionInfoDlg.h>
+#include <dialogs/ProgressDlg.h>
 #include <QPinnableTabWidget.h>
 
 #include <QApplication>
@@ -28,7 +28,7 @@
 #include <QTextStream>
 #include <QToolButton>
 
-#include <QLogger.h>
+#include <QLogger>
 
 using namespace QLogger;
 

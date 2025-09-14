@@ -1,15 +1,15 @@
-#include "SquashDlg.h"
+#include "dialogs/SquashDlg.h"
 #include "ui_SquashDlg.h"
 
 #include <CheckBox.h>
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
-#include <GitQlientSettings.h>
 #include <GitWip.h>
-#include <WipHelper.h>
+#include <core/cache/GitCache.h>
+#include <core/graph/WipHelper.h>
+#include <core/system/GitQlientSettings.h>
 
 #include <QLabel>
 #include <QMessageBox>

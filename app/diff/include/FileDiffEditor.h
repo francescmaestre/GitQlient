@@ -32,7 +32,7 @@ public:
     * @brief FileDiffEditor Default constructor
     * @param parent The parent widget
     */
-   explicit FileDiffEditor(QWidget *parent = nullptr);
+   explicit FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget *parent = nullptr);
 
 private:
    /**

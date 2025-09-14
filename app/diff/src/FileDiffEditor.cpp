@@ -1,14 +1,18 @@
 #include <FileDiffEditor.h>
 
-#include <GitQlientStyles.h>
 #include <LineNumberArea.h>
+#include <core/system/Colors.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
-FileDiffEditor::FileDiffEditor(QWidget *parent)
-   : FileDiffView(parent)
+FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget *parent)
+   : FileDiffView(additionColor, removalColor, commentColor, parent)
 {
    setReadOnly(false);
 
-   addNumberArea(new LineNumberArea(this));
+   const auto textColor = QSettings().value("colorSchema", 0).toInt() == 1 ? textColorBright : textColorDark;
+
+   addNumberArea(new LineNumberArea(this, textColor));
 
    connect(this, &FileDiffView::cursorPositionChanged, this, &FileDiffEditor::highlightCurrentLine);
 

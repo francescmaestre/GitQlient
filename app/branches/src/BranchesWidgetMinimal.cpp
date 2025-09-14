@@ -1,9 +1,9 @@
 #include "BranchesWidgetMinimal.h"
 
 #include <GitBase.h>
-#include <GitCache.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
+#include <core/cache/GitCache.h>
 
 #include <QEvent>
 #include <QLabel>

@@ -1,15 +1,15 @@
 #include "BranchContextMenu.h"
 
-#include <BranchDlg.h>
+#include <dialogs/BranchDlg.h>
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitCache.h>
 #include <GitConfig.h>
-#include <GitQlientSettings.h>
-#include <GitQlientStyles.h>
 #include <GitRemote.h>
-#include <InputShaDlg.h>
-#include <UpstreamDlg.h>
+#include <dialogs/InputShaDlg.h>
+#include <dialogs/UpstreamDlg.h>
+#include <core/cache/GitCache.h>
+#include <core/system/GitQlientSettings.h>
+#include <core/system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QClipboard>
