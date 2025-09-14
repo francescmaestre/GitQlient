@@ -1,4 +1,4 @@
-#include <FileDiffEditor.h>
+#include "FileDiffEditor.h"
 
 #include <LineNumberArea.h>
 #include <core/system/Colors.h>

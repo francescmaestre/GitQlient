@@ -1,4 +1,4 @@
-#include "IDiffWidget.h"
+#include <diff-widgets/IDiffWidget.h>
 
 IDiffWidget::IDiffWidget(const QSharedPointer<GitBase> &git, QSharedPointer<GitCache> cache, QWidget *parent)
    : QFrame(parent)

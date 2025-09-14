@@ -1,7 +1,5 @@
 #include <main-widgets/MergeWidget.h>
 
-#include <FileDiffWidget.h>
-#include <FileEditor.h>
 #include <GitBase.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
@@ -13,6 +11,8 @@
 #include <core/cache/GitCache.h>
 #include <core/graph/WipHelper.h>
 #include <core/system/GitQlientStyles.h>
+#include <diff-widgets/FileDiffWidget.h>
+#include <diff-widgets/FileEditor.h>
 
 #include <QFile>
 #include <QLabel>

@@ -1,4 +1,4 @@
-#include "FullDiffWidget.h"
+#include <diff-widgets/FullDiffWidget.h>
 
 #include <DiffHelper.h>
 #include <GitHistory.h>

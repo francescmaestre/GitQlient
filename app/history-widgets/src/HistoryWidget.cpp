@@ -7,9 +7,6 @@
 #include <CheckBox.h>
 #include <CommitChangesWidget.h>
 #include <CommitInfoWidget.h>
-#include <FileDiffWidget.h>
-#include <FileEditor.h>
-#include <FullDiffWidget.h>
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitConfig.h>
@@ -25,6 +22,9 @@
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
+#include <diff-widgets/FileDiffWidget.h>
+#include <diff-widgets/FileEditor.h>
+#include <diff-widgets/FullDiffWidget.h>
 #include <ref-widgets/BranchesWidget.h>
 
 #include <QLogger>

@@ -16,11 +16,11 @@ target_link_libraries(main-widgets
     Qt::Widgets
     core
     dialogs
+    diff-widgets
+    history-widgets
 
     AuxiliarCustomWidgets
-    diff
     commits
-    history-widgets
     config
     QPinnableTabWidget
 )

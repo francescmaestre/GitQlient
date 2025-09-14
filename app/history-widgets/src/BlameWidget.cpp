@@ -3,9 +3,9 @@
 #include "CommitHistoryColumns.h"
 #include "CommitHistoryModel.h"
 #include "CommitHistoryView.h"
+#include "FileBlameWidget.h"
 #include "RepositoryViewDelegate.h"
 
-#include <FileBlameWidget.h>
 #include <GitHistory.h>
 #include <core/cache/Commit.h>
 #include <core/system/GitQlientSettings.h>

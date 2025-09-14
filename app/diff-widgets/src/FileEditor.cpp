@@ -1,6 +1,6 @@
-#include "FileEditor.h"
+#include "FileDiffEditor.h"
+#include <diff-widgets/FileEditor.h>
 
-#include <FileDiffEditor.h>
 #include <Highlighter.h>
 #include <core/system/Colors.h>
 #include <core/system/GitQlientSettings.h>

@@ -1,10 +1,9 @@
-#include "FileDiffWidget.h"
+#include <diff-widgets/FileDiffWidget.h>
 
 #include <ButtonLink.h>
 #include <CheckBox.h>
 #include <DiffHelper.h>
 #include <FileDiffView.h>
-#include <FileEditor.h>
 #include <GitBase.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
@@ -15,6 +14,7 @@
 #include <core/cache/GitCache.h>
 #include <core/system/Colors.h>
 #include <core/system/GitQlientSettings.h>
+#include <diff-widgets/FileEditor.h>
 
 #include <QApplication>
 #include <QClipboard>

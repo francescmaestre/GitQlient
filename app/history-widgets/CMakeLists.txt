@@ -15,9 +15,9 @@ target_link_libraries(history-widgets
     Qt::Widgets
     core
     dialogs
+    diff-widgets
     main-widgets
     ref-widgets
-    AuxiliarCustomWidgets
 )
 
 target_include_directories(history-widgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

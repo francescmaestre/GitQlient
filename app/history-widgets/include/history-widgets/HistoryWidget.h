@@ -40,7 +40,10 @@ class FileDiffWidget;
 class FullDiffWidget;
 class BranchesWidgetMinimal;
 class QPushButton;
-namespace Graph { class Cache; }
+namespace Graph
+{
+class Cache;
+}
 class QLabel;
 class GitQlientSettings;
 class QSplitter;
