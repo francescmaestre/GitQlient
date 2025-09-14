@@ -56,7 +56,6 @@ add_subdirectory(ref-widgets)
 
 add_subdirectory(AuxiliarCustomWidgets)
 add_subdirectory(commits)
-add_subdirectory(config)
 add_subdirectory(git)
 add_subdirectory(QLogger)
 add_subdirectory(QPinnableTabWidget)

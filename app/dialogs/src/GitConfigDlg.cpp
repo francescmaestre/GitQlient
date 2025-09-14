@@ -1,5 +1,5 @@
-#include "GitConfigDlg.h"
 #include "ui_GitConfigDlg.h"
+#include <dialogs/GitConfigDlg.h>
 
 #include <GitBase.h>
 #include <GitConfig.h>

@@ -2,7 +2,6 @@
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <GitConfigDlg.h>
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitMerge.h>
@@ -17,6 +16,7 @@
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
+#include <dialogs/GitConfigDlg.h>
 #include <dialogs/WaitingDlg.h>
 #include <diff-widgets/DiffWidget.h>
 #include <history-widgets/BlameWidget.h>

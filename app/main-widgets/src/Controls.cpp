@@ -4,7 +4,6 @@
 #include <GitConfig.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
-#include <PomodoroButton.h>
 #include <QLogger>
 #include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>

@@ -1,6 +1,5 @@
 file(GLOB SRC_FILES
     include/diff-widgets/*.h
-    include/*.h
     src/*.h
     src/*.cpp
     src/*.ui

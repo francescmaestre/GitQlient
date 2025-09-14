@@ -1,14 +1,13 @@
 ﻿#include "InitScreen.h"
+#include "GeneralConfigDlg.h"
 
 #include <ButtonLink.h>
-#include <dialogs/CreateRepoDlg.h>
-#include <GeneralConfigDlg.h>
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <core/system/GitQlientSettings.h>
+#include <dialogs/CreateRepoDlg.h>
 #include <dialogs/ProgressDlg.h>
 
-#include <core/system/GitQlientStyles.h>
 #include <QApplication>
 #include <QButtonGroup>
 #include <QDesktopServices>
@@ -20,6 +19,7 @@
 #include <QStackedWidget>
 #include <QStyle>
 #include <QtGlobal>
+#include <core/system/GitQlientStyles.h>
 
 #include <QLogger>
 

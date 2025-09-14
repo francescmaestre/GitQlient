@@ -1,11 +1,11 @@
-#include "InitialRepoConfig.h"
 #include "ui_InitialRepoConfig.h"
+#include <dialogs/InitialRepoConfig.h>
 
-#include <dialogs/CredentialsDlg.h>
 #include <GitConfig.h>
 #include <GitCredentials.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
+#include <dialogs/CredentialsDlg.h>
 
 InitialRepoConfig::InitialRepoConfig(const QSharedPointer<GitBase> &git,
                                      const QSharedPointer<GitQlientSettings> &settings, QWidget *parent)

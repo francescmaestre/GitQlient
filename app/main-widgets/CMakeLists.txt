@@ -1,5 +1,6 @@
 file(GLOB SRC_FILES
     include/main-widgets/*.h
+    src/*.h
     src/*.cpp
     src/*.ui
 )
@@ -21,6 +22,5 @@ target_link_libraries(main-widgets
 
     AuxiliarCustomWidgets
     commits
-    config
     QPinnableTabWidget
 )

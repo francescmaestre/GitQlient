@@ -1,6 +1,6 @@
 file(GLOB SRC_FILES
     include/dialogs/*.h
-    include/*.h
+    src/*.h
     src/*.cpp
     src/*.ui
 )

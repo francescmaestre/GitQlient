@@ -1,5 +1,7 @@
 #include <diff-widgets/FileDiffWidget.h>
 
+#include "HunkWidget.h"
+
 #include <ButtonLink.h>
 #include <CheckBox.h>
 #include <DiffHelper.h>
@@ -8,7 +10,6 @@
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitPatches.h>
-#include <HunkWidget.h>
 #include <LineNumberArea.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>

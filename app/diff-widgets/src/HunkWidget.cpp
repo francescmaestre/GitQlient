@@ -1,4 +1,4 @@
-#include <HunkWidget.h>
+#include "HunkWidget.h"
 
 #include <FileDiffView.h>
 #include <GitPatches.h>

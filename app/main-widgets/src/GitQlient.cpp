@@ -1,13 +1,14 @@
 #include <main-widgets/GitQlient.h>
 
+#include "InitScreen.h"
+
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <InitScreen.h>
-#include <InitialRepoConfig.h>
 #include <QPinnableTabWidget.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
 #include <dialogs/CreateRepoDlg.h>
+#include <dialogs/InitialRepoConfig.h>
 #include <dialogs/NewVersionInfoDlg.h>
 #include <dialogs/ProgressDlg.h>
 #include <main-widgets/GitQlientRepo.h>
