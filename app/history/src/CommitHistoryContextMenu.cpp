@@ -1,6 +1,5 @@
 #include "CommitHistoryContextMenu.h"
 
-#include <dialogs/BranchDlg.h>
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitConfig.h>
@@ -10,15 +9,16 @@
 #include <GitPatches.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
-#include <dialogs/PullDlg.h>
-#include <dialogs/SquashDlg.h>
-#include <TagDlg.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/cache/GraphCache.h>
 #include <core/graph/WipHelper.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
+#include <dialogs/BranchDlg.h>
+#include <dialogs/PullDlg.h>
+#include <dialogs/SquashDlg.h>
+#include <ref-widgets/TagDlg.h>
 
 #include <QApplication>
 #include <QClipboard>

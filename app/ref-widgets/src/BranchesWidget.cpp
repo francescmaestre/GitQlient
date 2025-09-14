@@ -1,16 +1,18 @@
-﻿#include <AddSubtreeDlg.h>
-#include <BranchesWidget.h>
-#include <BranchesWidgetMinimal.h>
+﻿#include <ref-widgets/BranchesWidget.h>
+
+#include "AddSubtreeDlg.h"
+#include "BranchesWidgetMinimal.h"
+#include "RefListWidget.h"
+#include "RefTreeWidget.h"
+#include "StashesContextMenu.h"
+#include "SubmodulesContextMenu.h"
+
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
 #include <GitSubtree.h>
 #include <GitTags.h>
-#include <RefListWidget.h>
-#include <RefTreeWidget.h>
-#include <StashesContextMenu.h>
-#include <SubmodulesContextMenu.h>
 #include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>
 

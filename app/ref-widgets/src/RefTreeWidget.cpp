@@ -1,10 +1,11 @@
-#include <RefTreeWidget.h>
+#include "RefTreeWidget.h"
 
-#include <BranchTreeWidget.h>
-#include <BranchesViewDelegate.h>
+#include "BranchTreeWidget.h"
+#include "BranchesViewDelegate.h"
+#include "GitQlientBranchItemRole.h"
+
 #include <ClickableFrame.h>
 #include <GitBase.h>
-#include <GitQlientBranchItemRole.h>
 #include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>
 

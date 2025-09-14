@@ -1,15 +1,16 @@
 #include "BranchTreeWidget.h"
+#include "AddRemoteDlg.h"
 
-#include <AddRemoteDlg.h>
-#include <BranchContextMenu.h>
+#include "BranchContextMenu.h"
+#include "GitQlientBranchItemRole.h"
+
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <GitQlientBranchItemRole.h>
 #include <GitRemote.h>
-#include <dialogs/PullDlg.h>
 #include <core/cache/GitCache.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
+#include <dialogs/PullDlg.h>
 
 #include <QApplication>
 #include <QKeyEvent>

@@ -1,14 +1,13 @@
 #include "BlameWidget.h"
 
-#include <BranchesViewDelegate.h>
 #include <CommitHistoryColumns.h>
 #include <CommitHistoryModel.h>
 #include <CommitHistoryView.h>
-#include <core/cache/Commit.h>
 #include <FileBlameWidget.h>
 #include <GitHistory.h>
-#include <core/system/GitQlientSettings.h>
 #include <RepositoryViewDelegate.h>
+#include <core/cache/Commit.h>
+#include <core/system/GitQlientSettings.h>
 
 #include <QApplication>
 #include <QClipboard>

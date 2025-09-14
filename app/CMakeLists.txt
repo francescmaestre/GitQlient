@@ -48,12 +48,11 @@ file(GLOB SRC_FILES
 )
 
 add_subdirectory(core)
+add_subdirectory(dialogs)
+add_subdirectory(main_widgets)
+add_subdirectory(ref-widgets)
 
 add_subdirectory(AuxiliarCustomWidgets)
-add_subdirectory(dialogs)
-add_subdirectory(big_widgets)
-add_subdirectory(branches)
-
 add_subdirectory(commits)
 add_subdirectory(config)
 add_subdirectory(diff)
@@ -81,16 +80,7 @@ target_link_libraries(
    Qt::Core
    Qt::Widgets
    Qt::Network
-   AuxiliarCustomWidgets
-   big_widgets
-   branches
-   commits
-   config
-   diff
-   git
-   history
-   QLogger
-   QPinnableTabWidget
+   mainWidgets
  )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")

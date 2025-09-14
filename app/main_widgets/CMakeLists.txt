@@ -4,13 +4,13 @@ file(GLOB SRC_FILES
     src/*.ui
 )
 
-add_library(big_widgets STATIC
+add_library(mainWidgets STATIC
     ${SRC_FILES}
 )
 
-target_include_directories(big_widgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(mainWidgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(big_widgets
+target_link_libraries(mainWidgets
     PUBLIC
     Qt::Core
     Qt::Widgets
@@ -18,7 +18,6 @@ target_link_libraries(big_widgets
     dialogs
 
     AuxiliarCustomWidgets
-    branches
     diff
     commits
     history

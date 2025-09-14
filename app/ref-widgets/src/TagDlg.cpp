@@ -1,4 +1,5 @@
-#include "TagDlg.h"
+#include <ref-widgets/TagDlg.h>
+
 #include "ui_TagDlg.h"
 
 #include <GitTags.h>

@@ -1,6 +1,5 @@
 #include "HistoryWidget.h"
 
-#include <BranchesWidget.h>
 #include <CheckBox.h>
 #include <CommitChangesWidget.h>
 #include <CommitHistoryModel.h>
@@ -25,6 +24,7 @@
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
 #include <core/system/GitRepoLoader.h>
+#include <ref-widgets/BranchesWidget.h>
 
 #include <QLogger>
 
