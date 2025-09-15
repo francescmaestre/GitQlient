@@ -54,8 +54,8 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    , mCache(cache)
    , mGraphCache(graphCache)
    , mSettings(settings)
+   , mCommitInfoFrame(new QFrame(this))
    , mReturnFromFull(new QPushButton(QIcon(":/icons/back"), "", this))
-   , mSplitter(new QSplitter(this))
 {
    QLog_Info("Performance", "HistoryWidget loading...");
    setAttribute(Qt::WA_DeleteOnClose);
@@ -73,10 +73,10 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    wipLayout->setSpacing(5);
    wipLayout->addWidget(mCommitStackedWidget);
 
-   const auto wipFrame = new QFrame(this);
-   wipFrame->setLayout(wipLayout);
-   wipFrame->setMinimumWidth(200);
-   wipFrame->setMaximumWidth(500);
+   mCommitInfoFrame->setVisible(false);
+   mCommitInfoFrame->setLayout(wipLayout);
+   mCommitInfoFrame->setMinimumWidth(200);
+   mCommitInfoFrame->setMaximumWidth(500);
 
    connect(mCommitChangesWidget, &CommitChangesWidget::signalShowDiff, this, &HistoryWidget::showWipFileDiff);
    connect(mCommitChangesWidget, &CommitChangesWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
@@ -134,7 +134,6 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
 
    connect(mBranchesWidget, &BranchesWidget::fullReload, this, &HistoryWidget::fullReload);
    connect(mBranchesWidget, &BranchesWidget::logReload, this, &HistoryWidget::logReload);
-
    connect(mBranchesWidget, &BranchesWidget::signalSelectCommit, this, &HistoryWidget::goToSha);
    connect(mBranchesWidget, &BranchesWidget::signalOpenSubmodule, this, &HistoryWidget::signalOpenSubmodule);
    connect(mBranchesWidget, &BranchesWidget::signalMergeRequired, this, &HistoryWidget::mergeBranch);
@@ -197,28 +196,16 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    connect(mWipFileDiff, &FileDiffWidget::fileReverted, this, &HistoryWidget::signalUpdateWip);
    connect(mWipFileDiff, &FileDiffWidget::exitRequested, this, &HistoryWidget::signalUpdateWip);
 
-   mSplitter->insertWidget(0, wipFrame);
-   mSplitter->insertWidget(1, mCenterStackedWidget);
-   mSplitter->setCollapsible(1, false);
-   mSplitter->insertWidget(2, mBranchesWidget);
-
    const auto minimalActive = mBranchesWidget->isMinimalViewActive();
-   const auto branchesWidth = minimalActive ? 50 : 200;
-
    rearrangeSplittrer(minimalActive);
 
    connect(mBranchesWidget, &BranchesWidget::minimalViewStateChanged, this, &HistoryWidget::rearrangeSplittrer);
 
-   const auto splitterSate = mSettings->localValue("HistoryWidgetState", QByteArray()).toByteArray();
-
-   if (splitterSate.isEmpty())
-      mSplitter->setSizes({ 200, 500, branchesWidth });
-   else
-      mSplitter->restoreState(splitterSate);
-
    const auto layout = new QHBoxLayout(this);
    layout->setContentsMargins(QMargins());
-   layout->addWidget(mSplitter);
+   layout->addWidget(mCenterStackedWidget);
+   layout->addWidget(mCommitInfoFrame);
+   layout->addWidget(mBranchesWidget);
 
    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::Graph));
    mCenterStackedWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -227,8 +214,6 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
 
 HistoryWidget::~HistoryWidget()
 {
-   mSettings->setLocalValue("HistoryWidgetState", mSplitter->saveState());
-
    delete mItemDelegate;
    delete mRepositoryModel;
 }
@@ -314,13 +299,11 @@ void HistoryWidget::rearrangeSplittrer(bool minimalActive)
    if (minimalActive)
    {
       mBranchesWidget->setFixedWidth(50);
-      mSplitter->setCollapsible(2, false);
    }
    else
    {
       mBranchesWidget->setMinimumWidth(250);
       mBranchesWidget->setMaximumWidth(500);
-      mSplitter->setCollapsible(2, true);
    }
 }
 
@@ -368,9 +351,19 @@ void HistoryWidget::goToSha(const QString &sha)
 
 void HistoryWidget::commitSelected(const QModelIndex &index)
 {
-   const auto sha = mRepositoryModel->sha(index.row());
+   if (mLastSelectedRow == index.row())
+   {
+      mLastSelectedRow = -1;
+      mCommitInfoFrame->setVisible(false);
+   }
+   else
+   {
+      mLastSelectedRow = index.row();
 
-   selectCommit(sha);
+      const auto sha = mRepositoryModel->sha(index.row());
+      selectCommit(sha);
+      mCommitInfoFrame->setVisible(true);
+   }
 }
 
 void HistoryWidget::onShowAllUpdated(bool showAll)

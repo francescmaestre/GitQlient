@@ -46,7 +46,6 @@ class Cache;
 }
 class QLabel;
 class GitQlientSettings;
-class QSplitter;
 struct GitExecResult;
 
 /*!
@@ -201,6 +200,7 @@ private:
    QSharedPointer<GitCache> mCache;
    QSharedPointer<Graph::Cache> mGraphCache;
    QSharedPointer<GitQlientSettings> mSettings;
+   QFrame *mCommitInfoFrame = nullptr;
    CommitHistoryModel *mRepositoryModel = nullptr;
    CommitHistoryView *mRepositoryView = nullptr;
    BranchesWidget *mBranchesWidget = nullptr;
@@ -216,7 +216,7 @@ private:
    FullDiffWidget *mFullDiffWidget = nullptr;
    QPushButton *mReturnFromFull = nullptr;
    bool mReverseSearch = false;
-   QSplitter *mSplitter = nullptr;
+   int mLastSelectedRow = -1;
 
    /*!
     \brief Performs a search based on the input of the search QLineEdit with the users input.

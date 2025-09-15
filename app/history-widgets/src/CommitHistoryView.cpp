@@ -37,6 +37,7 @@ CommitHistoryView::CommitHistoryView(const QSharedPointer<GitCache> &cache, cons
    connect(header(), &QHeaderView::customContextMenuRequested, this, &CommitHistoryView::onHeaderContextMenu);
 
    connect(mCache.get(), &GitCache::signalCacheUpdated, this, &CommitHistoryView::refreshView);
+   connect(this, &CommitHistoryView::clicked, this, &CommitHistoryView::handleItemClick);
    connect(this, &CommitHistoryView::doubleClicked, this, [this](const QModelIndex &index) {
       if (mCommitHistoryModel)
       {
@@ -44,6 +45,17 @@ CommitHistoryView::CommitHistoryView(const QSharedPointer<GitCache> &cache, cons
          emit signalOpenDiff(sha);
       }
    });
+}
+
+void CommitHistoryView::handleItemClick(const QModelIndex &index)
+{
+   if (mLastSelectedRow == index.row())
+   {
+      clearSelection();
+      mLastSelectedRow = -1;
+   }
+   else
+      mLastSelectedRow = index.row();
 }
 
 void CommitHistoryView::setModel(QAbstractItemModel *model)
