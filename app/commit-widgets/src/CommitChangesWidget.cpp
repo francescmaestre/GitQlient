@@ -311,7 +311,7 @@ void CommitChangesWidget::commitWipChanges()
                newCommit.longLog = ui->teDescription->toPlainText();
 
                mCache->insertCommit(newCommit);
-               mGraphCache->addTimeline(newCommit);
+               mGraphCache->createMultiverse(std::span<Commit>(&newCommit, 1));
                mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
                mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
 

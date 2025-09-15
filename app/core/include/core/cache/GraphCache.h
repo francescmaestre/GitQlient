@@ -22,7 +22,6 @@ public:
 
    void init();
    void createMultiverse(std::span<Commit> commits);
-   void addTimeline(const Commit &commit);
 
    int timelinesCount(const QString &sha) const;
    State getTimelineAt(const QString &sha, int index) const;

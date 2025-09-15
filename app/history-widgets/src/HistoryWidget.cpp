@@ -508,7 +508,7 @@ void HistoryWidget::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->addTimeline(commit);
+         mGraphCache->createMultiverse(std::span<Commit>(&commit, 1));
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -547,7 +547,7 @@ void HistoryWidget::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->addTimeline(commit);
+         mGraphCache->createMultiverse(std::span(&commit, 1));
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 

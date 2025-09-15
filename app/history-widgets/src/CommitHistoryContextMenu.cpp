@@ -329,7 +329,7 @@ void CommitHistoryContextMenu::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->addTimeline(commit);
+         mGraphCache->createMultiverse(std::span<Commit>(&commit, 1));
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -561,7 +561,7 @@ void CommitHistoryContextMenu::revertCommit()
                               .arg(newCommit.shortLog, QString::fromUtf8("This reverts commit"), revertedCommit.sha);
 
       mCache->insertCommit(newCommit);
-      mGraphCache->addTimeline(newCommit);
+      mGraphCache->createMultiverse(std::span<Commit>(&newCommit, 1));
       mCache->deleteReference(previousSha, References::Type::LocalBranch, mGit->getCurrentBranch());
       mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
 

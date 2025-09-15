@@ -23,13 +23,6 @@ void Cache::createMultiverse(std::span<Commit> commits)
    }
 }
 
-void Cache::addTimeline(const Commit &commit)
-{
-   Timeline u;
-   u.setType(0, StateType::Active);
-   mMultiverse[commit.sha] = std::move(u);
-}
-
 int Cache::timelinesCount(const QString &sha) const
 {
    return mMultiverse.value(sha).count();
