@@ -58,10 +58,7 @@ void CommitHistoryView::setModel(QAbstractItemModel *model)
            [this](const QItemSelection &selected, const QItemSelection &) {
               const auto indexes = selected.indexes();
               if (!indexes.isEmpty())
-              {
                  scrollTo(indexes.first());
-                 emit clicked(indexes.first());
-              }
            });
 }
 

@@ -331,6 +331,8 @@ void CommitChangesWidget::commitWipChanges()
 
                WipHelper::update(mGit, mCache);
 
+               clearStaged();
+
                emit mCache->signalCacheUpdated();
                emit changesCommitted();
             }
@@ -399,6 +401,8 @@ void CommitChangesWidget::commitAmendChanges()
                const auto ret = git->getDiffFiles(mCurrentSha, commit.firstParent());
 
                mCache->insertRevisionFiles(mCurrentSha, commit.firstParent(), RevisionFiles(ret.output));
+
+               clearStaged();
 
                emit changesCommitted();
             }

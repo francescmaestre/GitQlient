@@ -21,6 +21,7 @@ class ConfigWidget : public QWidget
    Q_OBJECT
 
 signals:
+   void goBack();
    void reloadView();
    void reloadDiffFont();
    void buildSystemEnabled(bool enabled);

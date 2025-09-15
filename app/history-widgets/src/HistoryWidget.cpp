@@ -79,12 +79,12 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    wipFrame->setMaximumWidth(500);
 
    connect(mCommitChangesWidget, &CommitChangesWidget::signalShowDiff, this, &HistoryWidget::showWipFileDiff);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::returnToView);
-   connect(mCommitChangesWidget, &CommitChangesWidget::fileStaged, this, &HistoryWidget::returnToViewIfObsolete);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::changesCommitted);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::cleanCommitPanels);
-   connect(mCommitChangesWidget, &CommitChangesWidget::unstagedFilesChanged, this, &HistoryWidget::onRevertedChanges);
    connect(mCommitChangesWidget, &CommitChangesWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
+   connect(mCommitChangesWidget, &CommitChangesWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
+   connect(mCommitChangesWidget, &CommitChangesWidget::fileStaged, this, &HistoryWidget::returnToViewIfObsolete);
+   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::returnToView);
+   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::changesCommitted);
+   connect(mCommitChangesWidget, &CommitChangesWidget::unstagedFilesChanged, this, &HistoryWidget::onRevertedChanges);
    connect(mCommitChangesWidget, &CommitChangesWidget::signalUpdateWip, this, &HistoryWidget::signalUpdateWip);
    connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, [this](const QString &revertedFile) {
       if (mWipFileDiff->getCurrentFile().contains(revertedFile))
@@ -92,10 +92,10 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    });
    connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, &HistoryWidget::onRevertedChanges);
    connect(mCommitChangesWidget, &CommitChangesWidget::logReload, this, &HistoryWidget::logReload);
-   connect(mCommitChangesWidget, &CommitChangesWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
 
-   connect(mCommitInfoWidget, &CommitInfoWidget::signalOpenFileCommit, this, &HistoryWidget::signalShowDiff);
+   connect(mCommitInfoWidget, &CommitInfoWidget::showFileDiff, this, &HistoryWidget::showFileDiff);
    connect(mCommitInfoWidget, &CommitInfoWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
+   connect(mCommitInfoWidget, &CommitInfoWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
 
    mSearchInput = new QLineEdit(this);
    mSearchInput->setObjectName("SearchInput");
@@ -135,7 +135,6 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    connect(mBranchesWidget, &BranchesWidget::fullReload, this, &HistoryWidget::fullReload);
    connect(mBranchesWidget, &BranchesWidget::logReload, this, &HistoryWidget::logReload);
 
-   connect(mBranchesWidget, &BranchesWidget::signalSelectCommit, mRepositoryView, &CommitHistoryView::focusOnCommit);
    connect(mBranchesWidget, &BranchesWidget::signalSelectCommit, this, &HistoryWidget::goToSha);
    connect(mBranchesWidget, &BranchesWidget::signalOpenSubmodule, this, &HistoryWidget::signalOpenSubmodule);
    connect(mBranchesWidget, &BranchesWidget::signalMergeRequired, this, &HistoryWidget::mergeBranch);
@@ -260,16 +259,10 @@ void HistoryWidget::loadBranches(bool fullReload)
 
 void HistoryWidget::updateUiFromWatcher()
 {
-   if (const auto widget = dynamic_cast<CommitChangesWidget *>(mCommitStackedWidget->currentWidget()))
-      widget->reload();
+   mCommitChangesWidget->reload();
 
    if (const auto widget = dynamic_cast<IDiffWidget *>(mCenterStackedWidget->currentWidget()))
       widget->reload();
-}
-
-void HistoryWidget::focusOnCommit(const QString &sha)
-{
-   mRepositoryView->focusOnCommit(sha);
 }
 
 void HistoryWidget::updateGraphView(int totalCommits)
@@ -277,8 +270,12 @@ void HistoryWidget::updateGraphView(int totalCommits)
    mRepositoryModel->onNewRevisions(totalCommits);
 
    const auto currentSha = mRepositoryView->getCurrentSha();
-   selectCommit(currentSha);
-   focusOnCommit(currentSha);
+   mRepositoryView->focusOnCommit(currentSha);
+
+   mCommitChangesWidget->reload();
+
+   if (const auto widget = dynamic_cast<IDiffWidget *>(mCenterStackedWidget->currentWidget()))
+      widget->reload();
 }
 
 void HistoryWidget::keyPressEvent(QKeyEvent *event)
@@ -299,22 +296,17 @@ void HistoryWidget::keyReleaseEvent(QKeyEvent *event)
 
 void HistoryWidget::onOpenFullDiff(const QString &sha)
 {
-   if (sha == ZERO_SHA)
-   {
-      const auto commit = mCache->commitInfo(ZERO_SHA);
-      QScopedPointer<GitHistory> git(new GitHistory(mGit));
-      const auto ret = git->getCommitDiff(ZERO_SHA, commit.firstParent());
+   const auto commit = mCache->commitInfo(sha);
+   QScopedPointer<GitHistory> git(new GitHistory(mGit));
+   const auto ret = git->getCommitDiff(sha, commit.firstParent());
 
-      if (ret.success && !ret.output.isEmpty())
-      {
-         mFullDiffWidget->loadDiff(ZERO_SHA, commit.firstParent(), ret.output);
-         mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FullDiff));
-      }
-      else
-         QMessageBox::warning(this, tr("No diff available!"), tr("There is no diff to show."));
+   if (ret.success && !ret.output.isEmpty())
+   {
+      mFullDiffWidget->loadDiff(sha, commit.firstParent(), ret.output);
+      mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FullDiff));
    }
    else
-      emit signalOpenDiff(sha);
+      QMessageBox::warning(this, tr("No diff available!"), tr("There is no diff to show."));
 }
 
 void HistoryWidget::rearrangeSplittrer(bool minimalActive)
@@ -332,31 +324,11 @@ void HistoryWidget::rearrangeSplittrer(bool minimalActive)
    }
 }
 
-void HistoryWidget::cleanCommitPanels()
-{
-   mCommitChangesWidget->clearStaged();
-}
-
 void HistoryWidget::onRevertedChanges()
 {
    WipHelper::update(mGit, mCache);
 
    updateUiFromWatcher();
-}
-
-void HistoryWidget::onCommitTitleMaxLenghtChanged()
-{
-   mCommitChangesWidget->setCommitTitleMaxLength();
-}
-
-void HistoryWidget::onPanelsVisibilityChanged()
-{
-   mBranchesWidget->onPanelsVisibilityChaned();
-}
-
-void HistoryWidget::onDiffFontSizeChanged()
-{
-   mWipFileDiff->updateFontSize();
 }
 
 void HistoryWidget::search()
@@ -392,8 +364,6 @@ void HistoryWidget::search()
 void HistoryWidget::goToSha(const QString &sha)
 {
    mRepositoryView->focusOnCommit(sha);
-
-   selectCommit(sha);
 }
 
 void HistoryWidget::commitSelected(const QModelIndex &index)
@@ -618,7 +588,14 @@ void HistoryWidget::cherryPickCommit()
 
 void HistoryWidget::showWipFileDiff(const QString &fileName, bool isCached)
 {
-   mWipFileDiff->setup(fileName, isCached);
+   mWipFileDiff->setup(fileName, isCached, false, ZERO_SHA);
+   mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FileDiff));
+   mBranchesWidget->forceMinimalView();
+}
+
+void HistoryWidget::showFileDiff(const QString &fileName, const QString &currentSha, const QString &parentSha)
+{
+   mWipFileDiff->setup(fileName, false, false, currentSha, parentSha);
    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FileDiff));
    mBranchesWidget->forceMinimalView();
 }

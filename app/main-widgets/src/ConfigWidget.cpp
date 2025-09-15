@@ -204,6 +204,7 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase> &git, QWidget *parent)
    connect(ui->cbBranchSeparator, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
    connect(ui->cbLanguage, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
    connect(ui->leLogsLocation, &QLineEdit::editingFinished, this, &ConfigWidget::saveConfig);
+   connect(ui->pbBack, &QPushButton::clicked, this, &ConfigWidget::goBack);
 
    ui->cbDiffView->setCurrentIndex(settings.globalValue("DefaultDiffView").toInt());
    ui->cbBranchSeparator->setCurrentText(settings.globalValue("BranchSeparator", "-").toString());

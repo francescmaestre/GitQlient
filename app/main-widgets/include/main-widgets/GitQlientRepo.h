@@ -42,7 +42,10 @@ class MergeWidget;
 class QTimer;
 class WaitingDlg;
 class GitTags;
-namespace Graph { class Cache; }
+namespace Graph
+{
+class Cache;
+}
 class ConfigWidget;
 
 namespace GitServer
@@ -176,12 +179,6 @@ private:
    */
    void updateUiFromWatcher();
 
-   /**
-    * @brief Opens the diff view with the selected commit from the repository view.
-    * @param currentSha The current selected commit SHA.
-    */
-   void openCommitDiff(const QString currentSha);
-
    /*!
     \brief Method called when changes are committed through the WIP widget.
 
@@ -286,11 +283,4 @@ private:
     * @param newInterval The new interval (in seconds) to automatically fetch the data from local git repository.
     */
    void reconfigureAutoRefresh(int newInterval);
-
-private slots:
-   /**
-    * @brief focusHistoryOnBranch Opens the graph view and focuses on the SHA of the last commit of the given branch.
-    * @param branch The branch.
-    */
-   void focusHistoryOnBranch(const QString &branch);
 };

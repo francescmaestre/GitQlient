@@ -37,8 +37,7 @@ BranchTreeWidget::BranchTreeWidget(QWidget *parent)
            this, &BranchTreeWidget::showBranchesContextMenu);
    connect(this, &BranchTreeWidget::itemClicked,
            this, &BranchTreeWidget::selectCommit);
-   connect(this, &BranchTreeWidget::itemSelectionChanged,
-           this, &BranchTreeWidget::onSelectionChanged);
+   // connect(this, &BranchTreeWidget::itemSelectionChanged, this, &BranchTreeWidget::onSelectionChanged);
    connect(this, &BranchTreeWidget::itemDoubleClicked,
            this, &BranchTreeWidget::checkoutBranch);
 

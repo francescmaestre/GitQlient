@@ -74,12 +74,6 @@ signals:
 
    void logReload();
 
-   /**
-    * @brief Signal triggered when the user wants to see the diff of the selected SHA compared to its first parent.
-    * @param sha The selected commit SHA.
-    */
-   void signalOpenDiff(const QString &sha);
-
    /*!
     \brief Signal triggered when the user opens a new submodule. It is necessary to propagate this signal since is the
     GitQlient class the responsible of opening a new tab for the submodule.
@@ -87,14 +81,6 @@ signals:
     \param submodule The submodule to be opened.
    */
    void signalOpenSubmodule(const QString &submodule);
-   /*!
-    \brief Signal triggered when the user wants to see the diff of a file between two commits.
-
-    \param sha The base commit SHA.
-    \param parentSha The commit SHA to compare to.
-    \param fileName The file name for the diff.
-   */
-   void signalShowDiff(const QString &sha, const QString &parentSha, const QString &fileName);
 
    /*!
     \brief Signal triggered when changes are committed.
@@ -185,12 +171,6 @@ public:
    */
    void updateUiFromWatcher();
    /*!
-    \brief Focuses on the given commit.
-
-    \param sha The commit SHA to focus the view in.
-   */
-   void focusOnCommit(const QString &sha);
-   /*!
     \brief Configures the CommitInfoWidget or the WorkInProgress widget depending on the given SHA. It sets the
     configured widget to visible.
 
@@ -204,21 +184,6 @@ public:
     \param totalCommits The new total of commits to show in the graph.
    */
    void updateGraphView(int totalCommits);
-
-   /**
-    * @brief onCommitTitleMaxLenghtChanged Changes the maximum length of the commit title.
-    */
-   void onCommitTitleMaxLenghtChanged();
-
-   /**
-    * @brief onPanelsVisibilityChaned Reloads the visibility configuration of the panels in the BranchesWidget.
-    */
-   void onPanelsVisibilityChanged();
-
-   /**
-    * @brief onDiffFontSizeChanged Reloads the diff widgets with the new font size stored in the settings.
-    */
-   void onDiffFontSizeChanged();
 
 protected:
    void keyPressEvent(QKeyEvent *event) override;
@@ -328,6 +293,8 @@ private:
     */
    void showWipFileDiff(const QString &fileName, bool isCached);
 
+   void showFileDiff(const QString &fileName, const QString &currentSha, const QString &parentSha);
+
    /**
     * @brief showFullDiff Shows the full commit diff.
     * @param sha The base commit SHA.
@@ -336,8 +303,6 @@ private:
    void onOpenFullDiff(const QString &sha);
 
    void rearrangeSplittrer(bool minimalActive);
-
-   void cleanCommitPanels();
 
    void onRevertedChanges();
 };

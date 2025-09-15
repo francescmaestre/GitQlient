@@ -31,9 +31,11 @@ class QPinnableTabWidget;
 class InitScreen;
 class ProgressDlg;
 class GitConfig;
-class QStackedLayout;
 class GitQlientSettings;
 class GitBase;
+class ConfigWidget;
+
+class QStackedLayout;
 
 /*!
  \brief The GitQlient class is the MainWindow of the GitQlient application. Is the widget that stores all the tabs about
@@ -96,13 +98,17 @@ protected:
 private:
    QStackedLayout *mStackedLayout = nullptr;
    QPinnableTabWidget *mRepos = nullptr;
-   InitScreen *mConfigWidget = nullptr;
+   QMap<QWidget *, QString> mTabsMap;
+   InitScreen *mInitWidget = nullptr;
    QSet<QString> mCurrentRepos;
-   QSharedPointer<GitConfig> mGit;
+   QSharedPointer<GitConfig> mGitConfig;
    ProgressDlg *mProgressDlg = nullptr;
    QString mPathToOpen;
    bool mMoveLogs = false;
-   QMap<QString, QObject *> mPlugins;
+   ConfigWidget *mConfigWidget = nullptr;
+
+   void createRepoManagementMenu();
+   void createOptionsMenu();
 
    /*!
     \brief Opens a QFileDialog to select a repository in the local disk.
@@ -179,17 +185,15 @@ private:
                                       const QSharedPointer<GitQlientSettings> &settings);
 
    /**
-    * @brief updateWindowTitle Updates the window title of GitQlient appending the branch of the current repository.
+    * @brief updateTabName Updates the window title of GitQlient appending the branch of the current repository.
     * @param currentTabIndex The current tab index used to retrieve the repository.
     */
-   void updateWindowTitle();
+   void updateTabName();
 
    /**
     * @brief moveLogsBeforeClose Marks the logs to be moved to their new folder before GitQlient closes.
     */
    void moveLogsBeforeClose();
-
-   void loadPlugins();
 
    void closeRepoIfNotPinned();
 };

@@ -30,15 +30,17 @@ class GitBase;
 class QLabel;
 class FileListWidget;
 class CommitInfoPanel;
+class QListWidgetItem;
 
 class CommitInfoWidget : public QFrame
 {
    Q_OBJECT
 
 signals:
-   void signalOpenFileCommit(const QString &currentSha, const QString &previousSha, const QString &file);
+   void showFileDiff(const QString &file, const QString &currentSha, const QString &previousSha);
    void signalOpenFileContextMenu(const QString &, int);
    void signalShowFileHistory(const QString &fileName);
+   void signalReturnToHistory();
 
    /**
     * @brief signalEditFile Signal triggered when the user wants to edit a file and is running GitQlient from QtCreator.
@@ -63,4 +65,7 @@ private:
    QString mParentSha;
    CommitInfoPanel *mInfoPanel = nullptr;
    FileListWidget *mFileListWidget = nullptr;
+   QListWidgetItem *mLastSelectedItem = nullptr;
+
+   void handleItemClick(QListWidgetItem *item);
 };

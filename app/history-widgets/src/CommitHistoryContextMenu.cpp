@@ -8,7 +8,6 @@
 #include <GitMerge.h>
 #include <GitPatches.h>
 #include <GitRemote.h>
-#include <GitStashes.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/cache/GraphCache.h>
@@ -59,16 +58,7 @@ void CommitHistoryContextMenu::createIndividualShaMenu()
    {
       const auto sha = mShas.first();
 
-      if (sha == ZERO_SHA)
-      {
-         const auto stashMenu = addMenu(tr("Stash"));
-         const auto stashAction = stashMenu->addAction(tr("Push"));
-         connect(stashAction, &QAction::triggered, this, &CommitHistoryContextMenu::stashPush);
-
-         const auto popAction = stashMenu->addAction(tr("Pop"));
-         connect(popAction, &QAction::triggered, this, &CommitHistoryContextMenu::stashPop);
-      }
-      else
+      if (sha != ZERO_SHA)
       {
          const auto commitAction = addAction(tr("Show diff"));
          connect(commitAction, &QAction::triggered, this, [this]() { emit signalOpenDiff(mShas.first()); });
@@ -202,24 +192,6 @@ void CommitHistoryContextMenu::createMultipleShasMenu()
    }
    else
       QLog_Warning("UI", "WIP selected as part of a series of SHAs");
-}
-
-void CommitHistoryContextMenu::stashPush()
-{
-   QScopedPointer<GitStashes> git(new GitStashes(mGit));
-   const auto ret = git->stash();
-
-   if (ret.success)
-      emit logReload();
-}
-
-void CommitHistoryContextMenu::stashPop()
-{
-   QScopedPointer<GitStashes> git(new GitStashes(mGit));
-   const auto ret = git->pop();
-
-   if (ret.success)
-      emit logReload();
 }
 
 void CommitHistoryContextMenu::createBranch()

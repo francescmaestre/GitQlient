@@ -99,16 +99,8 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    connect(mControls, &Controls::requestFullReload, this, &GitQlientRepo::updateUiFromWatcher);
    connect(mControls, &Controls::requestReferencesReload, this, &GitQlientRepo::referencesReload);
    connect(mControls, &Controls::signalGoMerge, this, &GitQlientRepo::showMergeView);
-   connect(mControls, &Controls::autoFetchIntervalChanged, this, &GitQlientRepo::reconfigureAutoFetch);
-   connect(mControls, &Controls::autoRefreshIntervalChanged, this, &GitQlientRepo::reconfigureAutoRefresh);
    connect(mControls, &Controls::signalPullConflict, mControls, &Controls::activateMergeWarning);
    connect(mControls, &Controls::signalPullConflict, this, &GitQlientRepo::showWarningMerge);
-   connect(mControls, &Controls::commitTitleMaxLenghtChanged, mHistoryWidget,
-           &HistoryWidget::onCommitTitleMaxLenghtChanged);
-   connect(mControls, &Controls::panelsVisibilityChanged, mHistoryWidget,
-           &HistoryWidget::onPanelsVisibilityChanged);
-   connect(mControls, &Controls::reloadDiffFont, mHistoryWidget, &HistoryWidget::onDiffFontSizeChanged);
-   connect(mControls, &Controls::moveLogsAndClose, this, &GitQlientRepo::moveLogsAndClose);
 
    connect(mHistoryWidget, &HistoryWidget::signalAllBranchesActive, mGitLoader.data(), &GitRepoLoader::setShowAll);
    connect(mHistoryWidget, &HistoryWidget::fullReload, this, &GitQlientRepo::fullReload);
@@ -116,8 +108,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    connect(mHistoryWidget, &HistoryWidget::logReload, this, &GitQlientRepo::logReload);
 
    connect(mHistoryWidget, &HistoryWidget::signalOpenSubmodule, this, &GitQlientRepo::signalOpenSubmodule);
-   connect(mHistoryWidget, &HistoryWidget::signalShowDiff, this, &GitQlientRepo::loadFileDiff);
-   connect(mHistoryWidget, &HistoryWidget::signalOpenDiff, this, &GitQlientRepo::openCommitDiff);
    connect(mHistoryWidget, &HistoryWidget::changesCommitted, this, &GitQlientRepo::onChangesCommitted);
    connect(mHistoryWidget, &HistoryWidget::signalShowFileHistory, this, &GitQlientRepo::showFileHistory);
    connect(mHistoryWidget, &HistoryWidget::signalRebaseConflict, mControls, &Controls::activateMergeWarning);
@@ -179,15 +169,6 @@ void GitQlientRepo::updateUiFromWatcher()
    mHistoryWidget->updateUiFromWatcher();
 
    mDiffWidget->reload();
-}
-
-void GitQlientRepo::openCommitDiff(const QString currentSha)
-{
-   const auto rev = mGitQlientCache->commitInfo(currentSha);
-   const auto loaded = mDiffWidget->loadCommitDiff(currentSha, rev.firstParent());
-
-   if (loaded)
-      showDiffView();
 }
 
 void GitQlientRepo::clearWindow()
@@ -407,31 +388,6 @@ void GitQlientRepo::updateWip()
    WipHelper::update(mGitBase, mGitQlientCache);
 
    mHistoryWidget->updateUiFromWatcher();
-}
-
-void GitQlientRepo::focusHistoryOnBranch(const QString &branch)
-{
-   auto found = false;
-   const auto fullBranch = QString("origin/%1").arg(branch);
-   auto remoteBranches = mGitQlientCache->getBranches(References::Type::RemoteBranche);
-
-   for (const auto &remote : remoteBranches)
-   {
-      if (remote.second.contains(fullBranch))
-      {
-         found = true;
-         mHistoryWidget->focusOnCommit(remote.first);
-         showHistoryView();
-      }
-   }
-
-   remoteBranches.clear();
-   remoteBranches.squeeze();
-
-   if (!found)
-      QMessageBox::information(
-          this, tr("Branch not found"),
-          tr("The branch couldn't be found. Please, make sure you fetched and have the latest changes."));
 }
 
 void GitQlientRepo::reconfigureAutoFetch(int newInterval)

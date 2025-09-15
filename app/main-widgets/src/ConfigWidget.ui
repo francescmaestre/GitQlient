@@ -29,67 +29,6 @@
    <property name="spacing">
     <number>10</number>
    </property>
-   <item row="6" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="lFeedback">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="1">
-    <widget class="CheckBox" name="chDevMode">
-     <property name="text">
-      <string>Enable developer mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="localGit">
-      <attribute name="title">
-       <string>Git local</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="globalGit">
-      <attribute name="title">
-       <string>Git global</string>
-      </attribute>
-     </widget>
-    </widget>
-   </item>
    <item row="1" column="0" rowspan="2">
     <widget class="QTabWidget" name="tabWidget_2">
      <property name="currentIndex">
@@ -594,8 +533,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>511</width>
-            <height>794</height>
+            <width>492</width>
+            <height>768</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1305,6 +1244,86 @@
      </widget>
     </widget>
    </item>
+   <item row="6" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="lFeedback">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="localGit">
+      <attribute name="title">
+       <string>Git local</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="globalGit">
+      <attribute name="title">
+       <string>Git global</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="CheckBox" name="chDevMode">
+     <property name="text">
+      <string>Enable developer mode</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QPushButton" name="pbBack">
+     <property name="minimumSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="icon">
+      <iconset theme="QIcon::ThemeIcon::GoPrevious"/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -1354,7 +1373,7 @@
   <slot>saveConfig()</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="bgHistoryViewPreferredView"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>
