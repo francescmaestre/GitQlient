@@ -2,9 +2,9 @@
 #include "ui_PullDlg.h"
 
 #include <GitBase.h>
+#include <GitRemote.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
-#include <GitRemote.h>
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -30,13 +30,10 @@ PullDlg::~PullDlg()
 
 void PullDlg::accept()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto updateOnPull = settings.localValue("UpdateOnPull", true).toBool();
-
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
 
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   const auto ret = git->pull(updateOnPull);
+   const auto ret = git->pull();
    QApplication::restoreOverrideCursor();
 
    if (ret.success)

@@ -209,12 +209,9 @@ void Controls::stashPop()
 
 void Controls::pullCurrentBranch()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto updateOnPull = settings.localValue("UpdateOnPull", true).toBool();
-
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->pull(updateOnPull);
+   const auto ret = git->pull();
    QApplication::restoreOverrideCursor();
 
    if (ret.success)
@@ -249,7 +246,7 @@ void Controls::fetchAll()
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    GitQlientSettings settings(mGit->getGitDir());
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->fetch(settings.localValue("PruneOnFetch").toBool());
+   const auto ret = git->fetch();
    QApplication::restoreOverrideCursor();
 
    if (!ret)

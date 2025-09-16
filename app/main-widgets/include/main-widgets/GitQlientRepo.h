@@ -162,7 +162,6 @@ private:
    DiffWidget *mDiffWidget = nullptr;
    BlameWidget *mBlameWidget = nullptr;
    MergeWidget *mMergeWidget = nullptr;
-   QTimer *mAutoFetch = nullptr;
    QTimer *mAutoFilesUpdate = nullptr;
    QTimer *mAutoPrUpdater = nullptr;
    QPointer<WaitingDlg> mWaitDlg;
@@ -271,12 +270,6 @@ private:
 
    */
    void updateWip();
-
-   /**
-    * @brief reconfigureAutoFetch Changes the interval for the auto fetch timer.
-    * @param newInterval The new interval (in minutes) to automatically fetch the data from the server.
-    */
-   void reconfigureAutoFetch(int newInterval);
 
    /**
     * @brief reconfigureAutoRefresh Changes the interval for the auto refresh timer.

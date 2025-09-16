@@ -492,12 +492,9 @@ void CommitHistoryContextMenu::push()
 
 void CommitHistoryContextMenu::pull()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto updateOnPull = settings.localValue("UpdateOnPull", true).toBool();
-
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->pull(updateOnPull);
+   const auto ret = git->pull();
    QApplication::restoreOverrideCursor();
 
    if (ret.success)
@@ -526,12 +523,9 @@ void CommitHistoryContextMenu::pull()
 
 void CommitHistoryContextMenu::fetch()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto pruneOnFetch = settings.localValue("PruneOnFetch", true).toBool();
-
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
 
-   if (git->fetch(pruneOnFetch))
+   if (git->fetch())
       emit fullReload();
 }
 

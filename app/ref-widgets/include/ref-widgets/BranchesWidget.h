@@ -9,6 +9,7 @@ class GitTags;
 class RefTreeWidget;
 class RefListWidget;
 class BranchesWidgetMinimal;
+
 class QPushButton;
 
 class BranchesWidget : public QFrame
@@ -59,6 +60,7 @@ private:
 
    void setupUI();
    void setupConnections();
+   void loadSettings();
    void processRefs();
    void processBranches();
    void processTags();

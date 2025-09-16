@@ -45,7 +45,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
    , mGitBase(git)
    , mSettings(settings)
    , mGitLoader(new GitRepoLoader(mGitBase, mGitQlientCache, mGraphCache, mSettings))
-   , mAutoFetch(new QTimer())
    , mAutoFilesUpdate(new QTimer())
 {
    setAttribute(Qt::WA_DeleteOnClose);
@@ -87,12 +86,8 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
 
    showHistoryView();
 
-   if (const auto fetchInterval = mSettings->localValue("AutoFetch", 5).toInt(); fetchInterval > 0)
-      mAutoFetch->setInterval(fetchInterval * 60 * 1000);
-
    mAutoFilesUpdate->setInterval(mSettings->localValue("AutoRefresh", 60).toInt() * 1000);
 
-   connect(mAutoFetch, &QTimer::timeout, mControls, &Controls::fetchAll);
    connect(mAutoFilesUpdate, &QTimer::timeout, this, &GitQlientRepo::updateUiFromWatcher);
 
    connect(mControls, &Controls::requestFullReload, this, &GitQlientRepo::fullReload);
@@ -146,7 +141,6 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase> &git, const QSharedPo
 
 GitQlientRepo::~GitQlientRepo()
 {
-   delete mAutoFetch;
    delete mAutoFilesUpdate;
 
    m_loaderThread->exit();
@@ -222,9 +216,6 @@ void GitQlientRepo::onRepoLoadFinished()
       mBlameWidget->init(mCurrentDir);
 
       mAutoFilesUpdate->start();
-
-      if (const auto fetchInterval = mSettings->localValue("AutoFetch", 5).toInt(); fetchInterval > 0)
-         mAutoFetch->start();
 
       if (GitConfig git(mGitBase); !git.getGlobalUserInfo().isValid() && !git.getLocalUserInfo().isValid())
       {
@@ -388,14 +379,6 @@ void GitQlientRepo::updateWip()
    WipHelper::update(mGitBase, mGitQlientCache);
 
    mHistoryWidget->updateUiFromWatcher();
-}
-
-void GitQlientRepo::reconfigureAutoFetch(int newInterval)
-{
-   if (newInterval > 0)
-      mAutoFetch->start(newInterval * 60 * 1000);
-   else
-      mAutoFetch->stop();
 }
 
 void GitQlientRepo::reconfigureAutoRefresh(int newInterval)
