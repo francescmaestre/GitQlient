@@ -1,6 +1,6 @@
 #include "FileContextMenu.h"
 
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 #include <QApplication>
 #include <QClipboard>
 #include <QDir>

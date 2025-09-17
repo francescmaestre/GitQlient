@@ -3,8 +3,8 @@
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <QPinnableTabWidget.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 #include <dialogs/CreateRepoDlg.h>
 #include <dialogs/InitialRepoConfig.h>
 #include <dialogs/NewVersionInfoDlg.h>

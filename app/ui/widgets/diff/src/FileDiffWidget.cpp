@@ -6,10 +6,10 @@
 #include <GitHistory.h>
 #include <GitLocal.h>
 #include <GitPatches.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
-#include <core/system/Colors.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
+#include <system/Colors.h>
+#include <system/GitQlientSettings.h>
 #include <custom-widgets/ButtonLink.h>
 #include <custom-widgets/CheckBox.h>
 #include <custom-widgets/DiffHelper.h>

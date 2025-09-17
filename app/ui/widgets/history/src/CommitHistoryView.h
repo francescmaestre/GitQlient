@@ -26,7 +26,7 @@
 #include <QTreeView>
 
 #include <GitExecResult.h>
-#include <core/cache/Commit.h>
+#include <cache/Commit.h>
 
 class GitCache;
 class GitBase;

@@ -1,7 +1,7 @@
 #include "RefListWidget.h"
 #include "GitBase.h"
 
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 #include <custom-widgets/ClickableFrame.h>
 
 #include <QListWidget>

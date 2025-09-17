@@ -7,7 +7,7 @@
 #include "GitQlient.h"
 
 #include <QLogger>
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 
 using namespace QLogger;
 

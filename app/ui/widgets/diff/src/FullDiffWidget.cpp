@@ -1,10 +1,10 @@
 #include <diff-widgets/FullDiffWidget.h>
 
 #include <GitHistory.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 #include <custom-widgets/DiffHelper.h>
 
 #include <QLineEdit>

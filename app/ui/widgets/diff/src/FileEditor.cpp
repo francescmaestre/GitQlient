@@ -2,9 +2,9 @@
 #include <diff-widgets/FileEditor.h>
 
 #include "Highlighter.h"
-#include <core/system/Colors.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/Colors.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QFile>
 #include <QMessageBox>

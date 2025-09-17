@@ -1,7 +1,7 @@
 #include "BranchesViewDelegate.h"
 #include "GitQlientBranchItemRole.h"
 
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 
 #include <QPainter>
 

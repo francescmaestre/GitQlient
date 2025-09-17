@@ -6,14 +6,14 @@
 
 #include <GitBase.h>
 #include <GitLocal.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
-#include <core/cache/GraphCache.h>
-#include <core/graph/State.h>
-#include <core/graph/StateType.h>
-#include <core/system/Colors.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
+#include <cache/GraphCache.h>
+#include <graph/State.h>
+#include <graph/StateType.h>
+#include <system/Colors.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QClipboard>

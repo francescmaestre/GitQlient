@@ -3,7 +3,7 @@
 
 #include <GitBase.h>
 #include <GitBranches.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 
 #include <QMessageBox>
 #include <QPushButton>

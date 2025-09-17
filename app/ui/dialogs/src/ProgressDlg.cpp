@@ -1,6 +1,6 @@
 #include "dialogs/ProgressDlg.h"
 
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 
 #include <QKeyEvent>
 

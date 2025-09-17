@@ -7,10 +7,10 @@
 #include <GitWip.h>
 #include <QPinnableTabWidget.h>
 #include <RevisionFiles.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
-#include <core/graph/WipHelper.h>
-#include <core/system/GitQlientStyles.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
+#include <graph/WipHelper.h>
+#include <system/GitQlientStyles.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FileEditor.h>
 

@@ -4,11 +4,11 @@
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitConfig.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
-#include <core/cache/GitCache.h>
+#include <cache/GitCache.h>
 
 #include <QFile>
 #include <QMessageBox>

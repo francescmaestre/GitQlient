@@ -4,7 +4,7 @@
 #include <GitBase.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 #include <dialogs/BranchDlg.h>
 
 #include <QApplication>

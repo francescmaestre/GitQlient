@@ -2,7 +2,7 @@
 #include "ui_AddSubmoduleDlg.h"
 
 #include <GitSubmodules.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 
 AddSubmoduleDlg::AddSubmoduleDlg(const QSharedPointer<GitSubmodules> &git, QWidget *parent)
    : QDialog(parent)

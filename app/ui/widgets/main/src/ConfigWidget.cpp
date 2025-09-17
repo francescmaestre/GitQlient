@@ -5,7 +5,7 @@
 #include <GitConfig.h>
 #include <GitCredentials.h>
 #include <QLogger>
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 #include <custom-widgets/CheckBox.h>
 #include <dialogs/CredentialsDlg.h>
 #include <dialogs/NewVersionInfoDlg.h>

@@ -4,8 +4,8 @@
 
 #include <GitHistory.h>
 #include <commit-widgets/CommitInfoPanel.h>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FullDiffWidget.h>
 

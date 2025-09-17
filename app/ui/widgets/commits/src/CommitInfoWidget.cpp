@@ -3,8 +3,8 @@
 
 #include <GitExecResult.h>
 #include <commit-widgets/FileListWidget.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
 
 #include <QDateTime>
 #include <QLabel>

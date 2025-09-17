@@ -3,8 +3,8 @@
 
 #include <GitBase.h>
 #include <GitRemote.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QMessageBox>
 #include <QPushButton>

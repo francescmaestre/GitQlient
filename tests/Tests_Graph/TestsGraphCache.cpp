@@ -1,6 +1,6 @@
 #include <TestsGraphCache.h>
 
-#include <core/graph/TemporalLoom.h>
+#include <graph/TemporalLoom.h>
 
 #include <QTest>
 

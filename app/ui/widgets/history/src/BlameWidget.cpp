@@ -7,8 +7,8 @@
 #include "RepositoryViewDelegate.h"
 
 #include <GitHistory.h>
-#include <core/cache/Commit.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/Commit.h>
+#include <system/GitQlientSettings.h>
 
 #include <QApplication>
 #include <QClipboard>

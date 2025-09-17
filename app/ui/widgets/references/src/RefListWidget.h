@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 
 class ClickableFrame;
 class QListWidget;

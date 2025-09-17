@@ -6,10 +6,10 @@
 #include <GitLocal.h>
 #include <GitMerge.h>
 #include <GitWip.h>
-#include <core/cache/GitCache.h>
-#include <core/graph/WipHelper.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/GitCache.h>
 #include <custom-widgets/CheckBox.h>
+#include <graph/WipHelper.h>
+#include <system/GitQlientSettings.h>
 
 #include <QLabel>
 #include <QMessageBox>

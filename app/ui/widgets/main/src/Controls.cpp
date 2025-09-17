@@ -5,10 +5,10 @@
 #include <GitRemote.h>
 #include <GitStashes.h>
 #include <QLogger>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
-#include <core/system/GitQlientUpdater.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
+#include <system/GitQlientUpdater.h>
 #include <dialogs/BranchDlg.h>
 #include <main-widgets/ConfigWidget.h>
 

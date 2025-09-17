@@ -1,10 +1,16 @@
-file(GLOB SRC_FILES
-    include/custom-widgets/*.h
+file(GLOB_RECURSE SRC_FILES
+    include/*.h
     src/*.cpp
 )
 
+file(GLOB_RECURSE UI_SRC
+    src/*.ui)
+
+source_group("Forms" FILES ${UI_SRC})
+
 add_library(custom-widgets STATIC
     ${SRC_FILES}
+    ${UI_SRC}
     ${RESOURCES}
 )
 

@@ -13,8 +13,8 @@
 #include <GitSubmodules.h>
 #include <GitSubtree.h>
 #include <GitTags.h>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
 
 #include <QApplication>
 #include <QMenu>

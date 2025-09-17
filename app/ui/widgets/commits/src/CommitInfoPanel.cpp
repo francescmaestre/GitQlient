@@ -1,6 +1,6 @@
 #include <commit-widgets/CommitInfoPanel.h>
 
-#include <core/cache/Commit.h>
+#include <cache/Commit.h>
 #include <custom-widgets/ButtonLink.h>
 
 #include <QApplication>

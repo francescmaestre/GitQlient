@@ -4,7 +4,7 @@
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 #include <custom-widgets/ButtonLink.h>
 #include <dialogs/CreateRepoDlg.h>
 #include <dialogs/ProgressDlg.h>
@@ -20,7 +20,7 @@
 #include <QStackedWidget>
 #include <QStyle>
 #include <QtGlobal>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 
 #include <QLogger>
 

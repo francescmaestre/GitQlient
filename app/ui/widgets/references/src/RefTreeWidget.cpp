@@ -5,8 +5,8 @@
 #include "GitQlientBranchItemRole.h"
 
 #include <GitBase.h>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
 #include <custom-widgets/ClickableFrame.h>
 
 #include <QHeaderView>

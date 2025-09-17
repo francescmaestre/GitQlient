@@ -1,9 +1,9 @@
 #include "HunkWidget.h"
 
 #include <GitPatches.h>
-#include <core/cache/GitCache.h>
-#include <core/system/Colors.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/GitCache.h>
+#include <system/Colors.h>
+#include <system/GitQlientSettings.h>
 #include <custom-widgets/FileDiffView.h>
 #include <custom-widgets/LineNumberArea.h>
 

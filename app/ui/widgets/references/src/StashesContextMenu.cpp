@@ -1,7 +1,7 @@
 #include "StashesContextMenu.h"
 
 #include <dialogs/BranchDlg.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 #include <GitStashes.h>
 
 #include <QMessageBox>

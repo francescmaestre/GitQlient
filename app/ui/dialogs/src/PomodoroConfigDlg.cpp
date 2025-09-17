@@ -2,8 +2,8 @@
 #include "ui_PomodoroConfigDlg.h"
 
 #include <GitBase.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 PomodoroConfigDlg::PomodoroConfigDlg(const QSharedPointer<GitBase> &git, QWidget *parent)
    : QDialog(parent)

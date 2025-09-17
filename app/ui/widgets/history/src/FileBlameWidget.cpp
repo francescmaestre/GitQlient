@@ -1,8 +1,8 @@
 #include "FileBlameWidget.h"
 
 #include <GitHistory.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
 #include <custom-widgets/ButtonLink.h>
 
 #include <QGridLayout>

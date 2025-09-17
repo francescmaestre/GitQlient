@@ -4,9 +4,9 @@
 #include <GitBranches.h>
 #include <GitConfig.h>
 #include <GitRemote.h>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 #include <dialogs/BranchDlg.h>
 #include <dialogs/InputShaDlg.h>
 #include <dialogs/UpstreamDlg.h>

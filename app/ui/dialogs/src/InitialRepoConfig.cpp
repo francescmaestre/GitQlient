@@ -3,8 +3,8 @@
 
 #include <GitConfig.h>
 #include <GitCredentials.h>
-#include <core/system/GitQlientSettings.h>
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 #include <dialogs/CredentialsDlg.h>
 
 InitialRepoConfig::InitialRepoConfig(const QSharedPointer<GitBase> &git,

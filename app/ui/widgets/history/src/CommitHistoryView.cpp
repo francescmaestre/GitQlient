@@ -7,9 +7,9 @@
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <core/cache/Commit.h>
-#include <core/cache/GitCache.h>
-#include <core/system/GitQlientSettings.h>
+#include <cache/Commit.h>
+#include <cache/GitCache.h>
+#include <system/GitQlientSettings.h>
 
 #include <QDateTime>
 #include <QHeaderView>

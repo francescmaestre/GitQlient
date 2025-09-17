@@ -1,6 +1,6 @@
 #include "FileListDelegate.h"
 
-#include <core/system/GitQlientStyles.h>
+#include <system/GitQlientStyles.h>
 
 #include <QPainter>
 

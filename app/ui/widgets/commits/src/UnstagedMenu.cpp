@@ -2,7 +2,7 @@
 
 #include <GitBase.h>
 #include <GitLocal.h>
-#include <core/system/GitQlientSettings.h>
+#include <system/GitQlientSettings.h>
 #include <GitSyncProcess.h>
 #include <QLogger>
 
