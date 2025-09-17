@@ -26,9 +26,9 @@ add_compile_definitions(SHA_VER="${GQ_SHA}")
 add_compile_definitions(VER="${VERSION}")
 add_compile_definitions(QT_DEPRECATED_WARNINGS)
 
-if (NOT EXISTS "${PROJECT_SOURCE_DIR}/app/QLogger/.git" OR
-    NOT EXISTS "${PROJECT_SOURCE_DIR}/app/QPinnableTabWidget/.git" OR
-    NOT EXISTS "${PROJECT_SOURCE_DIR}/app/git/.git")
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QLogger/.git" OR
+    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QPinnableTabWidget/.git" OR
+    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/git/.git")
     message(STATUS "Submodule update:")
     execute_process(COMMAND git submodule update --init --recursive
                     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -54,9 +54,9 @@ add_subdirectory(main-widgets)
 add_subdirectory(history-widgets)
 add_subdirectory(ref-widgets)
 
-add_subdirectory(git)
-add_subdirectory(QLogger)
-add_subdirectory(QPinnableTabWidget)
+add_subdirectory(dependencies/git)
+add_subdirectory(dependencies/QLogger)
+add_subdirectory(dependencies/QPinnableTabWidget)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
    list(APPEND SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc")
