@@ -1,11 +1,11 @@
 [submodule "app/QPinnableTabWidget"]
-	path = app/QPinnableTabWidget
+	path = app/dependencies/QPinnableTabWidget
 	url = ../QPinnableTabWidget.git
 [submodule "app/QLogger"]
-	path = app/QLogger
+	path = app/dependencies/QLogger
 	url = ../QLogger.git
 [submodule "app/git"]
-	path = app/git
+	path = app/dependencies/git
 	url = ../git.git
 [submodule "tests/catch2"]
 	path = tests/deps/catch2
