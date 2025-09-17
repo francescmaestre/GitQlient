@@ -29,7 +29,10 @@
 class QListWidget;
 class QListWidgetItem;
 class GitCache;
-namespace Graph { class Cache; }
+namespace Graph
+{
+class Cache;
+}
 class GitBase;
 class RevisionFiles;
 class FileWidget;
@@ -72,7 +75,6 @@ public:
    void configure(const QString &sha);
    void reload();
    void clear();
-   void clearStaged();
    void setCommitTitleMaxLength();
    void setCommitMode(CommitMode mode);
    CommitMode getCommitMode() const { return mCommitMode; }
@@ -103,6 +105,7 @@ private slots:
    void onAmendToggled(bool checked);
 
 private:
+   void clearStaged();
    void configureWipMode(const QString &sha);
    void configureAmendMode(const QString &sha);
    void commitWipChanges();

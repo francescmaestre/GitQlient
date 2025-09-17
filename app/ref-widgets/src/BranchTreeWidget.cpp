@@ -37,8 +37,7 @@ BranchTreeWidget::BranchTreeWidget(QWidget *parent)
            this, &BranchTreeWidget::showBranchesContextMenu);
    connect(this, &BranchTreeWidget::itemClicked,
            this, &BranchTreeWidget::selectCommit);
-   connect(this, &BranchTreeWidget::itemSelectionChanged,
-           this, &BranchTreeWidget::onSelectionChanged);
+   // connect(this, &BranchTreeWidget::itemSelectionChanged, this, &BranchTreeWidget::onSelectionChanged);
    connect(this, &BranchTreeWidget::itemDoubleClicked,
            this, &BranchTreeWidget::checkoutBranch);
 
@@ -215,13 +214,12 @@ void BranchTreeWidget::showBranchesContextMenu(const QPoint &pos)
       else
       {
          GitQlientSettings settings(mGit->getGitDir());
-         if (settings.localValue("DeleteRemoteFolder", false).toBool() || mIsLocal)
+         if (mIsLocal)
             showDeleteFolderMenu(item, pos);
          else
          {
             QMessageBox::warning(this, tr("Delete branch!"),
-                                 tr("Deleting multiple remote branches at the same time is disabled in the "
-                                    "configuration of GitQlient.\n\n"
+                                 tr("Deleting multiple remote branches at the same time is disabled for remote.\n\n"
                                     "To enable, go to the Configuration panel, Repository tab."),
                                  QMessageBox::Ok);
          }
@@ -456,13 +454,12 @@ void BranchTreeWidget::onDeleteBranch()
    else
    {
       GitQlientSettings settings(mGit->getGitDir());
-      if (settings.localValue("DeleteRemoteFolder", false).toBool() || mIsLocal)
+      if (mIsLocal)
          deleteFolder();
       else
       {
          QMessageBox::warning(this, tr("Delete branch!"),
-                              tr("Deleting multiple remote branches at the same time is disabled in the "
-                                 "configuration of GitQlient.\n\n"
+                              tr("Deleting multiple remote branches at the same time is disabled for remote.\n\n"
                                  "To enable, go to the Configuration panel, Repository tab."),
                               QMessageBox::Ok);
       }

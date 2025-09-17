@@ -26,7 +26,10 @@
 #include <QMenu>
 
 class GitCache;
-namespace Graph { class Cache; }
+namespace Graph
+{
+class Cache;
+}
 class GitBase;
 
 /*!
@@ -121,14 +124,6 @@ private:
     \brief This method creates all the actions that will appear when more than one SHA is selected.
    */
    void createMultipleShasMenu();
-   /*!
-    \brief Pushes the changes to a stash.
-   */
-   void stashPush();
-   /*!
-    \brief Pops the changes stored in a stash.
-   */
-   void stashPop();
    /*!
     \brief Creates a branch at the selected commit.
    */

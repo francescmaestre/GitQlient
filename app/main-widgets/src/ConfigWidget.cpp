@@ -124,17 +124,10 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase> &git, QWidget *parent)
               saveConfig();
            });
 
-   mOriginalRepoOrder = settings.localValue("GraphSortingOrder", 0).toInt();
-   ui->cbLogOrder->setCurrentIndex(mOriginalRepoOrder);
-   ui->autoFetch->setValue(settings.localValue("AutoFetch", 5).toInt());
-   ui->pruneOnFetch->setChecked(settings.localValue("PruneOnFetch", true).toBool());
-   ui->clangFormat->setChecked(settings.localValue("ClangFormatOnCommit", false).toBool());
-   ui->updateOnPull->setChecked(settings.localValue("UpdateOnPull", false).toBool());
    ui->sbMaxCommits->setValue(settings.localValue("MaxCommits", 0).toInt());
 
    ui->tabWidget->setCurrentIndex(0);
    connect(ui->pbClearLogs, &ButtonLink::clicked, this, &ConfigWidget::clearLogs);
-   connect(ui->pbClearCache, &ButtonLink::clicked, this, &ConfigWidget::clearCache);
 
    ui->cbLocal->setChecked(settings.localValue("LocalHeader", true).toBool());
    ui->cbRemote->setChecked(settings.localValue("RemoteHeader", true).toBool());
@@ -142,32 +135,15 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase> &git, QWidget *parent)
    ui->cbStash->setChecked(settings.localValue("StashesHeader", true).toBool());
    ui->cbSubmodule->setChecked(settings.localValue("SubmodulesHeader", true).toBool());
    ui->cbSubtree->setChecked(settings.localValue("SubtreeHeader", true).toBool());
-   ui->cbDeleteFolder->setChecked(settings.localValue("DeleteRemoteFolder", false).toBool());
 
    QScopedPointer<GitConfig> gitConfig(new GitConfig(mGit));
 
    const auto url = gitConfig->getServerUrl();
    ui->credentialsFrames->setVisible(url.startsWith("https"));
 
-   const auto mergeStrategyFF = gitConfig->getGitValue("pull.ff").output;
-   const auto mergeStrategyRebase = gitConfig->getGitValue("pull.rebase").output;
-
-   if (mergeStrategyFF.isEmpty())
-   {
-      if (mergeStrategyRebase.isEmpty() || mergeStrategyRebase.contains("false", Qt::CaseInsensitive))
-         ui->cbPullStrategy->setCurrentIndex(0);
-      else if (mergeStrategyRebase.contains("true", Qt::CaseInsensitive))
-         ui->cbPullStrategy->setCurrentIndex(1);
-   }
-   else if (mergeStrategyFF.contains("true", Qt::CaseInsensitive))
-      ui->cbPullStrategy->setCurrentIndex(2);
-
    fillLanguageBox();
 
-   connect(ui->cbPullStrategy, SIGNAL(currentIndexChanged(int)), this, SLOT(onPullStrategyChanged(int)));
-
-   connect(ui->buttonGroup, qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
-           &ConfigWidget::onCredentialsOptionChanged);
+   connect(ui->buttonGroup, &QButtonGroup::buttonClicked, this, &ConfigWidget::onCredentialsOptionChanged);
    connect(ui->pbAddCredentials, &QPushButton::clicked, this, &ConfigWidget::showCredentialsDlg);
 
    connect(ui->chDevMode, &CheckBox::stateChanged, this, &ConfigWidget::enableWidgets);
@@ -177,23 +153,16 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase> &git, QWidget *parent)
    connect(ui->spCommitTitleLength, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
    connect(ui->sbUiFontSize, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
    connect(ui->sbHistoryViewFontSize, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
-   connect(ui->bgHistoryViewPreferredView, qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this, &ConfigWidget::saveConfig);
+   connect(ui->bgHistoryViewPreferredView, &QButtonGroup::buttonClicked, this, &ConfigWidget::saveConfig);
    connect(ui->sbEditorFontSize, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
-   connect(ui->cbTranslations, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
    connect(ui->sbMaxCommits, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
-   connect(ui->cbLogOrder, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
-   connect(ui->autoFetch, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
    connect(ui->autoRefresh, SIGNAL(valueChanged(int)), this, SLOT(saveConfig()));
-   connect(ui->pruneOnFetch, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
-   connect(ui->updateOnPull, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
-   connect(ui->clangFormat, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->cbLocal, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->cbRemote, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->cbTags, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->cbStash, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->cbSubmodule, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->cbSubtree, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
-   connect(ui->cbDeleteFolder, &QCheckBox::stateChanged, this, &ConfigWidget::saveConfig);
    connect(ui->pbSelectFolder, &QPushButton::clicked, this, &ConfigWidget::selectFolder);
    connect(ui->pbDefault, &QPushButton::clicked, this, &ConfigWidget::useDefaultLogsFolder);
    connect(ui->leEditor, &QLineEdit::editingFinished, this, &ConfigWidget::saveConfig);
@@ -204,15 +173,13 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase> &git, QWidget *parent)
    connect(ui->cbBranchSeparator, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
    connect(ui->cbLanguage, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
    connect(ui->leLogsLocation, &QLineEdit::editingFinished, this, &ConfigWidget::saveConfig);
+   connect(ui->pbBack, &QPushButton::clicked, this, &ConfigWidget::goBack);
 
    ui->cbDiffView->setCurrentIndex(settings.globalValue("DefaultDiffView").toInt());
    ui->cbBranchSeparator->setCurrentText(settings.globalValue("BranchSeparator", "-").toString());
 
    auto size = calculateDirSize(ui->leLogsLocation->text());
    ui->lLogsSize->setText(QString("%1 KB").arg(size));
-
-   size = calculateDirSize(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-   ui->lCacheSize->setText(QString("%1 KB").arg(size));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -235,41 +202,6 @@ void ConfigWidget::onPanelsVisibilityChanged()
 void ConfigWidget::onCredentialsOptionChanged(QAbstractButton *button)
 {
    ui->sbTimeout->setEnabled(button == ui->rbCache);
-}
-
-void ConfigWidget::onPullStrategyChanged(int index)
-{
-   QScopedPointer<GitConfig> gitConfig(new GitConfig(mGit));
-
-   switch (index)
-   {
-      case 0:
-         gitConfig->unset("pull.ff");
-         gitConfig->setLocalData("pull.rebase", "false");
-         break;
-      case 1:
-         gitConfig->unset("pull.ff");
-         gitConfig->setLocalData("pull.rebase", "true");
-         break;
-      case 2:
-         gitConfig->unset("pull.rebase");
-         gitConfig->setLocalData("pull.ff", "only");
-         break;
-   }
-}
-
-void ConfigWidget::clearCache()
-{
-   const auto path = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-   QProcess p;
-   p.setWorkingDirectory(path);
-   p.start("rm", { "-rf", path });
-
-   if (p.waitForFinished())
-   {
-      const auto size = calculateDirSize(path);
-      ui->lCacheSize->setText(QString("%1 KB").arg(size));
-   }
 }
 
 void ConfigWidget::clearLogs()
@@ -320,7 +252,7 @@ void ConfigWidget::saveConfig()
 
    ui->lFeedback->setText(tr("Changes saved"));
 
-   GitQlientSettings settings(mGit->getGitDir());
+   GitQlientSettings settings(mGit->getWorkingDir());
 
    settings.setGlobalValue("logsDisabled", ui->chDisableLogs->isChecked());
    settings.setGlobalValue("logsLevel", ui->cbLogLevel->currentIndex());
@@ -363,21 +295,10 @@ void ConfigWidget::saveConfig()
    else
       logger->resume();
 
-   if (mOriginalRepoOrder != ui->cbLogOrder->currentIndex())
-   {
-      settings.setLocalValue("GraphSortingOrder", ui->cbLogOrder->currentIndex());
-      emit reloadView();
-   }
-
-   settings.setLocalValue("AutoFetch", ui->autoFetch->value());
    settings.setLocalValue("AutoRefresh", ui->autoRefresh->value());
 
-   emit autoFetchChanged(ui->autoFetch->value());
    emit autoRefreshChanged(ui->autoRefresh->value());
 
-   settings.setLocalValue("PruneOnFetch", ui->pruneOnFetch->isChecked());
-   settings.setLocalValue("ClangFormatOnCommit", ui->clangFormat->isChecked());
-   settings.setLocalValue("UpdateOnPull", ui->updateOnPull->isChecked());
    settings.setLocalValue("MaxCommits", ui->sbMaxCommits->value());
 
    settings.setLocalValue("LocalHeader", ui->cbLocal->isChecked());
@@ -386,10 +307,6 @@ void ConfigWidget::saveConfig()
    settings.setLocalValue("StashesHeader", ui->cbStash->isChecked());
    settings.setLocalValue("SubmodulesHeader", ui->cbSubmodule->isChecked());
    settings.setLocalValue("SubtreeHeader", ui->cbSubtree->isChecked());
-
-   settings.setLocalValue("DeleteRemoteFolder", ui->cbDeleteFolder->isChecked());
-
-   emit panelsVisibilityChanged();
 
    mFeedbackTimer->singleShot(3000, ui->lFeedback, &QLabel::clear);
 }

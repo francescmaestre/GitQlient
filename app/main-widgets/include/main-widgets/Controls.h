@@ -34,7 +34,6 @@ class GitCache;
 class GitQlientUpdater;
 class QButtonGroup;
 class QHBoxLayout;
-class PomodoroButton;
 
 /*!
  \brief Enum used to configure the different views handled by the Controls widget.
@@ -64,15 +63,6 @@ signals:
    */
    void signalGoMerge();
 
-   /**
-    * @brief signalGoManagement Signal triggered when the user selected the Git remote platform view.
-    */
-   void signalGoServer();
-
-   /**
-    * @brief signalGoBuildSystem Signal triggered when the user selected the Build System view.
-    */
-   void signalGoBuildSystem();
    /*!
     * \brief Signal triggered when trying to pull and a conflict happens.
     */
@@ -92,19 +82,6 @@ signals:
     * @brief requestReload Signal triggered when the user forces a refresh of the references of the repository.
     */
    void requestReferencesReload();
-
-   /**
-    * @brief goConfig Signal triggered when the user selected the config view.
-    */
-   void goConfig();
-   void autoFetchIntervalChanged(int interval);
-   void autoRefreshIntervalChanged(int interval);
-   void commitTitleMaxLenghtChanged();
-   void panelsVisibilityChanged();
-   void reloadDiffFont();
-   void moveLogsAndClose();
-
-   void goPlugins();
 
 public:
    /*!
@@ -164,12 +141,10 @@ private:
    QToolButton *mPullOptions = nullptr;
    QToolButton *mPushBtn = nullptr;
    QToolButton *mRefreshBtn = nullptr;
-   QToolButton *mConfigBtn = nullptr;
    QToolButton *mVersionCheck = nullptr;
    QPushButton *mMergeWarning = nullptr;
    GitQlientUpdater *mUpdater = nullptr;
    QFrame *mLastSeparator = nullptr;
-   QDialog *mConfigDialog = nullptr;
 
    QToolButton *createToolButton(const QString &iconPath, const QString &tooltip,
                                  const QKeySequence &shortcut = QKeySequence());
@@ -194,5 +169,4 @@ private:
    void pruneBranches();
 
    bool eventFilter(QObject *obj, QEvent *event);
-   void showConfigDialog();
 };

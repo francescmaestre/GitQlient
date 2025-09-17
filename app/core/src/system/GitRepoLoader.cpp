@@ -217,24 +217,8 @@ void GitRepoLoader::requestRevisions()
 
    QString order;
 
-   switch (mSettings->localValue("GraphSortingOrder", 0).toInt())
-   {
-      case 0:
-         order = "--author-date-order";
-         break;
-      case 1:
-         order = "--date-order";
-         break;
-      case 2:
-         order = "--topo-order";
-         break;
-      default:
-         order = "--author-date-order";
-         break;
-   }
-
-   const auto baseCmd = QString("git log %1 --no-color --log-size --parents --boundary -z --pretty=format:%2 %3")
-                            .arg(order, QString::fromUtf8(GIT_LOG_FORMAT), commitsToRetrieve);
+   const auto baseCmd = QString("git log --author-date-order --no-color --log-size --parents --boundary -z --pretty=format:%1 %2")
+                            .arg(QString::fromUtf8(GIT_LOG_FORMAT), commitsToRetrieve);
 
    if (!mRevCache->isInitialized())
       emit signalLoadingStarted();

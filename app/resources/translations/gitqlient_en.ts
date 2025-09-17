@@ -2951,46 +2951,6 @@ To enable, go to the Configuration panel, Repository tab.</source>
     </message>
 </context>
 <context>
-    <name>PomodoroButton</name>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="26"/>
-        <source>Pomodoro</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="30"/>
-        <source>Options...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="43"/>
-        <source>Options</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="249"/>
-        <source>Time for a break!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="249"/>
-        <source>It&apos;s time to do a break. Are you ready?</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="289"/>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="321"/>
-        <source>Time to work!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="289"/>
-        <location filename="../../dialogs/PomodoroButton.cpp" line="321"/>
-        <source>It&apos;s time to go back to work. Are you ready?</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>PomodoroConfigDlg</name>
     <message>
         <location filename="../../dialogs/PomodoroConfigDlg.ui" line="14"/>

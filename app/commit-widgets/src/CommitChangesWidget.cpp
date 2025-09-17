@@ -311,7 +311,7 @@ void CommitChangesWidget::commitWipChanges()
                newCommit.longLog = ui->teDescription->toPlainText();
 
                mCache->insertCommit(newCommit);
-               mGraphCache->addTimeline(newCommit);
+               mGraphCache->createMultiverse(std::span<Commit>(&newCommit, 1));
                mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
                mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -330,6 +330,8 @@ void CommitChangesWidget::commitWipChanges()
                ui->teDescription->clear();
 
                WipHelper::update(mGit, mCache);
+
+               clearStaged();
 
                emit mCache->signalCacheUpdated();
                emit changesCommitted();
@@ -399,6 +401,8 @@ void CommitChangesWidget::commitAmendChanges()
                const auto ret = git->getDiffFiles(mCurrentSha, commit.firstParent());
 
                mCache->insertRevisionFiles(mCurrentSha, commit.firstParent(), RevisionFiles(ret.output));
+
+               clearStaged();
 
                emit changesCommitted();
             }

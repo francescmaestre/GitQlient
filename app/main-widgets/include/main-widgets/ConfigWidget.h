@@ -21,15 +21,13 @@ class ConfigWidget : public QWidget
    Q_OBJECT
 
 signals:
-   void reloadView();
+   void goBack();
    void reloadDiffFont();
    void buildSystemEnabled(bool enabled);
    void gitServerEnabled(bool enabled);
    void terminalEnabled(bool enabled);
    void commitTitleMaxLenghtChanged();
-   void panelsVisibilityChanged();
    void moveLogsAndClose();
-   void autoFetchChanged(int minutes);
    void autoRefreshChanged(int seconds);
 
 public:
@@ -41,7 +39,6 @@ public:
 private:
    Ui::ConfigWidget *ui;
    QSharedPointer<GitBase> mGit;
-   int mOriginalRepoOrder = 0;
    bool mShowResetMsg = false;
    QTimer *mFeedbackTimer = nullptr;
    QPushButton *mSave = nullptr;
@@ -52,7 +49,6 @@ private:
    QStringList mPluginNames;
    QPushButton *mPbFeaturesTour;
 
-   void clearCache();
    void clearLogs();
    void clearFolder(const QString &folder, QLabel *label);
    void calculateLogsSize();
@@ -70,5 +66,4 @@ private:
 private slots:
    void saveConfig();
    void onCredentialsOptionChanged(QAbstractButton *button);
-   void onPullStrategyChanged(int index);
 };

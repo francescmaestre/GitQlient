@@ -176,6 +176,7 @@ private:
    ShaFilterProxyModel *mProxyModel = nullptr;
    bool mIsFiltering = false;
    QString mCurrentSha = ZERO_SHA;
+   int mLastSelectedRow = -1;
 
    /**
     * @brief Shows the context menu for the CommitHistoryView.
@@ -205,4 +206,5 @@ private:
     * @param pos The position of the cursor that will be used to show the menu.
     */
    void onHeaderContextMenu(const QPoint &pos);
+   void handleItemClick(const QModelIndex &index);
 };

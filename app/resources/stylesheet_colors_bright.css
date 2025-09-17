@@ -335,47 +335,6 @@ ClickableFrame::pressed
    background: #202122;
 }
 
-PomodoroButton
-{
-   background: white;
-}
-
-PomodoroButton:hover
-{
-   background: #EFEFEF;
-}
-
-PomodoroButton[checked=true], PomodoroButton[checked=true]:hover, PomodoroButton[checked=false]:hover
-{
-   background: #C6C6C7;
-}
-
-PomodoroButton[checked=false]
-{
-   background: white;
-}
-
-PomodoroButton > QToolButton, PomodoroButton > QToolButton:hover
-{
-   background: transparent;
-}
-
-PomodoroButton > QToolButton#Arrow
-{
-   background: white;
-   padding: 0;
-}
-
-PomodoroButton > QToolButton#Arrow:pressed
-{
-   background: #C6C6C7;
-}
-
-PomodoroButton > QToolButton#Arrow:hover
-{
-   background: #EFEFEF;
-}
-
 #SearchInput
 {
    border-color: #2E2F30;

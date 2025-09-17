@@ -8,7 +8,6 @@
 #include <GitMerge.h>
 #include <GitPatches.h>
 #include <GitRemote.h>
-#include <GitStashes.h>
 #include <core/cache/Commit.h>
 #include <core/cache/GitCache.h>
 #include <core/cache/GraphCache.h>
@@ -59,16 +58,7 @@ void CommitHistoryContextMenu::createIndividualShaMenu()
    {
       const auto sha = mShas.first();
 
-      if (sha == ZERO_SHA)
-      {
-         const auto stashMenu = addMenu(tr("Stash"));
-         const auto stashAction = stashMenu->addAction(tr("Push"));
-         connect(stashAction, &QAction::triggered, this, &CommitHistoryContextMenu::stashPush);
-
-         const auto popAction = stashMenu->addAction(tr("Pop"));
-         connect(popAction, &QAction::triggered, this, &CommitHistoryContextMenu::stashPop);
-      }
-      else
+      if (sha != ZERO_SHA)
       {
          const auto commitAction = addAction(tr("Show diff"));
          connect(commitAction, &QAction::triggered, this, [this]() { emit signalOpenDiff(mShas.first()); });
@@ -202,24 +192,6 @@ void CommitHistoryContextMenu::createMultipleShasMenu()
    }
    else
       QLog_Warning("UI", "WIP selected as part of a series of SHAs");
-}
-
-void CommitHistoryContextMenu::stashPush()
-{
-   QScopedPointer<GitStashes> git(new GitStashes(mGit));
-   const auto ret = git->stash();
-
-   if (ret.success)
-      emit logReload();
-}
-
-void CommitHistoryContextMenu::stashPop()
-{
-   QScopedPointer<GitStashes> git(new GitStashes(mGit));
-   const auto ret = git->pop();
-
-   if (ret.success)
-      emit logReload();
 }
 
 void CommitHistoryContextMenu::createBranch()
@@ -357,7 +329,7 @@ void CommitHistoryContextMenu::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->addTimeline(commit);
+         mGraphCache->createMultiverse(std::span<Commit>(&commit, 1));
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -520,12 +492,9 @@ void CommitHistoryContextMenu::push()
 
 void CommitHistoryContextMenu::pull()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto updateOnPull = settings.localValue("UpdateOnPull", true).toBool();
-
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->pull(updateOnPull);
+   const auto ret = git->pull();
    QApplication::restoreOverrideCursor();
 
    if (ret.success)
@@ -554,12 +523,9 @@ void CommitHistoryContextMenu::pull()
 
 void CommitHistoryContextMenu::fetch()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto pruneOnFetch = settings.localValue("PruneOnFetch", true).toBool();
-
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
 
-   if (git->fetch(pruneOnFetch))
+   if (git->fetch())
       emit fullReload();
 }
 
@@ -589,7 +555,7 @@ void CommitHistoryContextMenu::revertCommit()
                               .arg(newCommit.shortLog, QString::fromUtf8("This reverts commit"), revertedCommit.sha);
 
       mCache->insertCommit(newCommit);
-      mGraphCache->addTimeline(newCommit);
+      mGraphCache->createMultiverse(std::span<Commit>(&newCommit, 1));
       mCache->deleteReference(previousSha, References::Type::LocalBranch, mGit->getCurrentBranch());
       mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
 

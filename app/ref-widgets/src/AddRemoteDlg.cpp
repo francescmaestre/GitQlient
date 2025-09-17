@@ -2,9 +2,9 @@
 #include "ui_AddSubmoduleDlg.h"
 
 #include <GitBase.h>
+#include <GitRemote.h>
 #include <core/system/GitQlientSettings.h>
 #include <core/system/GitQlientStyles.h>
-#include <GitRemote.h>
 
 #include <QMessageBox>
 
@@ -46,10 +46,7 @@ void AddRemoteDlg::accept()
    }
    else if (const auto ret = git->addRemote(remoteUrl, remoteName); ret.success)
    {
-      GitQlientSettings settings(mGit->getGitDir());
-      const auto pruneOnFetch = settings.localValue("PruneOnFetch", true).toBool();
-
-      git->fetch(pruneOnFetch);
+      git->fetch();
 
       QDialog::accept();
    }

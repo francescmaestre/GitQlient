@@ -50,6 +50,7 @@ BranchesWidget::BranchesWidget(const QSharedPointer<GitCache> &cache,
 
    setupUI();
    setupConnections();
+   loadSettings();
 }
 
 void BranchesWidget::setupUI()
@@ -93,11 +94,6 @@ void BranchesWidget::setupUI()
    mainLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Expanding), 0, 1);
    mainLayout->addWidget(mMinimal, 1, 1);
    mainLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Expanding), 2, 1);
-
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto isMinimalVisible = settings.localValue("MinimalBranchesView", false).toBool();
-   mFullBranchFrame->setVisible(!isMinimalVisible);
-   mMinimal->setVisible(isMinimalVisible);
 }
 
 void BranchesWidget::setupConnections()
@@ -149,6 +145,21 @@ void BranchesWidget::setupConnections()
    connect(mSubtrees, &RefListWidget::contextMenuRequested, this, &BranchesWidget::handleSubtreesContextMenu);
 }
 
+void BranchesWidget::loadSettings()
+{
+   GitQlientSettings settings(mGit->getWorkingDir());
+   const auto isMinimalVisible = settings.localValue("MinimalBranchesView", false).toBool();
+   mFullBranchFrame->setVisible(!isMinimalVisible);
+   mMinimal->setVisible(isMinimalVisible);
+
+   mLocalBranches->setVisible(settings.localValue("LocalHeader", true).toBool());
+   mRemoteBranches->setVisible(settings.localValue("RemoteHeader", true).toBool());
+   mTags->setVisible(settings.localValue("TagsHeader", true).toBool());
+   mStashes->setVisible(settings.localValue("StashesHeader", true).toBool());
+   mSubmodules->setVisible(settings.localValue("SubmodulesHeader", true).toBool());
+   mSubtrees->setVisible(settings.localValue("SubtreeHeader", true).toBool());
+}
+
 void BranchesWidget::showBranches()
 {
    QLog_Info("UI", QString("Loading branches data"));
@@ -166,6 +177,8 @@ void BranchesWidget::showBranches()
 
    mLocalBranches->adjustBranchesTree();
    mRemoteBranches->adjustBranchesTree();
+
+   loadSettings();
 }
 
 void BranchesWidget::processBranches()

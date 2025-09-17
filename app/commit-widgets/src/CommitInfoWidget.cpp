@@ -39,8 +39,7 @@ CommitInfoWidget::CommitInfoWidget(const QSharedPointer<GitCache> &cache, const 
    mainLayout->setRowStretch(2, 0);
    mainLayout->setRowStretch(2, 1);
 
-   connect(mFileListWidget, &FileListWidget::itemDoubleClicked, this,
-           [this](QListWidgetItem *item) { emit signalOpenFileCommit(mCurrentSha, mParentSha, item->text()); });
+   connect(mFileListWidget, &FileListWidget::itemClicked, this, &CommitInfoWidget::handleItemClick);
    connect(mFileListWidget, &FileListWidget::signalShowFileHistory, this, &CommitInfoWidget::signalShowFileHistory);
    connect(mFileListWidget, &FileListWidget::signalEditFile, this, &CommitInfoWidget::signalEditFile);
 }
@@ -83,4 +82,23 @@ void CommitInfoWidget::clear()
    mParentSha = QString();
 
    mFileListWidget->clear();
+}
+
+void CommitInfoWidget::handleItemClick(QListWidgetItem *item)
+{
+   if (mLastSelectedItem == item && item->isSelected())
+   {
+      mFileListWidget->clearSelection();
+      mLastSelectedItem = nullptr;
+
+      emit signalReturnToHistory();
+   }
+   else
+   {
+
+      item->setSelected(true);
+      mLastSelectedItem = item;
+
+      emit showFileDiff(item->text(), mCurrentSha, mParentSha);
+   }
 }

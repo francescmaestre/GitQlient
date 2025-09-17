@@ -35,7 +35,6 @@ Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<G
    , mPullOptions(createToolButton(":/icons/arrow_down", tr("Remote actions")))
    , mPushBtn(createToolButton(":/icons/git_push", tr("Push"), Qt::CTRL | Qt::Key_5))
    , mRefreshBtn(createToolButton(":/icons/refresh", tr("Refresh"), Qt::Key_F5))
-   , mConfigBtn(createToolButton(":/icons/config", tr("Config"), Qt::CTRL | Qt::Key_6))
    , mVersionCheck(new QToolButton(this))
    , mMergeWarning(
          new QPushButton(tr("WARNING: There is a merge pending to be committed! Click here to solve it."), this))
@@ -92,6 +91,7 @@ Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<G
    hLayout->addLayout(pullLayout);
    hLayout->addWidget(mPushBtn);
    hLayout->addWidget(separator2);
+   hLayout->addWidget(mRefreshBtn);
 
    mVersionCheck->setIcon(QIcon(":/icons/get_gitqlient"));
    mVersionCheck->setIconSize(QSize(22, 22));
@@ -101,9 +101,6 @@ Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<G
    mVersionCheck->setVisible(false);
 
    mUpdater->checkNewGitQlientVersion();
-
-   hLayout->addWidget(mRefreshBtn);
-   hLayout->addWidget(mConfigBtn);
 
    mLastSeparator->setObjectName("orangeSeparator");
    mLastSeparator->setFixedHeight(20);
@@ -129,7 +126,6 @@ Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<G
    connect(mRefreshBtn, &QToolButton::clicked, this, &Controls::requestFullReload);
    connect(mMergeWarning, &QPushButton::clicked, this, &Controls::signalGoMerge);
    connect(mVersionCheck, &QToolButton::clicked, mUpdater, &GitQlientUpdater::showInfoMessage);
-   connect(mConfigBtn, &QToolButton::clicked, this, &Controls::showConfigDialog);
 
    enableButtons(false);
 }
@@ -142,7 +138,6 @@ void Controls::enableButtons(bool enabled)
    mPullOptions->setEnabled(enabled);
    mPushBtn->setEnabled(enabled);
    mRefreshBtn->setEnabled(enabled);
-   mConfigBtn->setEnabled(enabled);
 }
 
 void Controls::stashPush()
@@ -214,12 +209,9 @@ void Controls::stashPop()
 
 void Controls::pullCurrentBranch()
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   const auto updateOnPull = settings.localValue("UpdateOnPull", true).toBool();
-
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->pull(updateOnPull);
+   const auto ret = git->pull();
    QApplication::restoreOverrideCursor();
 
    if (ret.success)
@@ -254,7 +246,7 @@ void Controls::fetchAll()
    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
    GitQlientSettings settings(mGit->getGitDir());
    QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->fetch(settings.localValue("PruneOnFetch").toBool());
+   const auto ret = git->fetch();
    QApplication::restoreOverrideCursor();
 
    if (!ret)
@@ -364,44 +356,4 @@ bool Controls::eventFilter(QObject *obj, QEvent *event)
    }
 
    return false;
-}
-
-void Controls::showConfigDialog()
-{
-   if (mConfigDialog && mConfigDialog->isVisible())
-   {
-      mConfigDialog->raise();
-      mConfigDialog->activateWindow();
-      return;
-   }
-
-   mConfigDialog = new QDialog(this);
-   mConfigDialog->setWindowTitle(tr("Repository Configuration"));
-   mConfigDialog->setAttribute(Qt::WA_DeleteOnClose);
-   mConfigDialog->setModal(false);
-   mConfigDialog->resize(800, 600);
-
-   auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, mConfigDialog);
-   buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Accept"));
-   connect(buttonBox, &QDialogButtonBox::accepted, mConfigDialog, &QDialog::accept);
-
-   auto configWidget = new ConfigWidget(mGit, mConfigDialog);
-
-   auto layout = new QVBoxLayout(mConfigDialog);
-   layout->setContentsMargins(QMargins(10, 10, 10, 10));
-   layout->addWidget(configWidget);
-   layout->addWidget(buttonBox);
-
-   connect(configWidget, &ConfigWidget::reloadDiffFont, this, &Controls::requestFullReload);
-   connect(configWidget, &ConfigWidget::autoFetchChanged, this, &Controls::autoFetchIntervalChanged);
-   connect(configWidget, &ConfigWidget::autoRefreshChanged, this, &Controls::autoRefreshIntervalChanged);
-   connect(configWidget, &ConfigWidget::autoRefreshChanged, this, &Controls::commitTitleMaxLenghtChanged);
-   connect(configWidget, &ConfigWidget::panelsVisibilityChanged, this, &Controls::panelsVisibilityChanged);
-   connect(configWidget, &ConfigWidget::moveLogsAndClose, this, [this]() {
-      emit moveLogsAndClose();
-      if (mConfigDialog)
-         mConfigDialog->close();
-   });
-
-   mConfigDialog->show();
 }
