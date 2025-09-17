@@ -6,7 +6,6 @@ add_library(
     core
     STATIC
     ${SRC_FILES}
-    ${UI_SRC}
 )
 
 target_link_libraries(core

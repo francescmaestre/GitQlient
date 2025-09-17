@@ -4,7 +4,9 @@ file(GLOB_RECURSE SRC_FILES
     src/*.cpp
 )
 
-file(GLOB_RECURSE UI_SRC src/*.ui)
+file(GLOB_RECURSE UI_SRC ui/*.ui)
+
+set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 
 source_group("Forms" FILES ${UI_SRC})
 
