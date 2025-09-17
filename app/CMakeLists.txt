@@ -45,15 +45,14 @@ file(GLOB SRC_FILES
    GitQlient.qrc
 )
 
-add_subdirectory(commit-widgets)
 add_subdirectory(core)
-add_subdirectory(custom-widgets)
-add_subdirectory(dialogs)
-add_subdirectory(diff-widgets)
-add_subdirectory(main-widgets)
-add_subdirectory(history-widgets)
-add_subdirectory(ref-widgets)
-
+add_subdirectory(ui/dialogs)
+add_subdirectory(ui/widgets/commits)
+add_subdirectory(ui/widgets/custom)
+add_subdirectory(ui/widgets/diff)
+add_subdirectory(ui/widgets/main)
+add_subdirectory(ui/widgets/history)
+add_subdirectory(ui/widgets/references)
 add_subdirectory(dependencies/git)
 add_subdirectory(dependencies/QLogger)
 add_subdirectory(dependencies/QPinnableTabWidget)
