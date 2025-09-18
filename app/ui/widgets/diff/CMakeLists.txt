@@ -1,29 +1,12 @@
-file(GLOB SRC_FILES
-    include/diff-widgets/*.h
-    src/*.h
-    src/*.cpp
+include(${CMAKE_SOURCE_DIR}/cmake/GitQlientLibrary.cmake)
+
+create_gitqlient_library(diff-widgets
+    HAS_UI
+    DEPENDENCIES
+        Qt::Core
+        Qt::Widgets
+        commit-widgets
+        core
+        dialogs
+        main-widgets
 )
-
-file(GLOB_RECURSE UI_SRC
-    ui/*.ui)
-
-set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
-
-source_group("Forms" FILES ${UI_SRC})
-
-add_library(diff-widgets STATIC
-    ${SRC_FILES}
-    ${UI_SRC}
-)
-
-target_link_libraries(diff-widgets
-    PUBLIC
-    Qt::Core
-    Qt::Widgets
-    commit-widgets
-    core
-    dialogs
-    main-widgets
-)
-
-target_include_directories(diff-widgets PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

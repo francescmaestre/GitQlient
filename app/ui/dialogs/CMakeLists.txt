@@ -1,29 +1,12 @@
-file(GLOB SRC_FILES
-    include/dialogs/*.h
-    src/*.h
-    src/*.cpp
+include(${CMAKE_SOURCE_DIR}/cmake/GitQlientLibrary.cmake)
+
+create_gitqlient_library(dialogs
+    HAS_UI
+    DEPENDENCIES
+        Qt::Core
+        Qt::Widgets
+        Qt::Network
+        core
+        custom-widgets
+        git
 )
-
-file(GLOB_RECURSE UI_SRC
-    ui/*.ui)
-
-set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
-
-source_group("Forms" FILES ${UI_SRC})
-
-add_library(dialogs STATIC
-    ${SRC_FILES}
-    ${UI_SRC}
-)
-
-target_link_libraries(dialogs
-    PUBLIC
-    Qt::Core
-    Qt::Widgets
-    Qt::Network
-    core
-    custom-widgets
-    git
-)
-
-target_include_directories(dialogs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
