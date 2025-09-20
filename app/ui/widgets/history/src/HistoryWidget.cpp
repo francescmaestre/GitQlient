@@ -84,6 +84,9 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    connect(mCommitChangesWidget, &CommitChangesWidget::fileStaged, this, &HistoryWidget::returnToViewIfObsolete);
    connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::returnToView);
    connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::changesCommitted);
+   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, [this]() {
+      mCommitInfoFrame->setVisible(false);
+   });
    connect(mCommitChangesWidget, &CommitChangesWidget::unstagedFilesChanged, this, &HistoryWidget::onRevertedChanges);
    connect(mCommitChangesWidget, &CommitChangesWidget::signalUpdateWip, this, &HistoryWidget::signalUpdateWip);
    connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, [this](const QString &revertedFile) {
