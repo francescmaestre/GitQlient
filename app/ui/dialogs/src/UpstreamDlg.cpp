@@ -17,8 +17,6 @@ UpstreamDlg::UpstreamDlg(QSharedPointer<GitBase> git, const QString &text, QWidg
 
    ui->lText->setText(text);
    ui->lQuestion->setText(tr("<strong>Would you like to reconfigure the upstream and push the branch?</strong>"));
-
-   setStyleSheet(GitQlientStyles::getStyles());
 }
 
 UpstreamDlg::~UpstreamDlg()
@@ -49,7 +47,6 @@ void UpstreamDlg::accept()
                                     "description for more information.")),
                          QMessageBox::Ok, this);
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }

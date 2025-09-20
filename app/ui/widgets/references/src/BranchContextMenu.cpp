@@ -5,11 +5,11 @@
 #include <GitConfig.h>
 #include <GitRemote.h>
 #include <cache/GitCache.h>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
 #include <dialogs/BranchDlg.h>
 #include <dialogs/InputShaDlg.h>
 #include <dialogs/UpstreamDlg.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -88,7 +88,6 @@ void BranchContextMenu::pull()
                                "description for more information."),
                             QMessageBox::Ok, parentWidget());
          msgBox.setDetailedText(errorMsg);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
    }
@@ -192,7 +191,6 @@ void BranchContextMenu::push()
                             "for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -208,7 +206,6 @@ void BranchContextMenu::unsetUpstream()
    {
       QMessageBox msgBox(QMessageBox::Information, tr("Upstream unset!"), tr("Upstream unset successfully!"),
                          QMessageBox::Ok, parentWidget());
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -232,7 +229,6 @@ void BranchContextMenu::pushForce()
                             "for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }

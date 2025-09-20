@@ -3,7 +3,7 @@
 /****************************************************************************************
  ** GitQlient is an application to manage and operate one or several Git repositories. With
  ** GitQlient you will be able to add commits, branches and manage all the options Git provides.
- ** Copyright (C) 2022 Francesc Martinez
+ ** Copyright (C) 2021  Francesc Martinez
  **
  ** LinkedIn: www.linkedin.com/in/cescmm/
  ** Web: www.francescmm.com
@@ -23,30 +23,39 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
-#include <QObject>
+#include <QStyledItemDelegate>
 
-class QNetworkAccessManager;
-class QProgressDialog;
+class QPainter;
 
-class GitQlientUpdater : public QObject
+/*!
+ \brief RefListDelegate is the delegate in charge of painting how the branches are display in the BranchTreeWidget.
+
+*/
+class RefListDelegate : public QStyledItemDelegate
 {
-   Q_OBJECT
-signals:
-   void newVersionAvailable();
-
 public:
-   explicit GitQlientUpdater(QObject *parent = nullptr);
-   ~GitQlientUpdater();
+   /*!
+    \brief Default constructor.
 
-   void checkNewGitQlientVersion();
-   void showInfoMessage();
+    \param parent The parent widget if needed.
+   */
+   explicit RefListDelegate(bool isTag = false, QObject *parent = nullptr);
+
+   /*!
+    \brief Overridden paint method used to display different colors when mouse actions happen.
+
+    \param p The painter device.
+    \param o The style options of the item.
+    \param i The item data
+   */
+   void paint(QPainter *p, const QStyleOptionViewItem &o, const QModelIndex &i) const override;
+   /*!
+    \brief Overridden method that returns the size of the row, both height and width.
+
+    \return QSize The width and height of the row.
+   */
+   QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
 
 private:
-   QNetworkAccessManager *mManager = nullptr;
-   QProgressDialog *mDownloadLog = nullptr;
-   QString mLatestGitQlient;
-   QString mChangeLog;
-
-   void processUpdateFile();
-   void processChangeLog();
+   bool mIsTag = false;
 };

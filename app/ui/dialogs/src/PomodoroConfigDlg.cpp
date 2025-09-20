@@ -26,8 +26,6 @@ PomodoroConfigDlg::PomodoroConfigDlg(const QSharedPointer<GitBase> &git, QWidget
    ui->breakDur->setValue(settings.localValue("Pomodoro/Break", 5).toInt());
    ui->longBreakDur->setValue(settings.localValue("Pomodoro/LongBreak", 15).toInt());
    ui->sbLongBreakCount->setValue(settings.localValue("Pomodoro/LongBreakTrigger", 4).toInt());
-
-   setStyleSheet(GitQlientStyles::getInstance()->getStyles());
 }
 
 PomodoroConfigDlg::~PomodoroConfigDlg()

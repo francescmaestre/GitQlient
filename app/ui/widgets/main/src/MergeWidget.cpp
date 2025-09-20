@@ -9,10 +9,10 @@
 #include <RevisionFiles.h>
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
-#include <graph/WipHelper.h>
-#include <system/GitQlientStyles.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FileEditor.h>
+#include <graph/WipHelper.h>
+#include <system/GitQlientStyles.h>
 
 #include <QFile>
 #include <QLabel>
@@ -261,7 +261,6 @@ void MergeWidget::abort()
                             "description for more information."),
                          QMessageBox::Ok, this);
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
    else
@@ -338,7 +337,6 @@ void MergeWidget::commit()
                                "for more information."),
                             QMessageBox::Ok, this);
          msgBox.setDetailedText(ret.output);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
       else
@@ -420,7 +418,6 @@ void MergeWidget::cherryPickCommit()
                                   "description for more information."),
                                QMessageBox::Ok, this);
             msgBox.setDetailedText(errorMsg);
-            msgBox.setStyleSheet(GitQlientStyles::getStyles());
             msgBox.exec();
 
             mPendingShas.clear();

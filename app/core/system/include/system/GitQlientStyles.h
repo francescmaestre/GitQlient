@@ -54,36 +54,6 @@ public:
     \return QString The stylesheet.
    */
    static QString getStyles();
-   /*!
-    \brief Gets the text color.
-
-    \return QColor Current text color.
-   */
-   static QColor getTextColor();
-
-   /**
-    * @brief Gets the row selection color
-    * @return QColor Current row selection color
-    */
-   static QColor getGraphSelectionColor();
-
-   /**
-    * @brief Gets the row hover color
-    * @return QColor Current row hover color
-    */
-   static QColor getGraphHoverColor();
-
-   /**
-    * @brief Gets the background color
-    * @return QColor Current background color
-    */
-   static QColor getBackgroundColor();
-
-   /**
-    * @brief Gets the tabs color
-    * @return QColor Current tab color
-    */
-   static QColor getTabColor();
 
    /*!
     \brief Gets the GitQlient blue color.
@@ -111,30 +81,11 @@ public:
    static QColor getOrange();
 
    /*!
-    \brief Gets the GitQlient red color.
-
-    \return QColor
-   */
-   static QColor getShadowedRed();
-   /*!
-    \brief Gets the GitQlient green color.
-
-    \return QColor
-   */
-   static QColor getShadowedGreen();
-
-   /*!
     \brief Gets the total count of branch colors.
 
     \return int
    */
-   static int getTotalBranchColors() { return kBranchColors; }
-   /*!
-    \brief Gets all the branch colors.
-
-    \return std::array<QColor, kBranchColors>
-   */
-   static std::array<QColor, kBranchColors> getBranchColors();
+   static int getTotalBranchColors() { return kBranchColors + 1; }
    /*!
     \brief Gets the branch color for a given \p index.
 
@@ -151,4 +102,6 @@ private:
 
    */
    GitQlientStyles() = default;
+
+   static std::array<QColor, kBranchColors> getBranchColors();
 };

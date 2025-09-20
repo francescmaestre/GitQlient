@@ -12,8 +12,6 @@ ProgressDlg::ProgressDlg(const QString &labelText, const QString &cancelButtonTe
    setAttribute(Qt::WA_DeleteOnClose);
    setWindowModality(Qt::ApplicationModal);
    setWindowFlags(Qt::FramelessWindowHint);
-
-   setStyleSheet(GitQlientStyles::getStyles());
 }
 
 void ProgressDlg::keyPressEvent(QKeyEvent *e)

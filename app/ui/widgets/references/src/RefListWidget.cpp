@@ -1,8 +1,9 @@
 #include "RefListWidget.h"
 #include "GitBase.h"
 
-#include <system/GitQlientSettings.h>
+#include "RefListDelegate.h"
 #include <custom-widgets/ClickableFrame.h>
+#include <system/GitQlientSettings.h>
 
 #include <QListWidget>
 #include <QVBoxLayout>
@@ -23,6 +24,7 @@ RefListWidget::RefListWidget(const QString &title,
    mList = new QListWidget();
    mList->setMouseTracking(true);
    mList->setContextMenuPolicy(Qt::CustomContextMenu);
+   mList->setItemDelegate(mDelegate = new RefListDelegate(true));
 
    mFrame->setContentWidget(mList);
 

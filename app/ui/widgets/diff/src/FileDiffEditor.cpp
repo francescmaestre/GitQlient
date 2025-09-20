@@ -1,9 +1,9 @@
 #include "FileDiffEditor.h"
 
+#include <custom-widgets/LineNumberArea.h>
 #include <system/Colors.h>
 #include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
-#include <custom-widgets/LineNumberArea.h>
 
 FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget *parent)
    : FileDiffView(additionColor, removalColor, commentColor, parent)
@@ -31,7 +31,7 @@ void FileDiffEditor::highlightCurrentLine()
 
       QTextEdit::ExtraSelection selection;
 
-      selection.format.setBackground(GitQlientStyles::getGraphSelectionColor());
+      selection.format.setBackground(QPalette().color(QPalette::AlternateBase));
       selection.format.setProperty(QTextFormat::FullWidthSelection, true);
       selection.cursor = textCursor();
       selection.cursor.clearSelection();

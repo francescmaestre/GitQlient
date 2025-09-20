@@ -17,7 +17,6 @@ InputShaDlg::InputShaDlg(const QString &branch, QSharedPointer<GitBase> git, QWi
    , mGit(git)
    , mBranch(branch)
 {
-   setStyleSheet(GitQlientStyles::getStyles());
 
    ui->setupUi(this);
 

@@ -1,8 +1,8 @@
 #include "StashesContextMenu.h"
 
+#include <GitStashes.h>
 #include <dialogs/BranchDlg.h>
 #include <system/GitQlientStyles.h>
-#include <GitStashes.h>
 
 #include <QMessageBox>
 
@@ -41,7 +41,6 @@ void StashesContextMenu::drop()
                             "description for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -60,7 +59,6 @@ void StashesContextMenu::clear()
                             "description for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }

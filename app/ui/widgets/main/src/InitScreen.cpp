@@ -4,10 +4,10 @@
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <system/GitQlientSettings.h>
 #include <custom-widgets/ButtonLink.h>
 #include <dialogs/CreateRepoDlg.h>
 #include <dialogs/ProgressDlg.h>
+#include <system/GitQlientSettings.h>
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -30,8 +30,6 @@ InitScreen::InitScreen(QWidget *parent)
    : QFrame(parent)
 {
    setAttribute(Qt::WA_DeleteOnClose);
-
-   setStyleSheet(GitQlientStyles::getStyles());
 
    mOpenRepo = new QPushButton(tr("OPEN"), this);
    mOpenRepo->setObjectName("bigButton");

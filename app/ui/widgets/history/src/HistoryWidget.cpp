@@ -420,7 +420,6 @@ void HistoryWidget::processMergeResponse(const GitExecResult &ret)
                      "information.<br><br>GitQlient will show the merge helper tool.")),
           QMessageBox::Ok, this);
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
 
       emit signalMergeConflicts();
@@ -437,7 +436,6 @@ void HistoryWidget::processMergeResponse(const GitExecResult &ret)
                 tr("There were problems during the merge. Please, see the detailed description for more information."),
                 QMessageBox::Ok, this);
             msgBox.setDetailedText(ret.output);
-            msgBox.setStyleSheet(GitQlientStyles::getStyles());
             msgBox.exec();
 
             emit signalMergeConflicts();
@@ -451,7 +449,6 @@ void HistoryWidget::processMergeResponse(const GitExecResult &ret)
                 tr("The merge was successfully done. See the detailed description for more information."),
                 QMessageBox::Ok, this);
             msgBox.setDetailedText(ret.output);
-            msgBox.setStyleSheet(GitQlientStyles::getStyles());
             msgBox.exec();
          }
       }
@@ -577,7 +574,6 @@ void HistoryWidget::cherryPickCommit()
                             "description for more information."),
                          QMessageBox::Ok, this);
       msgBox.setDetailedText(errorStr);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }

@@ -40,6 +40,10 @@ endif()
 
 find_package(Qt6 COMPONENTS Core Widgets Network REQUIRED)
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   find_package(Qt6 COMPONENTS DBus REQUIRED)
+endif()
+
 file(GLOB SRC_FILES
    ${MACOS_APP_ICON_GITQLIENT}
    GitQlient.qrc
@@ -72,13 +76,21 @@ qt_add_executable(
     GitQlient.cpp
     ${SRC_FILES})
 
+ set(DEPS
+    Qt::Core
+    Qt::Widgets
+    Qt::Network
+    main-widgets
+ )
+
+ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   list(APPEND DEPS Qt::DBus)
+ endif()
+
 target_link_libraries(
    ${PROJECT_NAME}
    PUBLIC
-   Qt::Core
-   Qt::Widgets
-   Qt::Network
-   main-widgets
+   ${DEPS}
  )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")

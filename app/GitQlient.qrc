@@ -5,29 +5,6 @@
         <file alias="GitQlientLogo32">resources/icons/GitQlientLogo32.png</file>
         <file alias="GitQlientLogoSVG">resources/icons/GitQlientLogo.svg</file>
         <file alias="GitQlientLogoIco">resources/icons/GitQlientLogo.ico</file>
-    </qresource>
-    <qresource prefix="/">
-        <file alias="stylesheet">resources/stylesheet.css</file>
-        <file alias="colors_bright">resources/stylesheet_colors_bright.css</file>
-        <file alias="colors_dark">resources/stylesheet_colors_dark.css</file>
-        <file alias="DejaVuSans">resources/DejaVuSans.ttf</file>
-        <file alias="DejaVuSansMono">resources/DejaVuSansMono.ttf</file>
-        <file alias="font_sizes">resources/font_sizes.css</file>
-    </qresource>
-    <qresource prefix="/translations">
-        <file alias="gitqlient_en.qm">resources/translations/gitqlient_en.qm</file>
-        <file alias="gitqlient_en.ts">resources/translations/gitqlient_en.ts</file>
-        <file alias="gitqlient_zh_CN.qm">resources/translations/gitqlient_zh_CN.qm</file>
-        <file alias="gitqlient_zh_CN.ts">resources/translations/gitqlient_zh_CN.ts</file>
-    </qresource>
-    <qresource prefix="/images/NewVersionInfoDlg">
-        <file alias="hunkPage">resources/images/hunkPage.png</file>
-        <file alias="pluginsPage">resources/images/pluginsPage.png</file>
-        <file alias="terminalPage">resources/images/terminalPage01.png</file>
-        <file alias="branchesPage">resources/images/branchesPage.png</file>
-        <file alias="shortcutsPage">resources/images/shortcutsPage.png</file>
-    </qresource>
-    <qresource prefix="/icons">
         <file alias="git_pull">resources/icons/git_pull.svg</file>
         <file alias="git_push">resources/icons/git_push.svg</file>
         <file alias="git_stash">resources/icons/git_stash.svg</file>
@@ -143,5 +120,24 @@
         <file alias="tag_indicator_dark">resources/icons/tag_indicator_dark.svg</file>
         <file alias="branch_indicator_bright">resources/icons/branch_indicator_bright.svg</file>
         <file alias="branch_indicator_dark">resources/icons/branch_indicator_dark.svg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file alias="stylesheet">resources/stylesheet.css</file>
+        <file alias="DejaVuSans">resources/DejaVuSans.ttf</file>
+        <file alias="DejaVuSansMono">resources/DejaVuSansMono.ttf</file>
+        <file alias="font_sizes">resources/font_sizes.css</file>
+    </qresource>
+    <qresource prefix="/translations">
+        <file alias="gitqlient_en.qm">resources/translations/gitqlient_en.qm</file>
+        <file alias="gitqlient_en.ts">resources/translations/gitqlient_en.ts</file>
+        <file alias="gitqlient_zh_CN.qm">resources/translations/gitqlient_zh_CN.qm</file>
+        <file alias="gitqlient_zh_CN.ts">resources/translations/gitqlient_zh_CN.ts</file>
+    </qresource>
+    <qresource prefix="/images/NewVersionInfoDlg">
+        <file alias="hunkPage">resources/images/hunkPage.png</file>
+        <file alias="pluginsPage">resources/images/pluginsPage.png</file>
+        <file alias="terminalPage">resources/images/terminalPage01.png</file>
+        <file alias="branchesPage">resources/images/branchesPage.png</file>
+        <file alias="shortcutsPage">resources/images/shortcutsPage.png</file>
     </qresource>
 </RCC>

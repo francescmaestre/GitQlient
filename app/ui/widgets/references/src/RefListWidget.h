@@ -8,6 +8,7 @@ class ClickableFrame;
 class QListWidget;
 class GitCache;
 class GitBase;
+class RefListDelegate;
 
 class RefListWidget : public QWidget
 {
@@ -36,6 +37,7 @@ private:
    QListWidget *mList = nullptr;
    QString mSettingsKey;
    std::unique_ptr<GitQlientSettings> mSettings;
+   RefListDelegate *mDelegate = nullptr;
 
    void saveExpansionState(bool expanded);
 };

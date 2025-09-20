@@ -8,9 +8,9 @@
 #include <GitBranches.h>
 #include <GitRemote.h>
 #include <cache/GitCache.h>
+#include <dialogs/PullDlg.h>
 #include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
-#include <dialogs/PullDlg.h>
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -297,7 +297,6 @@ void BranchTreeWidget::checkoutBranch(QTreeWidgetItem *item)
                                "description for more information."),
                             QMessageBox::Ok, this);
          msgBox.setDetailedText(output);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
    }

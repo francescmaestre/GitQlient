@@ -2,10 +2,10 @@
 #include "ui_AddSubtreeDlg.h"
 
 #include <GitBase.h>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
 #include <GitSubtree.h>
 #include <QLogger>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QMessageBox>
 
@@ -16,8 +16,6 @@ AddSubtreeDlg::AddSubtreeDlg(const QSharedPointer<GitBase> &git, QWidget *parent
    , ui(new Ui::AddSubtreeDlg)
    , mGit(git)
 {
-   setStyleSheet(GitQlientStyles::getStyles());
-
    ui->setupUi(this);
 
    connect(ui->lePath, &QLineEdit::returnPressed, this, &AddSubtreeDlg::accept);

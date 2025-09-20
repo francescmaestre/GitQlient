@@ -19,8 +19,6 @@ PullDlg::PullDlg(QSharedPointer<GitBase> git, const QString &text, QWidget *pare
    ui->lText->setText(text);
    ui->lQuestion->setText(tr("<strong>Would you like to pull the last changes?</strong>"));
    ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Pull");
-
-   setStyleSheet(GitQlientStyles::getStyles());
 }
 
 PullDlg::~PullDlg()
@@ -56,7 +54,6 @@ void PullDlg::accept()
                                        "description for more information.")),
                             QMessageBox::Ok, this);
          msgBox.setDetailedText(ret.output);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
    }

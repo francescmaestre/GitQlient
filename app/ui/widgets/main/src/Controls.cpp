@@ -6,11 +6,10 @@
 #include <GitStashes.h>
 #include <QLogger>
 #include <cache/GitCache.h>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
-#include <system/GitQlientUpdater.h>
 #include <dialogs/BranchDlg.h>
 #include <main-widgets/ConfigWidget.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientUpdater.h>
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -38,7 +37,7 @@ Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<G
    , mVersionCheck(new QToolButton(this))
    , mMergeWarning(
          new QPushButton(tr("WARNING: There is a merge pending to be committed! Click here to solve it."), this))
-   , mUpdater(new GitQlientUpdater(GitQlientStyles::getStyles(), this))
+   , mUpdater(new GitQlientUpdater(this))
    , mLastSeparator(new QFrame(this))
 {
    GitQlientSettings settings(mGit->getGitDir());
@@ -159,7 +158,6 @@ void Controls::stashPush()
                                     "description for more information.")),
                          QMessageBox::Ok, this);
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -201,7 +199,6 @@ void Controls::stashPop()
                                        "description for more information.")),
                             QMessageBox::Ok, this);
          msgBox.setDetailedText(ret.output);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
    }
@@ -235,7 +232,6 @@ void Controls::pullCurrentBranch()
                                        "description for more information.")),
                             QMessageBox::Ok, this);
          msgBox.setDetailedText(ret.output);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
    }
@@ -326,7 +322,6 @@ void Controls::pushCurrentBranch()
                      "for more information.")),
           QMessageBox::Ok, this);
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }

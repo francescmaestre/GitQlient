@@ -9,8 +9,6 @@ AddSubmoduleDlg::AddSubmoduleDlg(const QSharedPointer<GitSubmodules> &git, QWidg
    , ui(new Ui::AddSubmoduleDlg)
    , mGit(git)
 {
-   setStyleSheet(GitQlientStyles::getStyles());
-
    ui->setupUi(this);
 
    connect(ui->lePath, &QLineEdit::returnPressed, this, &AddSubmoduleDlg::accept);

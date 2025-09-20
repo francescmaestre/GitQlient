@@ -1,10 +1,10 @@
 #include "GeneralConfigDlg.h"
 
 #include <QLogger>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
 #include <custom-widgets/ButtonLink.h>
 #include <custom-widgets/CheckBox.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QComboBox>
 #include <QFileDialog>
@@ -94,8 +94,6 @@ GeneralConfigDlg::GeneralConfigDlg(QWidget *parent)
    layout->addLayout(buttonsLayout, ++row, 0, 1, 2);
 
    setFixedSize(500, 300);
-
-   setStyleSheet(GitQlientStyles::getStyles());
 }
 
 void GeneralConfigDlg::resetChanges()

@@ -277,7 +277,6 @@ void CommitHistoryContextMenu::checkoutBranch()
                             "description for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -307,7 +306,6 @@ void CommitHistoryContextMenu::checkoutCommit()
                             "description for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -357,7 +355,6 @@ void CommitHistoryContextMenu::cherryPickCommit()
                                   "description for more information."),
                                QMessageBox::Ok, parentWidget());
             msgBox.setDetailedText(errorMsg);
-            msgBox.setStyleSheet(GitQlientStyles::getStyles());
             msgBox.exec();
          }
       }
@@ -389,7 +386,6 @@ void CommitHistoryContextMenu::rebase()
                     "be aborted.")),
                 QMessageBox::Ok, parentWidget());
             msgBox.setDetailedText(ret.output);
-            msgBox.setStyleSheet(GitQlientStyles::getStyles());
             msgBox.exec();
 
             git->rebaseAbort();
@@ -415,7 +411,6 @@ void CommitHistoryContextMenu::rebase()
                  "aborted.")),
           QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
 
       git->rebaseAbort();
@@ -485,7 +480,6 @@ void CommitHistoryContextMenu::push()
                             "for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }
@@ -515,7 +509,6 @@ void CommitHistoryContextMenu::pull()
                                "description for more information."),
                             QMessageBox::Ok, parentWidget());
          msgBox.setDetailedText(errorMsg);
-         msgBox.setStyleSheet(GitQlientStyles::getStyles());
          msgBox.exec();
       }
    }
@@ -777,7 +770,6 @@ void CommitHistoryContextMenu::amendNoEdit()
                             "description for more information."),
                          QMessageBox::Ok, parentWidget());
       msgBox.setDetailedText(ret.output);
-      msgBox.setStyleSheet(GitQlientStyles::getStyles());
       msgBox.exec();
    }
 }

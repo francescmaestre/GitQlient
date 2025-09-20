@@ -3,8 +3,6 @@
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <QPinnableTabWidget.h>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
 #include <dialogs/CreateRepoDlg.h>
 #include <dialogs/InitialRepoConfig.h>
 #include <dialogs/NewVersionInfoDlg.h>
@@ -12,6 +10,8 @@
 #include <main-widgets/ConfigWidget.h>
 #include <main-widgets/GitQlientRepo.h>
 #include <main-widgets/InitScreen.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -35,13 +35,11 @@ using namespace QLogger;
 
 GitQlient::GitQlient(QWidget *parent)
    : QWidget(parent)
-   , mStackedLayout(new QStackedLayout(this))
-   , mRepos(new QPinnableTabWidget(this))
-   , mInitWidget(new InitScreen(this))
    , mGitConfig(QSharedPointer<GitConfig>::create(QSharedPointer<GitBase>::create("")))
-   , mConfigWidget(new ConfigWidget(QSharedPointer<GitBase>::create(""), this))
 
 {
+   setAttribute(Qt::WA_WindowPropagation);
+
    QLog_Info("UI", "*******************************************");
    QLog_Info("UI", "*          GitQlient has started          *");
    QLog_Info("UI", QString("*                  %1                  *").arg(VER));
@@ -51,17 +49,20 @@ GitQlient::GitQlient(QWidget *parent)
    QApplication::setFont(font);
 
    setStyleSheet(GitQlientStyles::getStyles());
+   mInitWidget = new InitScreen(this);
+   mRepos
+       = new QPinnableTabWidget(this);
+   mConfigWidget = new ConfigWidget(QSharedPointer<GitBase>::create(""), this);
 
-   mRepos->setObjectName("GitQlientTab");
-   mRepos->setStyleSheet(GitQlientStyles::getStyles());
-   connect(mRepos, &QTabWidget::tabCloseRequested, this, &GitQlient::closeTab);
-   connect(mRepos, &QTabWidget::currentChanged, this, &GitQlient::updateTabName);
-
+   mStackedLayout = new QStackedLayout(this);
    mStackedLayout->setContentsMargins(QMargins());
    mStackedLayout->addWidget(mInitWidget);
    mStackedLayout->addWidget(mRepos);
    mStackedLayout->addWidget(mConfigWidget);
    mStackedLayout->setCurrentIndex(0);
+
+   connect(mRepos, &QTabWidget::tabCloseRequested, this, &GitQlient::closeTab);
+   connect(mRepos, &QTabWidget::currentChanged, this, &GitQlient::updateTabName);
 
    connect(mInitWidget, qOverload<>(&InitScreen::signalOpenRepo), this, &GitQlient::openRepo);
    connect(mInitWidget, qOverload<const QString &>(&InitScreen::signalOpenRepo), this, &GitQlient::addRepoTab);
@@ -119,6 +120,12 @@ bool GitQlient::eventFilter(QObject *obj, QEvent *event)
       pos.setY(pos.y() + menu->parentWidget()->height());
       menu->move(pos);
       return true;
+   }
+   else if (event->type() == QEvent::ApplicationPaletteChange)
+   {
+      setStyleSheet(GitQlientStyles::getStyles());
+
+      QObject::eventFilter(obj, event);
    }
 
    return false;
@@ -396,7 +403,7 @@ void GitQlient::addNewRepoTab(const QString &repoPathArg, bool pinned)
 
          conditionallyOpenPreConfigDlg(git, settings);
 
-         const auto repo = new GitQlientRepo(git, settings);
+         const auto repo = new GitQlientRepo(git, settings, this);
          const auto index = pinned ? mRepos->addPinnedTab(repo, repoName) : mRepos->addTab(repo, repoName);
          mTabsMap.insert(repo, repoName);
 

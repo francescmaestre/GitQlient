@@ -16,9 +16,8 @@
 
 using namespace QLogger;
 
-GitQlientUpdater::GitQlientUpdater(const QString &styles, QObject *parent)
+GitQlientUpdater::GitQlientUpdater(QObject *parent)
    : QObject(parent)
-   , mStyles(styles)
    , mManager(new QNetworkAccessManager())
 {
 }
@@ -51,7 +50,6 @@ void GitQlientUpdater::showInfoMessage()
        QMessageBox::Ok | QMessageBox::Close, qobject_cast<QWidget *>(parent()));
    msgBox.addButton(tr("Go to GitHub"), QMessageBox::ButtonRole::YesRole);
    msgBox.setDetailedText(mChangeLog);
-   msgBox.setStyleSheet(mStyles);
 
    if (msgBox.exec() == QMessageBox::Ok)
    {

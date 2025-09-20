@@ -21,28 +21,23 @@ void BranchesViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &o, con
 
    QStyleOptionViewItem newOpt(o);
 
-   if (newOpt.state & QStyle::State_Selected)
+   if (o.state & QStyle::State_Selected)
    {
-      p->fillRect(newOpt.rect, GitQlientStyles::getGraphSelectionColor());
-
-      if (i.column() == 0)
-      {
-         QRect rect(0, newOpt.rect.y(), newOpt.rect.x(), newOpt.rect.height());
-         p->fillRect(rect, GitQlientStyles::getGraphSelectionColor());
-      }
+      QRect rect(0, o.rect.y(), o.rect.width() + o.rect.x(), o.rect.height());
+      auto color = o.palette.color(QPalette::Highlight);
+      p->fillRect(rect, color);
    }
-   else if (newOpt.state & QStyle::State_MouseOver)
+   else if (o.state & QStyle::State_MouseOver)
    {
-      p->fillRect(newOpt.rect, GitQlientStyles::getGraphHoverColor());
-
-      if (i.column() == 0)
-      {
-         QRect rect(0, newOpt.rect.y(), newOpt.rect.x(), newOpt.rect.height());
-         p->fillRect(rect, GitQlientStyles::getGraphHoverColor());
-      }
+      QRect rect(0, o.rect.y(), o.rect.width() + o.rect.x(), o.rect.height());
+      auto color = o.palette.color(QPalette::AlternateBase);
+      p->fillRect(rect, color);
    }
    else
-      p->fillRect(newOpt.rect, GitQlientStyles::getBackgroundColor());
+   {
+      auto background = o.palette.color(QPalette::Base);
+      p->fillRect(newOpt.rect, background);
+   }
 
    static const auto iconSize = 20;
    static const auto offset = 5;
@@ -65,7 +60,8 @@ void BranchesViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &o, con
       }
    }
 
-   p->setPen(GitQlientStyles::getTextColor());
+   auto foreground = o.palette.color(QPalette::Text);
+   p->setPen(foreground);
 
    newOpt.font.setBold(i.data(Qt::UserRole).toBool());
 

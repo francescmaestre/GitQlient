@@ -131,7 +131,7 @@ private:
     * @param mergeColor Color of the lane where the merge comes from in case the commit is a end-merge point.
     * @param isWip Tells the method if it's the WIP commit so it's painted differently.
     */
-   void paintGraphLane(QPainter *p, const Graph::State &type, bool laneHeadPresent, int x1, int x2, const QColor &col,
+   void paintGraphLane(QPainter *p, const QStyleOptionViewItem &opt, const Graph::State &type, bool laneHeadPresent, int x1, int x2, const QColor &col,
                        const QColor &activeCol, const QColor &mergeColor, bool isWip = false,
                        bool hasChilds = true) const;
 

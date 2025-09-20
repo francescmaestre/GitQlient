@@ -18,7 +18,6 @@ CreateRepoDlg::CreateRepoDlg(CreateRepoDlgType type, QSharedPointer<GitConfig> g
    , mType(type)
    , mGit(git)
 {
-   setStyleSheet(GitQlientStyles::getStyles());
 
    ui->setupUi(this);
 

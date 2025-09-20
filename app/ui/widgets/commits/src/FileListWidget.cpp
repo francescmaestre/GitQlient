@@ -101,7 +101,7 @@ void FileListWidget::insertFiles(const QString &currentSha, const QString &compa
             else
             {
                clr = files->statusCmp(i, RevisionFiles::DELETED) ? GitQlientStyles::getRed()
-                                                                 : GitQlientStyles::getTextColor();
+                                                                 : QPalette().color(QPalette::Text);
                fileName = files->getFile(i);
             }
 

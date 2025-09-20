@@ -3,9 +3,9 @@
 
 #include <GitConfig.h>
 #include <GitCredentials.h>
+#include <dialogs/CredentialsDlg.h>
 #include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
-#include <dialogs/CredentialsDlg.h>
 
 InitialRepoConfig::InitialRepoConfig(const QSharedPointer<GitBase> &git,
                                      const QSharedPointer<GitQlientSettings> &settings, QWidget *parent)
@@ -17,8 +17,6 @@ InitialRepoConfig::InitialRepoConfig(const QSharedPointer<GitBase> &git,
    setAttribute(Qt::WA_DeleteOnClose);
 
    ui->setupUi(this);
-
-   setStyleSheet(GitQlientStyles::getInstance()->getStyles());
 
    ui->sbMaxCommits->setValue(settings->localValue("MaxCommits", 0).toInt());
 

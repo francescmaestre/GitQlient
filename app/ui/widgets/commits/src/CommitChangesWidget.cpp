@@ -344,7 +344,6 @@ void CommitChangesWidget::commitWipChanges()
                                      "description for more information."),
                                   QMessageBox::Ok, this);
                msgBox.setDetailedText(ret.output);
-               msgBox.setStyleSheet(GitQlientStyles::getStyles());
                msgBox.exec();
             }
          }
@@ -414,7 +413,6 @@ void CommitChangesWidget::commitAmendChanges()
                                      "description for more information."),
                                   QMessageBox::Ok, this);
                msgBox.setDetailedText(ret.output);
-               msgBox.setStyleSheet(GitQlientStyles::getStyles());
                msgBox.exec();
             }
          }
@@ -496,7 +494,7 @@ QColor CommitChangesWidget::getColorForFile(const RevisionFiles &files, int inde
    else if (files.statusCmp(index, RevisionFiles::NEW) || isUnknown || isInIndex || isPartiallyCached)
       myColor = GitQlientStyles::getGreen();
    else
-      myColor = GitQlientStyles::getTextColor();
+      myColor = QPalette().color(QPalette::Text);
 
    return myColor;
 }
@@ -563,7 +561,7 @@ void CommitChangesWidget::insertFiles(const RevisionFiles &files, QListWidget *f
             auto color = getColorForFile(files, i);
 
             if (!files.statusCmp(i, RevisionFiles::NEW) && color == GitQlientStyles::getGreen())
-               color = GitQlientStyles::getTextColor();
+               color = QPalette().color(QPalette::Text);
 
             const auto itemPair = fillFileItemInfo(fileName, isConflict, QString(":/icons/add"), color, fileList);
 
