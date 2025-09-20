@@ -360,6 +360,11 @@ void GitCache::updateCommit(const QString &oldSha, Commit newCommit)
    }
 }
 
+std::span<Commit> GitCache::getCommits()
+{
+   return std::span<Commit>(mCommitsCache.data(), mCommitsCache.size());
+}
+
 bool GitCache::pendingLocalChanges()
 {
    QMutexLocker lock(&mCommitsMutex);

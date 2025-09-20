@@ -59,6 +59,7 @@ public:
    bool updateWipCommit(const QString &parentSha, const RevisionFiles &files);
    void insertCommit(Commit commit);
    void updateCommit(const QString &oldSha, Commit newCommit);
+   std::span<Commit> getCommits();
 
    bool insertRevisionFiles(const QString &sha1, const QString &sha2, const RevisionFiles &file);
    std::optional<RevisionFiles> revisionFile(const QString &sha1, const QString &sha2) const;

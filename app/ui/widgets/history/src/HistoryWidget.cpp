@@ -12,20 +12,20 @@
 #include <GitMerge.h>
 #include <GitRemote.h>
 #include <GitWip.h>
-#include <commit-widgets/CommitChangesWidget.h>
-#include <commit-widgets/CommitInfoWidget.h>
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
 #include <cache/GraphCache.h>
-#include <graph/WipHelper.h>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
-#include <system/GitRepoLoader.h>
+#include <commit-widgets/CommitChangesWidget.h>
+#include <commit-widgets/CommitInfoWidget.h>
 #include <custom-widgets/CheckBox.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FileEditor.h>
 #include <diff-widgets/FullDiffWidget.h>
+#include <graph/WipHelper.h>
 #include <ref-widgets/BranchesWidget.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
+#include <system/GitRepoLoader.h>
 
 #include <QLogger>
 
@@ -508,7 +508,7 @@ void HistoryWidget::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->createMultiverse(std::span<Commit>(&commit, 1));
+         mGraphCache->createMultiverse(mCache->getCommits());
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -547,7 +547,7 @@ void HistoryWidget::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->createMultiverse(std::span(&commit, 1));
+         mGraphCache->createMultiverse(mCache->getCommits());
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 

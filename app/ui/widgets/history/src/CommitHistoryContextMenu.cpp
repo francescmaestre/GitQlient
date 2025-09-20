@@ -11,13 +11,13 @@
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
 #include <cache/GraphCache.h>
-#include <graph/WipHelper.h>
-#include <system/GitQlientSettings.h>
-#include <system/GitQlientStyles.h>
 #include <dialogs/BranchDlg.h>
 #include <dialogs/PullDlg.h>
 #include <dialogs/SquashDlg.h>
+#include <graph/WipHelper.h>
 #include <ref-widgets/TagDlg.h>
+#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -329,7 +329,7 @@ void CommitHistoryContextMenu::cherryPickCommit()
          commit.sha = mGit->getLastCommit().output.trimmed();
 
          mCache->insertCommit(commit);
-         mGraphCache->createMultiverse(std::span<Commit>(&commit, 1));
+         mGraphCache->createMultiverse(mCache->getCommits());
          mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
          mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -555,7 +555,7 @@ void CommitHistoryContextMenu::revertCommit()
                               .arg(newCommit.shortLog, QString::fromUtf8("This reverts commit"), revertedCommit.sha);
 
       mCache->insertCommit(newCommit);
-      mGraphCache->createMultiverse(std::span<Commit>(&newCommit, 1));
+      mGraphCache->createMultiverse(mCache->getCommits());
       mCache->deleteReference(previousSha, References::Type::LocalBranch, mGit->getCurrentBranch());
       mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
