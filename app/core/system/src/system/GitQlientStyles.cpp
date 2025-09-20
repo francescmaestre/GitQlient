@@ -24,6 +24,7 @@ QString GitQlientStyles::getStyles()
 
    if (stylesFile.open(QIODevice::ReadOnly))
    {
+      /*
       const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
       QFile colorsFile(QString(":/colors_%1").arg(QString::fromUtf8(colorSchema ? "bright" : "dark")));
       QString colorsCss;
@@ -33,6 +34,7 @@ QString GitQlientStyles::getStyles()
          colorsCss = QString::fromUtf8(colorsFile.readAll());
          colorsFile.close();
       }
+*/
 
       QFile textSizeFile(":/font_sizes");
       QString textSizeContent;
@@ -61,7 +63,7 @@ QString GitQlientStyles::getStyles()
          textSizeContent = textSizeContent.trimmed();
       }
 
-      styles = stylesFile.readAll() + colorsCss;
+      styles = stylesFile.readAll(); // + colorsCss;
       styles += textSizeContent;
 
       stylesFile.close();
@@ -72,42 +74,42 @@ QString GitQlientStyles::getStyles()
 
 QColor GitQlientStyles::getTextColor()
 {
-   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorSchema == 1 ? textColorBright : textColorDark;
 }
 
 QColor GitQlientStyles::getGraphSelectionColor()
 {
-   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorSchema == 0 ? graphSelectionColorDark : graphSelectionColorBright;
 }
 
 QColor GitQlientStyles::getGraphHoverColor()
 {
-   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorSchema == 0 ? graphHoverColorDark : graphHoverColorBright;
 }
 
 QColor GitQlientStyles::getBackgroundColor()
 {
-   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorSchema == 0 ? graphBackgroundColorDark : graphBackgroundColorBright;
 }
 
 QColor GitQlientStyles::getTabColor()
 {
-   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorSchema == 0 ? graphHoverColorDark : graphBackgroundColorBright;
 }
 
 QColor GitQlientStyles::getBlue()
 {
-   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorSchema == 0 ? graphBlueDark : graphBlueBright;
 }
@@ -129,14 +131,14 @@ QColor GitQlientStyles::getOrange()
 
 QColor GitQlientStyles::getShadowedRed()
 {
-   const auto colorScheme = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorScheme = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorScheme == 0 ? editorRedShadowDark : editorRedShadowBright;
 }
 
 QColor GitQlientStyles::getShadowedGreen()
 {
-   const auto colorScheme = GitQlientSettings().globalValue("colorSchema", 0).toInt();
+   const auto colorScheme = GitQlientSettings().globalValue("colorSchema", 1).toInt();
 
    return colorScheme == 0 ? editorGreenShadowDark : editorGreenShadowBright;
 }
