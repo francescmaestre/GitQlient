@@ -472,6 +472,7 @@ void BranchesWidget::fullView()
 {
    mFullBranchFrame->setVisible(true);
    mMinimal->setVisible(false);
+   mMinimize->setVisible(true);
    emit minimalViewStateChanged(false);
 
    GitQlientSettings settings(mGit->getGitDir());
@@ -487,6 +488,7 @@ void BranchesWidget::minimalView()
 
 void BranchesWidget::forceMinimalView()
 {
+   mMinimize->setVisible(false);
    mFullBranchFrame->setVisible(false);
    mMinimal->setVisible(true);
    emit minimalViewStateChanged(true);
