@@ -607,8 +607,7 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          {
             QRectF textRect(iconRect.x() + iconRect.width() + textPadding, o.rect.y() + TEXT_HEIGHT_OFFSET,
                             textBoundingRect.width(), iconSize);
-            painter->setPen(GitQlientSettings().globalValue("colorSchema", 0).toInt() == 1 ? textColorBright
-                                                                                           : textColorDark);
+            painter->setPen(GitQlientStyles::getTextColor());
             painter->setFont(o.font);
             painter->drawText(textRect, Qt::AlignCenter, nameToDisplay);
          }

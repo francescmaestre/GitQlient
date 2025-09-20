@@ -56,9 +56,8 @@ CommitInfoPanel::CommitInfoPanel(QWidget *parent)
    descriptionLayout->addWidget(mLabelDateTime);
 
    connect(mLabelSha, &ButtonLink::clicked, this, [this]() {
-      const auto button = qobject_cast<ButtonLink *>(sender());
-      QApplication::clipboard()->setText(button->data().toString());
-      QToolTip::showText(QCursor::pos(), tr("Copied!"), button);
+      QApplication::clipboard()->setText(mLabelSha->data().toString());
+      QToolTip::showText(QCursor::pos(), tr("Copied!"), mLabelSha);
    });
 }
 
@@ -68,30 +67,35 @@ void CommitInfoPanel::configure(const Commit &commit)
    mLabelSha->setData(commit.sha);
    mLabelSha->setToolTip("Click to save");
 
-   const auto authorName = commit.committer.split("<").first();
    mLabelTitle->setText(commit.shortLog);
-   mLabelAuthor->setText(authorName);
+   mLabelAuthor->setText(commit.committer.split("<").first());
 
-   QDateTime commitDate = QDateTime::fromSecsSinceEpoch(commit.dateSinceEpoch.count());
-   mLabelDateTime->setText(commitDate.toString("dd/MM/yyyy hh:mm"));
+   mLabelDateTime->setText(QDateTime::fromSecsSinceEpoch(commit.dateSinceEpoch.count()).toString("dd/MM/yyyy hh:mm"));
 
-   const auto description = commit.longLog;
-   mLabelDescription->setText(description.isEmpty() ? "<No description provided>" : description);
+   if (const auto description = commit.longLog;
+       description.isEmpty())
+   {
+      mScrollArea->setVisible(false);
+   }
+   else
+   {
+      QFontMetrics fm(mLabelDescription->font());
+      const auto neededsize = fm.boundingRect(QRect(0, 0, 300, 250), Qt::TextWordWrap, description);
+      auto height = neededsize.height();
 
-   QFontMetrics fm(mLabelDescription->font());
-   const auto neededsize = fm.boundingRect(QRect(0, 0, 300, 250), Qt::TextWordWrap, mLabelDescription->text());
-   auto height = neededsize.height();
+      if (height > 250)
+         height = 250;
+      else if (height < 50)
+         height = 50;
 
-   if (height > 250)
-      height = 250;
-   else if (height < 50)
-      height = 50;
+      mScrollArea->setFixedHeight(height);
 
-   mScrollArea->setFixedHeight(height);
-
-   auto f = mLabelDescription->font();
-   f.setItalic(description.isEmpty());
-   mLabelDescription->setFont(f);
+      auto f = mLabelDescription->font();
+      f.setItalic(description.isEmpty());
+      mLabelDescription->setFont(f);
+      mLabelDescription->setText(description);
+      mScrollArea->setVisible(true);
+   }
 }
 
 void CommitInfoPanel::clear()
