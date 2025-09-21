@@ -206,12 +206,13 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
 
    const auto layout = new QHBoxLayout(this);
    layout->setContentsMargins(QMargins());
+   layout->addWidget(mBranchesWidget);
    layout->addWidget(mCenterStackedWidget);
    layout->addWidget(mCommitInfoFrame);
-   layout->addWidget(mBranchesWidget);
 
    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::Graph));
    mCenterStackedWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+   mBranchesWidget->setMinimumWidth(300);
    mBranchesWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 }
 
