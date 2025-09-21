@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QFontDatabase>
 #include <QHeaderView>
+#include <QHelpEvent>
 #include <QPainter>
 #include <QPainterPath>
 #include <QSortFilterProxyModel>
@@ -170,6 +171,28 @@ QSize RepositoryViewDelegate::sizeHint(const QStyleOptionViewItem &, const QMode
    return QSize(LANE_WIDTH, ROW_HEIGHT);
 }
 
+bool RepositoryViewDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)
+{
+   if (!event || !view)
+      return false;
+
+   if (event->type() == QEvent::ToolTip)
+   {
+      auto text = index.data(Qt::ToolTipRole).toString();
+
+      if (!text.isEmpty())
+      {
+         auto pal = view->palette();
+         auto backgroundColor = pal.color(QPalette::Base).name();
+         auto textColor = pal.color(QPalette::Text).name();
+
+         QToolTip::showText(event->globalPos(), tr("<div style='color: %1; background-color: %2;'>%3</div>").arg(textColor, backgroundColor, text), view);
+         return true;
+      }
+   }
+   return QStyledItemDelegate::helpEvent(event, view, option, index);
+}
+
 bool RepositoryViewDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                                          const QModelIndex &index)
 {
@@ -187,7 +210,10 @@ bool RepositoryViewDelegate::editorEvent(QEvent *event, QAbstractItemModel *mode
       if (cursorColumn == static_cast<int>(CommitHistoryColumns::Sha) && text != ZERO_SHA)
       {
          QApplication::clipboard()->setText(text);
-         QToolTip::showText(QCursor::pos(), tr("Copied!"), mView);
+         auto pal = qApp->palette();
+         auto textColor = pal.color(QPalette::Text);
+         auto backgroundColor = pal.color(QPalette::Base);
+         QToolTip::showText(QCursor::pos(), tr("<div style='color: %1; background-color: %2'>Copied!</div>").arg(textColor.name(), backgroundColor.name()), mView);
       }
 
       mColumnPressed = -1;

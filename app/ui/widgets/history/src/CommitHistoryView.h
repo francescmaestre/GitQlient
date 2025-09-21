@@ -52,6 +52,7 @@ signals:
    void fullReload();
    void referencesReload();
    void logReload();
+   void onClick(const QModelIndex &index);
 
    /**
     * @brief Signal triggered when the user wants to open the diff of a commit compared to its parent.

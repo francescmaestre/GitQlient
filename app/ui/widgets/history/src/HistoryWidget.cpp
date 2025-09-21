@@ -114,7 +114,7 @@ HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
    connect(mRepositoryView, &CommitHistoryView::referencesReload, this, &HistoryWidget::referencesReload);
    connect(mRepositoryView, &CommitHistoryView::logReload, this, &HistoryWidget::logReload);
    connect(mRepositoryView, &CommitHistoryView::signalOpenDiff, this, &HistoryWidget::onOpenFullDiff);
-   connect(mRepositoryView, &CommitHistoryView::clicked, this, &HistoryWidget::commitSelected);
+   connect(mRepositoryView, &CommitHistoryView::onClick, this, &HistoryWidget::commitSelected);
    connect(mRepositoryView, &CommitHistoryView::customContextMenuRequested, this, [this](const QPoint &pos) {
       const auto rowIndex = mRepositoryView->indexAt(pos);
       commitSelected(rowIndex);

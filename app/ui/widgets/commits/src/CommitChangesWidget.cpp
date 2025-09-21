@@ -31,7 +31,6 @@
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QTextStream>
-#include <QToolTip>
 
 #include <QLogger>
 

@@ -49,13 +49,21 @@ CommitHistoryView::CommitHistoryView(const QSharedPointer<GitCache> &cache, cons
 
 void CommitHistoryView::handleItemClick(const QModelIndex &index)
 {
+   if (index.column() == static_cast<int>(CommitHistoryColumns::Sha))
+      return;
+
    if (mLastSelectedRow == index.row())
    {
       clearSelection();
       mLastSelectedRow = -1;
+
+      emit onClick(index);
    }
    else
+   {
       mLastSelectedRow = index.row();
+      emit onClick(index);
+   }
 }
 
 void CommitHistoryView::setModel(QAbstractItemModel *model)
@@ -108,7 +116,6 @@ void CommitHistoryView::setupGeometry()
    {
       const auto hv = header();
       hv->setMinimumSectionSize(75);
-      hv->resizeSection(static_cast<int>(CommitHistoryColumns::Sha), 75);
       hv->resizeSection(static_cast<int>(CommitHistoryColumns::Graph), 120);
       hv->resizeSection(static_cast<int>(CommitHistoryColumns::Author), 160);
       hv->resizeSection(static_cast<int>(CommitHistoryColumns::Date), 125);

@@ -1,11 +1,11 @@
 #include "RefListDelegate.h"
-#include "GitQlientBranchItemRole.h"
 
 #include <system/GitQlientStyles.h>
 
+#include <QAbstractItemView>
+#include <QHelpEvent>
 #include <QPainter>
-
-using namespace GitQlient;
+#include <QToolTip>
 
 constexpr auto DefaultHeight = 30.0;
 
@@ -47,4 +47,26 @@ void RefListDelegate::paint(QPainter *p, const QStyleOptionViewItem &o, const QM
 QSize RefListDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const
 {
    return QSize(0, DefaultHeight);
+}
+
+bool RefListDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)
+{
+   if (!event || !view)
+      return false;
+
+   if (event->type() == QEvent::ToolTip)
+   {
+      auto text = index.data(Qt::ToolTipRole).toString();
+
+      if (!text.isEmpty())
+      {
+         auto pal = view->palette();
+         auto backgroundColor = pal.color(QPalette::Base).name();
+         auto textColor = pal.color(QPalette::Text).name();
+
+         QToolTip::showText(event->globalPos(), tr("<div style='color: %1; background-color: %2;'>%3</div>").arg(textColor, backgroundColor, text), view);
+         return true;
+      }
+   }
+   return QStyledItemDelegate::helpEvent(event, view, option, index);
 }

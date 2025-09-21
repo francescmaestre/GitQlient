@@ -57,7 +57,10 @@ CommitInfoPanel::CommitInfoPanel(QWidget *parent)
 
    connect(mLabelSha, &ButtonLink::clicked, this, [this]() {
       QApplication::clipboard()->setText(mLabelSha->data().toString());
-      QToolTip::showText(QCursor::pos(), tr("Copied!"), mLabelSha);
+      auto pal = qApp->palette();
+      auto textColor = pal.color(QPalette::Text);
+      auto backgroundColor = pal.color(QPalette::Base);
+      QToolTip::showText(QCursor::pos(), tr("<div style='color: %1; background-color: %2'>Copied!</div>").arg(textColor.name(), backgroundColor.name()), mLabelSha);
    });
 }
 

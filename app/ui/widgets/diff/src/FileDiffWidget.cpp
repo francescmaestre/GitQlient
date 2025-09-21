@@ -8,14 +8,14 @@
 #include <GitPatches.h>
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
-#include <system/Colors.h>
-#include <system/GitQlientSettings.h>
 #include <custom-widgets/ButtonLink.h>
 #include <custom-widgets/CheckBox.h>
 #include <custom-widgets/DiffHelper.h>
 #include <custom-widgets/FileDiffView.h>
 #include <custom-widgets/LineNumberArea.h>
 #include <diff-widgets/FileEditor.h>
+#include <system/Colors.h>
+#include <system/GitQlientSettings.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -223,7 +223,10 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase> &git, QSharedPointe
    connect(mFileNameLabel, &ButtonLink::clicked, this, [this]() {
       QApplication::clipboard()->setText(mFileNameLabel->text());
       const auto button = qobject_cast<ButtonLink *>(sender());
-      QToolTip::showText(QCursor::pos(), tr("Copied!"), button);
+      auto pal = qApp->palette();
+      auto textColor = pal.color(QPalette::Text);
+      auto backgroundColor = pal.color(QPalette::Base);
+      QToolTip::showText(QCursor::pos(), tr("<div style='color: %1; background-color: %2'>Copied!</div>").arg(textColor.name(), backgroundColor.name()), button);
    });
    connect(mNewFile, &FileDiffView::signalScrollChanged, mOldFile, &FileDiffView::moveScrollBarToPos);
    connect(mOldFile, &FileDiffView::signalScrollChanged, mNewFile, &FileDiffView::moveScrollBarToPos);
