@@ -39,7 +39,7 @@ public:
 
     \param parent The parent widget if needed.
    */
-   explicit RefListDelegate(bool isTag = false, QObject *parent = nullptr);
+   explicit RefListDelegate(QObject *parent = nullptr);
 
    /*!
     \brief Overridden paint method used to display different colors when mouse actions happen.
@@ -57,7 +57,4 @@ public:
    QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
 
    bool helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index) override;
-
-private:
-   bool mIsTag = false;
 };

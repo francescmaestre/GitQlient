@@ -9,9 +9,8 @@
 
 constexpr auto DefaultHeight = 30.0;
 
-RefListDelegate::RefListDelegate(bool isTag, QObject *parent)
+RefListDelegate::RefListDelegate(QObject *parent)
    : QStyledItemDelegate(parent)
-   , mIsTag(isTag)
 {
 }
 

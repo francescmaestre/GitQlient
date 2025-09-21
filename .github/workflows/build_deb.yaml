@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt-get -qq update
           sudo apt-get -qq install libxkbcommon-x11-0 build-essential libgl1-mesa-dev mesa-common-dev libgles2-mesa-dev libxcb-icccm4-dev libxcb-xinerama0 libxcb-image0 libxcb-keysyms1 libxcb-* fakeroot
-          sudo apt-get -qq install qt6-base-dev qt6-tools-dev qmake6
+          sudo apt-get -qq install qt6-base-dev qt6-tools-dev qmake6 libqt6svg6
           sudo pip install git-archive-all
           sudo qtchooser -install qt6 $(which qmake6)
           export QT_SELECT=qt6
