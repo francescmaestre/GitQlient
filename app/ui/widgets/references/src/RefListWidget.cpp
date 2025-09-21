@@ -24,7 +24,7 @@ RefListWidget::RefListWidget(const QString &title,
    mList = new QListWidget();
    mList->setMouseTracking(true);
    mList->setContextMenuPolicy(Qt::CustomContextMenu);
-   mList->setItemDelegate(mDelegate = new RefListDelegate(true));
+   mList->setItemDelegate(mDelegate = new RefListDelegate());
 
    mFrame->setContentWidget(mList);
 
