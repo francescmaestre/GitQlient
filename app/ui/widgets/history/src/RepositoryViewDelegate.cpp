@@ -361,8 +361,17 @@ void RepositoryViewDelegate::paintGraphLane(QPainter *p, const QStyleOptionViewI
    if (isWip)
    {
       isCommit = true;
-      p->setPen(QPen(col, 2));
-      p->setBrush(col);
+
+      if (opt.state & QStyle::State_Selected)
+      {
+         p->setPen(QPen(opt.palette.color(QPalette::Text), 2));
+         p->setBrush(opt.palette.color(QPalette::Text));
+      }
+      else
+      {
+         p->setPen(QPen(opt.palette.color(QPalette::Highlight), 2));
+         p->setBrush(opt.palette.color(QPalette::Highlight));
+      }
       p->drawEllipse(m - r + 2, h - r + 2, 8, 8);
    }
    else
