@@ -34,6 +34,8 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include <algorithm>
+
 using namespace Graph;
 
 RepositoryViewDelegate::RepositoryViewDelegate(const QSharedPointer<GitCache> &cache,
@@ -56,6 +58,8 @@ void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt,
 
       mCurrentTagIcon = renderSvgToPixmap(":/icons/tag_indicator");
       mCurrentBranchIcon = renderSvgToPixmap(":/icons/branch_indicator");
+      mCurrentLocalBranchIcon = renderSvgToPixmap(":/icons/local");
+      mCurrentRemoteBranchIcon = renderSvgToPixmap(":/icons/server");
    }
 
    const auto row = mView->hasActiveFilter()
@@ -164,6 +168,12 @@ void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt,
             p->drawPixmap(QRect(newOpt.rect.x(), newOpt.rect.y() + inc, size, size), pic);
 
             newOpt.rect.setX(newOpt.rect.x() + size + offset);
+         }
+         else if (index.column() == static_cast<int>(CommitHistoryColumns::Refs))
+         {
+            auto offset = 5;
+
+            paintTagBranch(p, newOpt, laneColor, offset, commit);
          }
 
          QFontMetrics fm(newOpt.font);
@@ -607,7 +617,7 @@ void RepositoryViewDelegate::paintGraph(QPainter *p, const QStyleOptionViewItem 
    p->restore();
 }
 
-void RepositoryViewDelegate::paintLog(QPainter *p, const QStyleOptionViewItem &opt, const QColor &currentLangeColor,
+void RepositoryViewDelegate::paintLog(QPainter *p, const QStyleOptionViewItem &opt, const QColor &currentLaneColor,
                                       const Commit &commit) const
 {
    if (commit.sha.isEmpty())
@@ -615,7 +625,7 @@ void RepositoryViewDelegate::paintLog(QPainter *p, const QStyleOptionViewItem &o
 
    auto offset = 5;
 
-   paintTagBranch(p, opt, currentLangeColor, offset, commit);
+   // paintTagBranch(p, opt, currentLangeColor, offset, commit);
 
    auto newOpt = opt;
    newOpt.rect.setX(opt.rect.x() + offset + 5);
@@ -640,9 +650,10 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          QString name;
          QColor color;
          bool isTag = false;
+         bool isPushed = false;
       };
 
-      QVector<RefConfig> refs;
+      std::vector<RefConfig> refs;
       const auto currentBranch = mGit->getCurrentBranch();
 
       if (startPoint <= 5)
@@ -652,28 +663,36 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
       {
          if (const auto ret = mGit->getLastCommit(); ret.success && commit.sha == ret.output.trimmed())
          {
-            refs.append({ "detached", graphDetached });
+            refs.push_back({ "detached", graphDetached });
          }
-      }
-
-      static const auto suffix
-          = QString::fromUtf8(GitQlientSettings().globalValue("colorSchema", 0).toInt() == 1 ? "bright" : "dark");
-      const auto localBranches = mCache->getReferences(commit.sha, References::Type::LocalBranch);
-      for (const auto &branch : localBranches)
-      {
-         refs.append({ branch, currentLangeColor });
       }
 
       const auto tags = mCache->getReferences(commit.sha, References::Type::LocalTag);
       for (const auto &tag : tags)
       {
-         refs.append({ tag, graphTag, true });
+         refs.push_back({ tag, graphTag, true });
       }
 
       const auto remoteBranches = mCache->getReferences(commit.sha, References::Type::RemoteBranche);
       for (const auto &branch : remoteBranches)
       {
-         refs.append({ branch, currentLangeColor });
+         refs.push_back({ branch, currentLangeColor });
+      }
+
+      const auto localBranches = mCache->getReferences(commit.sha, References::Type::LocalBranch);
+      for (const auto &branch : localBranches)
+      {
+         auto iter = std::find_if(refs.begin(), refs.end(), [branch](const RefConfig &ref) {
+            return ref.name.endsWith(branch);
+         });
+
+         if (iter != refs.end())
+         {
+            iter->name = branch;
+            iter->isPushed = true;
+         }
+         else
+            refs.push_back({ branch, currentLangeColor });
       }
 
       auto offset = 5;
@@ -693,8 +712,6 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          tmpBuffer += 20;
       }
 
-      finalText.append(commit.shortLog);
-
       QString nameToDisplay;
 
       if (auto textWidth = fm.boundingRect(finalText).width(); textWidth + tmpBuffer >= o.rect.width() && GitQlientSettings().globalValue("HistoryView/PreferCommit", true).toBool())
@@ -712,25 +729,42 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          const auto textBoundingRect = fm.boundingRect(nameToDisplay);
          const int textPadding = 5;
          const auto iconSize = ROW_HEIGHT - 4;
-         const auto rectWidth = textBoundingRect.width() + 2 * textPadding + iconSize;
+         auto rectWidth = textBoundingRect.width() + 2 * textPadding + iconSize;
 
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing);
          painter->setPen(QPen(iter.color, 2));
-
-         QRectF markerRect(o.rect.x() + startPoint, o.rect.y() + 2, rectWidth, iconSize);
-         {
-            QPainterPath path;
-            path.addRoundedRect(markerRect, 1, 1);
-            painter->drawPath(path);
-         }
 
          QRectF iconRect(o.rect.x() + startPoint, o.rect.y() + 2, iconSize, iconSize);
          {
             QPainterPath smallPath;
             smallPath.addRoundedRect(iconRect, 1, 1);
             painter->fillPath(smallPath, iter.color);
-            painter->drawImage(iconRect, QImage(iter.isTag ? mCurrentTagIcon : mCurrentBranchIcon));
+
+            if (iter.isTag)
+               painter->drawImage(iconRect, QImage(mCurrentTagIcon));
+            else
+            {
+               painter->drawImage(iconRect, QImage(mCurrentLocalBranchIcon));
+
+               if (iter.isPushed)
+               {
+                  rectWidth += iconSize;
+                  iconRect = QRectF(o.rect.x() + startPoint + iconSize, o.rect.y() + 2, iconSize, iconSize);
+
+                  QPainterPath smallPath;
+                  smallPath.addRoundedRect(iconRect, 1, 1);
+                  painter->fillPath(smallPath, iter.color);
+                  painter->drawImage(iconRect, QImage(mCurrentRemoteBranchIcon));
+               }
+            }
+         }
+
+         QRectF markerRect(o.rect.x() + startPoint, o.rect.y() + 2, rectWidth, iconSize);
+         {
+            QPainterPath path;
+            path.addRoundedRect(markerRect, 1, 1);
+            painter->drawPath(path);
          }
 
          {

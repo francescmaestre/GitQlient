@@ -630,7 +630,14 @@ void CommitChangesWidget::requestDiff(const QString &fileName)
 
 QString CommitChangesWidget::addFileToCommitList(QListWidgetItem *item, bool updateGit)
 {
+   if (!item)
+      return {};
+
    const auto fileWidget = qobject_cast<FileWidget *>(mUnstagedFilesList->itemWidget(item));
+
+   if (!fileWidget)
+      return {};
+
    const auto fileName = fileWidget->toolTip().remove(tr("(conflicts)")).trimmed();
    const auto textColor = fileWidget->getTextColor();
 

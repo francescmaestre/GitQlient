@@ -35,6 +35,7 @@ enum class CommitHistoryColumns
 {
    TreeViewIcon,
    Graph,
+   Refs,
    Log,
    Author,
    Date,

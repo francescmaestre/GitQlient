@@ -120,9 +120,11 @@ void CommitHistoryView::setupGeometry()
       hv->resizeSection(static_cast<int>(CommitHistoryColumns::Author), 160);
       hv->resizeSection(static_cast<int>(CommitHistoryColumns::Date), 125);
       hv->resizeSection(static_cast<int>(CommitHistoryColumns::Sha), 75);
+      hv->resizeSection(static_cast<int>(CommitHistoryColumns::Refs), 300);
       hv->setSectionResizeMode(static_cast<int>(CommitHistoryColumns::Author), QHeaderView::Fixed);
       hv->setSectionResizeMode(static_cast<int>(CommitHistoryColumns::Date), QHeaderView::Fixed);
       hv->setSectionResizeMode(static_cast<int>(CommitHistoryColumns::Sha), QHeaderView::Fixed);
+      hv->setSectionResizeMode(static_cast<int>(CommitHistoryColumns::Refs), QHeaderView::Fixed);
       hv->setSectionResizeMode(static_cast<int>(CommitHistoryColumns::Log), QHeaderView::Stretch);
       hv->setStretchLastSection(false);
 

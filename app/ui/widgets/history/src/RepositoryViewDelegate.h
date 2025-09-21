@@ -92,6 +92,8 @@ private:
    mutable QColor mCurrentTextColor;
    mutable QImage mCurrentTagIcon;
    mutable QImage mCurrentBranchIcon;
+   mutable QImage mCurrentLocalBranchIcon;
+   mutable QImage mCurrentRemoteBranchIcon;
    int diffTargetRow = -1;
    int mColumnPressed = -1;
 
@@ -109,10 +111,10 @@ private:
     *
     * @param p The painter device.
     * @param o The style options of the item.
-    * @param currentLangeColor The color of current lane used for local branches.
+    * @param currentLaneColor The color of current lane used for local branches.
     * @param commit The commit information.
     */
-   void paintLog(QPainter *p, const QStyleOptionViewItem &o, const QColor &currentLangeColor,
+   void paintLog(QPainter *p, const QStyleOptionViewItem &o, const QColor &currentLaneColor,
                  const Commit &commit) const;
    /**
     * @brief Method that sets up the configuration to paint the lane for the commit graph representation.
