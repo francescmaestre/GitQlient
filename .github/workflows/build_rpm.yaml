@@ -44,6 +44,7 @@ jobs:
             qt6-qtbase-devel
             qt6-qtbase-private-devel
             qt6-qttools-devel
+            qt6-qtsvg-devel
             libqt6svg6-dev
             gstreamer1-devel
             gstreamer1-plugins-base-devel
