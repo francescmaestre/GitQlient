@@ -16,17 +16,23 @@
 #include <system/GitQlientStyles.h>
 
 #include <QApplication>
+#include <QBuffer>
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QEvent>
+#include <QFile>
 #include <QFontDatabase>
 #include <QHeaderView>
 #include <QHelpEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPixmap>
 #include <QSortFilterProxyModel>
+#include <QSvgRenderer>
 #include <QToolTip>
 #include <QUrl>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 using namespace Graph;
 
@@ -43,6 +49,15 @@ RepositoryViewDelegate::RepositoryViewDelegate(const QSharedPointer<GitCache> &c
 
 void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt, const QModelIndex &index) const
 {
+   if (const auto newTextColor = QPalette().color(QPalette::Base);
+       mCurrentTextColor != newTextColor)
+   {
+      mCurrentTextColor = newTextColor;
+
+      mCurrentTagIcon = renderSvgToPixmap(":/icons/tag_indicator");
+      mCurrentBranchIcon = renderSvgToPixmap(":/icons/branch_indicator");
+   }
+
    const auto row = mView->hasActiveFilter()
        ? dynamic_cast<QSortFilterProxyModel *>(mView->model())->mapToSource(index).row()
        : index.row();
@@ -446,6 +461,72 @@ QColor RepositoryViewDelegate::getMergeColor(const State &currentLane, const Com
    return mergeColor;
 }
 
+QImage RepositoryViewDelegate::renderSvgToPixmap(const QString &fileName) const
+{
+   auto file = QFile(fileName);
+   QByteArray svgData;
+   if (file.open(QIODevice::ReadOnly))
+   {
+      svgData = file.readAll();
+      file.close();
+   }
+
+   QByteArray recoloredSvg;
+   QXmlStreamWriter writer(&recoloredSvg);
+   writer.setAutoFormatting(true);
+
+   QXmlStreamReader reader(svgData);
+
+   while (!reader.atEnd())
+   {
+      reader.readNext();
+
+      if (reader.isStartElement())
+      {
+         writer.writeStartElement(reader.prefix().toString(), reader.name().toString());
+
+         const auto attrs = reader.attributes();
+         for (const auto &attr : attrs)
+         {
+            auto name = attr.name().toString();
+            auto value = attr.value().toString();
+
+            if (name == "fill" || name == "stroke")
+            {
+               value = mCurrentTextColor.name();
+            }
+
+            writer.writeAttribute(attr.namespaceUri().toString(), name, value);
+         }
+      }
+      else if (reader.isEndElement())
+      {
+         writer.writeEndElement();
+      }
+      else if (reader.isCharacters())
+      {
+         writer.writeCharacters(reader.text().toString());
+      }
+   }
+
+   QSvgRenderer renderer(recoloredSvg);
+
+   if (!renderer.isValid())
+      return {};
+
+   QSize size = renderer.defaultSize();
+   if (size.isEmpty())
+      size = QSize(21, 21);
+
+   QImage img(size, QImage::Format_ARGB32_Premultiplied);
+   img.fill(Qt::transparent);
+
+   QPainter painter(&img);
+   renderer.render(&painter);
+
+   return img;
+}
+
 void RepositoryViewDelegate::paintGraph(QPainter *p, const QStyleOptionViewItem &opt, const Commit &commit) const
 {
    p->save();
@@ -549,7 +630,6 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
       {
          QString name;
          QColor color;
-         QString icon;
          bool isTag = false;
       };
 
@@ -563,7 +643,7 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
       {
          if (const auto ret = mGit->getLastCommit(); ret.success && commit.sha == ret.output.trimmed())
          {
-            refs.append({ "detached", graphDetached, "" });
+            refs.append({ "detached", graphDetached });
          }
       }
 
@@ -572,19 +652,19 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
       const auto localBranches = mCache->getReferences(commit.sha, References::Type::LocalBranch);
       for (const auto &branch : localBranches)
       {
-         refs.append({ branch, currentLangeColor, QString(":/icons/branch_indicator_%1").arg(suffix) });
+         refs.append({ branch, currentLangeColor });
       }
 
       const auto tags = mCache->getReferences(commit.sha, References::Type::LocalTag);
       for (const auto &tag : tags)
       {
-         refs.append({ tag, graphTag, QString(":/icons/tag_indicator_%1").arg(suffix), true });
+         refs.append({ tag, graphTag, true });
       }
 
       const auto remoteBranches = mCache->getReferences(commit.sha, References::Type::RemoteBranche);
       for (const auto &branch : remoteBranches)
       {
-         refs.append({ branch, currentLangeColor, QString(":/icons/branch_indicator_%1").arg(suffix) });
+         refs.append({ branch, currentLangeColor });
       }
 
       auto offset = 5;
@@ -641,7 +721,7 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
             QPainterPath smallPath;
             smallPath.addRoundedRect(iconRect, 1, 1);
             painter->fillPath(smallPath, iter.color);
-            painter->drawImage(iconRect, QImage(iter.icon));
+            painter->drawImage(iconRect, QImage(iter.isTag ? mCurrentTagIcon : mCurrentBranchIcon));
          }
 
          {

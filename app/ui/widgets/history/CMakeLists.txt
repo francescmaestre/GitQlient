@@ -5,6 +5,7 @@ create_gitqlient_library(history-widgets
     DEPENDENCIES
         Qt::Core
         Qt::Widgets
+        Qt::Svg
         core
         dialogs
         diff-widgets

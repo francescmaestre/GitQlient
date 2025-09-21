@@ -78,17 +78,20 @@ public:
     */
    QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
 
-   bool helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index);
-
 protected:
    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                     const QModelIndex &index) override;
+
+   bool helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index) override;
 
 private:
    QSharedPointer<GitCache> mCache;
    QSharedPointer<Graph::Cache> mGraphCache;
    QSharedPointer<GitBase> mGit;
    CommitHistoryView *mView = nullptr;
+   mutable QColor mCurrentTextColor;
+   mutable QImage mCurrentTagIcon;
+   mutable QImage mCurrentBranchIcon;
    int diffTargetRow = -1;
    int mColumnPressed = -1;
 
@@ -162,4 +165,6 @@ private:
     */
    QColor getMergeColor(const Graph::State &currentLane, const Commit &commit, int currentLaneIndex,
                         const QColor &defaultColor, bool &isSet) const;
+
+   QImage renderSvgToPixmap(const QString &fileName) const;
 };

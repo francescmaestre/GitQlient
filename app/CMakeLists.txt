@@ -38,7 +38,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QLogger/.git" OR
     endif()
 endif()
 
-find_package(Qt6 COMPONENTS Core Widgets Network REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets Network Svg REQUIRED)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
    find_package(Qt6 COMPONENTS DBus REQUIRED)
@@ -80,6 +80,7 @@ qt_add_executable(
     Qt::Core
     Qt::Widgets
     Qt::Network
+    Qt::Svg
     main-widgets
  )
 

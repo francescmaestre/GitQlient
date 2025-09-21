@@ -116,10 +116,7 @@
         <file alias="burger_menu">resources/icons/burger_menu.svg</file>
         <file alias="unsigned">resources/icons/unsigned.svg</file>
         <file alias="plugin">resources/icons/plugin.svg</file>
-        <file alias="tag_indicator_bright">resources/icons/tag_indicator_bright.svg</file>
-        <file alias="tag_indicator_dark">resources/icons/tag_indicator_dark.svg</file>
-        <file alias="branch_indicator_bright">resources/icons/branch_indicator_bright.svg</file>
-        <file alias="branch_indicator_dark">resources/icons/branch_indicator_dark.svg</file>
+        <file alias="branch_indicator">resources/icons/branch_indicator.svg</file>
     </qresource>
     <qresource prefix="/">
         <file alias="stylesheet">resources/stylesheet.css</file>
