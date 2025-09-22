@@ -27,7 +27,5 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/system/include)
 
 if(BUILD_TESTING)
-    set_source_files_properties(ThemeManager_mac.mm PROPERTIES COMPILE_FLAGS "-fobjc-arc")
-    target_link_libraries(core "-framework AppKit")
     target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src)
 endif()

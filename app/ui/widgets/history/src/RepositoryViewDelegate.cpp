@@ -221,7 +221,7 @@ bool RepositoryViewDelegate::helpEvent(
                 event->globalPos(),
                 tr("<div style='color: %1; background-color: %2;'>%3</div>").arg(textColor, backgroundColor, text),
                 view);
-#elif Q_OS_MACOS
+#else
             QToolTip::showText(event->globalPos(), tr("%1").arg(text), view);
 #endif
             return true;
