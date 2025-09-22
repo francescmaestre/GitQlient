@@ -225,8 +225,8 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
 
     connect(mFileNameLabel, &ButtonLink::clicked, this, [this]() {
         QApplication::clipboard()->setText(mFileNameLabel->text());
-#ifdef Q_OS_LINUX
         const auto button = qobject_cast<ButtonLink*>(sender());
+#ifdef Q_OS_LINUX
         auto pal = qApp->palette();
         auto textColor = pal.color(QPalette::Text);
         auto backgroundColor = pal.color(QPalette::Base);
@@ -236,7 +236,7 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
                 .arg(textColor.name(), backgroundColor.name()),
             button);
 #else
-      QToolTip::showText(QCursor::pos(), tr("%1").arg(text), view);
+      QToolTip::showText(QCursor::pos(), tr("Copied!"), button);
 #endif
     });
     connect(mNewFile, &FileDiffView::signalScrollChanged, mOldFile, &FileDiffView::moveScrollBarToPos);

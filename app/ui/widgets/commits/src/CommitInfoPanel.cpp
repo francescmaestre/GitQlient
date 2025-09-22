@@ -67,7 +67,7 @@ CommitInfoPanel::CommitInfoPanel(QWidget* parent)
                 .arg(textColor.name(), backgroundColor.name()),
             mLabelSha);
 #else
-       QToolTip::showText(event->globalPos(), tr("%1").arg(text), view);
+       QToolTip::showText(QCursor::pos(), tr("Copied!"), mLabelSha);
 #endif
     });
 }

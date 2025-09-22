@@ -122,14 +122,16 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
         const auto firstNonGraphColVisualIndex
             = mView->header()->visualIndex(static_cast<int>(CommitHistoryColumns::Graph)) + 1;
 
-        QColor laneColor;
-
         if (currentColVisualIndex == firstNonGraphColVisualIndex)
-            laneColor = paintBranchHelper(p, newOpt, commit);
+        {
+
+            if (const auto activeColor = getActiveColor(commit); activeColor.isValid())
+                paintBranchHelper(p, newOpt, commit, activeColor);
+        }
 
         if (index.column() == static_cast<int>(CommitHistoryColumns::Log))
         {
-            paintLog(p, newOpt, laneColor, commit);
+            paintLog(p, newOpt, commit);
         }
         else
         {
@@ -178,7 +180,7 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
             {
                 auto offset = 5;
 
-                paintTagBranch(p, newOpt, laneColor, offset, commit);
+                paintTagBranch(p, newOpt, offset, commit);
             }
 
             QFontMetrics fm(newOpt.font);
@@ -264,36 +266,22 @@ bool RepositoryViewDelegate::editorEvent(
     return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
-QColor
-RepositoryViewDelegate::paintBranchHelper(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
+void RepositoryViewDelegate::paintBranchHelper(
+    QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit, const QColor& activeColor) const
 {
-    const auto colorIndex = mView->hasActiveFilter() ? 0
-        : commit.sha != ZERO_SHA
-        ? mGraphCache->getSacredTimeline(commit.sha) % GitQlientStyles::getTotalBranchColors()
-        : -1;
+    static const auto LINE_OFFSET = 6;
 
-    if (colorIndex != -1)
-    {
-        static const auto LINE_OFFSET = 6;
+    auto foreground = opt.palette.color(QPalette::Text);
+    static QPen lanePen(foreground, 2); // fast path here
+    lanePen.setBrush(activeColor);
+    lanePen.setColor(activeColor);
 
-        const auto activeColor = GitQlientStyles::getBranchColorAt(colorIndex);
-
-        auto foreground = opt.palette.color(QPalette::Text);
-        static QPen lanePen(foreground, 2); // fast path here
-        lanePen.setBrush(activeColor);
-        lanePen.setColor(activeColor);
-
-        p->save();
-        p->setRenderHint(QPainter::Antialiasing);
-        p->setPen(lanePen);
-        p->drawLine(
-            opt.rect.x() + 3, opt.rect.y() + LINE_OFFSET, opt.rect.x() + 3, opt.rect.y() + ROW_HEIGHT - LINE_OFFSET);
-        p->restore();
-
-        return activeColor;
-    }
-
-    return QColor();
+    p->save();
+    p->setRenderHint(QPainter::Antialiasing);
+    p->setPen(lanePen);
+    p->drawLine(
+        opt.rect.x() + 3, opt.rect.y() + LINE_OFFSET, opt.rect.x() + 3, opt.rect.y() + ROW_HEIGHT - LINE_OFFSET);
+    p->restore();
 }
 
 void RepositoryViewDelegate::paintGraphLane(
@@ -578,6 +566,21 @@ QImage RepositoryViewDelegate::renderSvgToPixmap(const QString& fileName, QSize 
     return img;
 }
 
+QColor RepositoryViewDelegate::getActiveColor(const Commit& commit) const
+{
+    const auto colorIndex = mView->hasActiveFilter() ? 0
+        : commit.sha != ZERO_SHA
+        ? mGraphCache->getSacredTimeline(commit.sha) % GitQlientStyles::getTotalBranchColors()
+        : -1;
+
+    QColor activeColor;
+
+    if (colorIndex != -1)
+        activeColor = GitQlientStyles::getBranchColorAt(colorIndex);
+
+    return activeColor;
+}
+
 void RepositoryViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
 {
     p->save();
@@ -680,8 +683,7 @@ void RepositoryViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem&
     p->restore();
 }
 
-void RepositoryViewDelegate::paintLog(
-    QPainter* p, const QStyleOptionViewItem& opt, const QColor& currentLaneColor, const Commit& commit) const
+void RepositoryViewDelegate::paintLog(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
 {
     if (commit.sha.isEmpty())
         return;
@@ -706,9 +708,9 @@ void RepositoryViewDelegate::paintLog(
 }
 
 void RepositoryViewDelegate::paintTagBranch(
-    QPainter* painter, QStyleOptionViewItem o, const QColor& currentLangeColor, int& startPoint, const Commit& commit)
-    const
+    QPainter* painter, QStyleOptionViewItem o, int& startPoint, const Commit& commit) const
 {
+    const auto currentLaneColor = getActiveColor(commit);
     if (mCache->hasReferences(commit.sha) && !mView->hasActiveFilter())
     {
         struct RefConfig
@@ -743,7 +745,7 @@ void RepositoryViewDelegate::paintTagBranch(
         const auto remoteBranches = mCache->getReferences(commit.sha, References::Type::RemoteBranche);
         for (const auto& branch : remoteBranches)
         {
-            refs.push_back({branch, currentLangeColor, false, true, false});
+            refs.push_back({branch, currentLaneColor, false, true, false});
         }
 
         const auto localBranches = mCache->getReferences(commit.sha, References::Type::LocalBranch);
@@ -760,7 +762,7 @@ void RepositoryViewDelegate::paintTagBranch(
                 iter->isLocal = true;
             }
             else
-                refs.push_back({branch, currentLangeColor, false, false, true});
+                refs.push_back({branch, currentLaneColor, false, false, true});
         }
 
         auto offset = 5;
