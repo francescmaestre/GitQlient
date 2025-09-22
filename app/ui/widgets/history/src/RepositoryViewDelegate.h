@@ -91,7 +91,6 @@ private:
    CommitHistoryView *mView = nullptr;
    mutable QColor mCurrentTextColor;
    mutable QImage mCurrentTagIcon;
-   mutable QImage mCurrentBranchIcon;
    mutable QImage mCurrentLocalBranchIcon;
    mutable QImage mCurrentRemoteBranchIcon;
    int diffTargetRow = -1;
@@ -168,5 +167,5 @@ private:
    QColor getMergeColor(const Graph::State &currentLane, const Commit &commit, int currentLaneIndex,
                         const QColor &defaultColor, bool &isSet) const;
 
-   QImage renderSvgToPixmap(const QString &fileName) const;
+   QImage renderSvgToPixmap(const QString &fileName, QSize forcedSize = QSize()) const;
 };

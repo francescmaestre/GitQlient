@@ -57,9 +57,8 @@ void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt,
       mCurrentTextColor = newTextColor;
 
       mCurrentTagIcon = renderSvgToPixmap(":/icons/tag_indicator");
-      mCurrentBranchIcon = renderSvgToPixmap(":/icons/branch_indicator");
-      mCurrentLocalBranchIcon = renderSvgToPixmap(":/icons/local");
-      mCurrentRemoteBranchIcon = renderSvgToPixmap(":/icons/server");
+      mCurrentLocalBranchIcon = renderSvgToPixmap(":/icons/local", QSize(15, 15));
+      mCurrentRemoteBranchIcon = renderSvgToPixmap(":/icons/server", QSize(15, 15));
    }
 
    const auto row = mView->hasActiveFilter()
@@ -480,7 +479,7 @@ QColor RepositoryViewDelegate::getMergeColor(const State &currentLane, const Com
    return mergeColor;
 }
 
-QImage RepositoryViewDelegate::renderSvgToPixmap(const QString &fileName) const
+QImage RepositoryViewDelegate::renderSvgToPixmap(const QString &fileName, QSize forcedSize) const
 {
    auto file = QFile(fileName);
    QByteArray svgData;
@@ -529,13 +528,19 @@ QImage RepositoryViewDelegate::renderSvgToPixmap(const QString &fileName) const
    }
 
    QSvgRenderer renderer(recoloredSvg);
+   QSize size;
 
    if (!renderer.isValid())
       return {};
 
-   QSize size = renderer.defaultSize();
-   if (size.isEmpty())
-      size = QSize(21, 21);
+   if (forcedSize.isEmpty())
+   {
+      size = renderer.defaultSize();
+      if (size.isEmpty())
+         size = QSize(17, 17);
+   }
+   else
+      size = forcedSize;
 
    QImage img(size, QImage::Format_ARGB32_Premultiplied);
    img.fill(Qt::transparent);
@@ -651,6 +656,7 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          QColor color;
          bool isTag = false;
          bool isPushed = false;
+         bool isLocal = false;
       };
 
       std::vector<RefConfig> refs;
@@ -676,7 +682,7 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
       const auto remoteBranches = mCache->getReferences(commit.sha, References::Type::RemoteBranche);
       for (const auto &branch : remoteBranches)
       {
-         refs.push_back({ branch, currentLangeColor });
+         refs.push_back({ branch, currentLangeColor, false, true, false });
       }
 
       const auto localBranches = mCache->getReferences(commit.sha, References::Type::LocalBranch);
@@ -690,9 +696,10 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          {
             iter->name = branch;
             iter->isPushed = true;
+            iter->isLocal = true;
          }
          else
-            refs.push_back({ branch, currentLangeColor });
+            refs.push_back({ branch, currentLangeColor, false, false, true });
       }
 
       auto offset = 5;
@@ -728,39 +735,55 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          const QFontMetrics fm(o.font);
          const auto textBoundingRect = fm.boundingRect(nameToDisplay);
          const int textPadding = 5;
-         const auto iconSize = ROW_HEIGHT - 4;
-         auto rectWidth = textBoundingRect.width() + 2 * textPadding + iconSize;
+         const auto iconPlaceholderSize = ROW_HEIGHT - 4;
+         auto rectWidth = textBoundingRect.width() + 2 * textPadding + iconPlaceholderSize;
 
          painter->save();
          painter->setRenderHint(QPainter::Antialiasing);
          painter->setPen(QPen(iter.color, 2));
 
-         QRectF iconRect(o.rect.x() + startPoint, o.rect.y() + 2, iconSize, iconSize);
+         QRectF iconPlaceholderRect(o.rect.x() + startPoint, o.rect.y() + 2, iconPlaceholderSize, iconPlaceholderSize);
+         auto textXPos = iconPlaceholderRect.x() + iconPlaceholderRect.width() + textPadding;
          {
             QPainterPath smallPath;
-            smallPath.addRoundedRect(iconRect, 1, 1);
+            smallPath.addRoundedRect(iconPlaceholderRect, 1, 1);
             painter->fillPath(smallPath, iter.color);
 
             if (iter.isTag)
-               painter->drawImage(iconRect, QImage(mCurrentTagIcon));
+            {
+               QRectF firstIconRect(iconPlaceholderRect.x(), iconPlaceholderRect.y(), iconPlaceholderSize, iconPlaceholderSize);
+
+               painter->drawImage(firstIconRect, QImage(mCurrentTagIcon));
+            }
             else
             {
-               painter->drawImage(iconRect, QImage(mCurrentLocalBranchIcon));
+               QRectF firstIconRect(iconPlaceholderRect.x() + 3, iconPlaceholderRect.y() + 3, iconPlaceholderSize - 6, iconPlaceholderSize - 6);
 
-               if (iter.isPushed)
+               if (iter.isLocal)
                {
-                  rectWidth += iconSize;
-                  iconRect = QRectF(o.rect.x() + startPoint + iconSize, o.rect.y() + 2, iconSize, iconSize);
+                  painter->drawImage(firstIconRect, QImage(mCurrentLocalBranchIcon));
 
-                  QPainterPath smallPath;
-                  smallPath.addRoundedRect(iconRect, 1, 1);
-                  painter->fillPath(smallPath, iter.color);
-                  painter->drawImage(iconRect, QImage(mCurrentRemoteBranchIcon));
+                  if (iter.isPushed)
+                  {
+                     rectWidth += iconPlaceholderSize;
+                     textXPos += iconPlaceholderSize;
+                     auto secondIconPlaceholderRect = QRectF(iconPlaceholderRect.x() + iconPlaceholderRect.width(), iconPlaceholderRect.y(), iconPlaceholderSize, iconPlaceholderSize);
+                     auto secondIconRect = QRectF(iconPlaceholderRect.x() + iconPlaceholderRect.width() + 3, firstIconRect.y(), iconPlaceholderSize - 6, iconPlaceholderSize - 6);
+
+                     QPainterPath smallPath;
+                     smallPath.addRoundedRect(secondIconPlaceholderRect, 1, 1);
+                     painter->fillPath(smallPath, iter.color);
+                     painter->drawImage(secondIconRect, QImage(mCurrentRemoteBranchIcon));
+                  }
+               }
+               else if (iter.isPushed)
+               {
+                  painter->drawImage(firstIconRect, QImage(mCurrentRemoteBranchIcon));
                }
             }
          }
 
-         QRectF markerRect(o.rect.x() + startPoint, o.rect.y() + 2, rectWidth, iconSize);
+         QRectF markerRect(iconPlaceholderRect.x(), iconPlaceholderRect.y(), rectWidth, iconPlaceholderSize);
          {
             QPainterPath path;
             path.addRoundedRect(markerRect, 1, 1);
@@ -770,8 +793,8 @@ void RepositoryViewDelegate::paintTagBranch(QPainter *painter, QStyleOptionViewI
          {
             auto foreground = o.palette.color(QPalette::Text);
 
-            QRectF textRect(iconRect.x() + iconRect.width() + textPadding, o.rect.y() + TEXT_HEIGHT_OFFSET,
-                            textBoundingRect.width(), iconSize);
+            QRectF textRect(textXPos, o.rect.y() + TEXT_HEIGHT_OFFSET,
+                            textBoundingRect.width(), iconPlaceholderSize);
             painter->setPen(foreground);
             painter->setFont(o.font);
             painter->drawText(textRect, Qt::AlignCenter, nameToDisplay);
