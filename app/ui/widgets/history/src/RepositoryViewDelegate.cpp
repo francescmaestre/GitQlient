@@ -207,10 +207,11 @@ bool RepositoryViewDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *vie
       if (!text.isEmpty())
       {
          auto pal = view->palette();
-         auto backgroundColor = pal.color(QPalette::Base).name();
-         auto textColor = pal.color(QPalette::Text).name();
+         auto backgroundColor = pal.color(QPalette::ToolTipBase).isValid() ? pal.color(QPalette::ToolTipBase).name() : pal.color(QPalette::Base).name();
+         auto textColor = pal.color(QPalette::ToolTipText).isValid() ? pal.color(QPalette::ToolTipText).name() : pal.color(QPalette::Text).name();
 
-         QToolTip::showText(event->globalPos(), tr("<div style='color: %1; background-color: %2;'>%3</div>").arg(textColor, backgroundColor, text), view);
+         // QToolTip::showText(event->globalPos(), tr("<div style='color: %1; background-color: %2;'>%3</div>").arg(textColor, backgroundColor, text), view);
+         QToolTip::showText(event->globalPos(), tr("%1").arg(text), view);
          return true;
       }
    }
