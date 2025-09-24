@@ -33,515 +33,540 @@
 
 using namespace QLogger;
 
-GitQlient::GitQlient(QWidget *parent)
-   : QWidget(parent)
-   , mGitConfig(QSharedPointer<GitConfig>::create(QSharedPointer<GitBase>::create("")))
+GitQlient::GitQlient(QWidget* parent)
+    : QWidget(parent)
+    , mGitConfig(QSharedPointer<GitConfig>::create(QSharedPointer<GitBase>::create("")))
 
 {
-   setAttribute(Qt::WA_WindowPropagation);
+    setAttribute(Qt::WA_WindowPropagation);
 
-   QLog_Info("UI", "*******************************************");
-   QLog_Info("UI", "*          GitQlient has started          *");
-   QLog_Info("UI", QString("*                  %1                  *").arg(VER));
-   QLog_Info("UI", "*******************************************");
+    QLog_Info("UI", "*******************************************");
+    QLog_Info("UI", "*          GitQlient has started          *");
+    QLog_Info("UI", QString("*                  %1                  *").arg(VER));
+    QLog_Info("UI", "*******************************************");
 
-   auto font = QApplication::font();
-   QApplication::setFont(font);
+    auto font = QApplication::font();
+    QApplication::setFont(font);
 
-   setStyleSheet(GitQlientStyles::getStyles());
-   mInitWidget = new InitScreen(this);
-   mRepos
-       = new QPinnableTabWidget(this);
-   mConfigWidget = new ConfigWidget(QSharedPointer<GitBase>::create(""), this);
+    setStyleSheet(GitQlientStyles::getStyles());
+    mInitWidget = new InitScreen(this);
+    mRepos = new QPinnableTabWidget(this);
+    mConfigWidget = new ConfigWidget(QSharedPointer<GitBase>::create(""), this);
 
-   mStackedLayout = new QStackedLayout(this);
-   mStackedLayout->setContentsMargins(QMargins());
-   mStackedLayout->addWidget(mInitWidget);
-   mStackedLayout->addWidget(mRepos);
-   mStackedLayout->addWidget(mConfigWidget);
-   mStackedLayout->setCurrentIndex(0);
+    mStackedLayout = new QStackedLayout(this);
+    mStackedLayout->setContentsMargins(QMargins());
+    mStackedLayout->addWidget(mInitWidget);
+    mStackedLayout->addWidget(mRepos);
+    mStackedLayout->addWidget(mConfigWidget);
+    mStackedLayout->setCurrentIndex(0);
 
-   connect(mRepos, &QTabWidget::tabCloseRequested, this, &GitQlient::closeTab);
-   connect(mRepos, &QTabWidget::currentChanged, this, &GitQlient::updateTabName);
+    connect(mRepos, &QTabWidget::tabCloseRequested, this, &GitQlient::closeTab);
+    connect(mRepos, &QTabWidget::currentChanged, this, &GitQlient::updateTabName);
 
-   connect(mInitWidget, qOverload<>(&InitScreen::signalOpenRepo), this, &GitQlient::openRepo);
-   connect(mInitWidget, qOverload<const QString &>(&InitScreen::signalOpenRepo), this, &GitQlient::addRepoTab);
-   connect(mInitWidget, &InitScreen::signalCloneRepo, this, &GitQlient::cloneRepo);
-   connect(mInitWidget, &InitScreen::signalInitRepo, this, &GitQlient::initRepo);
-   connect(mConfigWidget, &ConfigWidget::goBack, this, [this]() {
-      mStackedLayout->setCurrentIndex(1);
-   });
+    connect(mInitWidget, qOverload<>(&InitScreen::signalOpenRepo), this, &GitQlient::openRepo);
+    connect(mInitWidget, qOverload<const QString&>(&InitScreen::signalOpenRepo), this, &GitQlient::addRepoTab);
+    connect(mInitWidget, &InitScreen::signalCloneRepo, this, &GitQlient::cloneRepo);
+    connect(mInitWidget, &InitScreen::signalInitRepo, this, &GitQlient::initRepo);
+    connect(mConfigWidget, &ConfigWidget::goBack, this, [this]() {
+        mStackedLayout->setCurrentIndex(1);
+    });
 
-   if (const auto geometry = GitQlientSettings().globalValue("GitQlientGeometry", saveGeometry()).toByteArray(); !geometry.isNull())
-   {
-      restoreGeometry(geometry);
-   }
+    if (const auto geometry = GitQlientSettings().globalValue("GitQlientGeometry", saveGeometry()).toByteArray();
+        !geometry.isNull())
+    {
+        restoreGeometry(geometry);
+    }
 
-   connect(mGitConfig.data(), &GitConfig::signalCloningProgress, this, &GitQlient::updateProgressDialog,
-           Qt::DirectConnection);
-   connect(mGitConfig.data(), &GitConfig::signalCloningFailure, this, &GitQlient::showError, Qt::DirectConnection);
+    connect(
+        mGitConfig.data(),
+        &GitConfig::signalCloningProgress,
+        this,
+        &GitQlient::updateProgressDialog,
+        Qt::DirectConnection);
+    connect(mGitConfig.data(), &GitConfig::signalCloningFailure, this, &GitQlient::showError, Qt::DirectConnection);
 
-   createRepoManagementMenu();
-   createOptionsMenu();
+    createRepoManagementMenu();
+    createOptionsMenu();
 }
 
 GitQlient::~GitQlient()
 {
-   QStringList pinnedRepos;
-   const auto totalTabs = mRepos->count();
+    QStringList pinnedRepos;
+    const auto totalTabs = mRepos->count();
 
-   for (auto i = 0; i < totalTabs; ++i)
-   {
-      if (mRepos->isPinned(i))
-      {
-         auto repoToRemove = dynamic_cast<GitQlientRepo *>(mRepos->widget(i));
-         pinnedRepos.append(repoToRemove->currentDir());
-      }
-   }
+    for (auto i = 0; i < totalTabs; ++i)
+    {
+        if (mRepos->isPinned(i))
+        {
+            auto repoToRemove = dynamic_cast<GitQlientRepo*>(mRepos->widget(i));
+            pinnedRepos.append(repoToRemove->currentDir());
+        }
+    }
 
-   GitQlientSettings settings;
-   settings.setGlobalValue(GitQlientSettings::PinnedRepos, pinnedRepos);
-   settings.setGlobalValue("GitQlientGeometry", saveGeometry());
+    GitQlientSettings settings;
+    settings.setGlobalValue(GitQlientSettings::PinnedRepos, pinnedRepos);
+    settings.setGlobalValue("GitQlientGeometry", saveGeometry());
 
-   QLog_Info("UI", "*            Closing GitQlient            *\n\n");
+    QLog_Info("UI", "*            Closing GitQlient            *\n\n");
 
-   if (mMoveLogs)
-      QLoggerManager::getInstance()->moveLogsWhenClose(settings.globalValue("logsFolder").toString());
+    if (mMoveLogs)
+        QLoggerManager::getInstance()->moveLogsWhenClose(settings.globalValue("logsFolder").toString());
 }
 
-bool GitQlient::eventFilter(QObject *obj, QEvent *event)
+bool GitQlient::eventFilter(QObject* obj, QEvent* event)
 {
 
-   if (const auto menu = qobject_cast<QMenu *>(obj); menu && event->type() == QEvent::Show)
-   {
-      auto localPos = menu->parentWidget()->pos();
-      auto pos = mapToGlobal(localPos);
-      menu->show();
-      pos.setY(pos.y() + menu->parentWidget()->height());
-      menu->move(pos);
-      return true;
-   }
-   else if (event->type() == QEvent::ApplicationPaletteChange)
-   {
-      setStyleSheet(GitQlientStyles::getStyles());
+    if (const auto menu = qobject_cast<QMenu*>(obj); menu && event->type() == QEvent::Show)
+    {
+        auto localPos = menu->parentWidget()->pos();
+        auto pos = mapToGlobal(localPos);
+        menu->show();
+        pos.setY(pos.y() + menu->parentWidget()->height());
+        menu->move(pos);
+        return true;
+    }
+    else if (event->type() == QEvent::ApplicationPaletteChange)
+    {
+        setStyleSheet(GitQlientStyles::getStyles());
 
-      QObject::eventFilter(obj, event);
-   }
+        QObject::eventFilter(obj, event);
+    }
 
-   return false;
+    return false;
 }
 
 void GitQlient::createRepoManagementMenu()
 {
-   const auto homeMenu = new QPushButton(this);
-   const auto menu = new QMenu(homeMenu);
+    const auto homeMenu = new QPushButton(this);
+    const auto menu = new QMenu(homeMenu);
 
-   homeMenu->setIcon(QIcon(":/icons/burger_menu"));
-   homeMenu->setIconSize(QSize(17, 17));
-   homeMenu->setToolTip("Options");
-   homeMenu->setMenu(menu);
-   homeMenu->setObjectName("MainMenuBtn");
+    homeMenu->setIcon(QIcon(":/icons/burger_menu"));
+    homeMenu->setIconSize(QSize(17, 17));
+    homeMenu->setToolTip("Options");
+    homeMenu->setMenu(menu);
+    homeMenu->setObjectName("MainMenuBtn");
 
-   menu->installEventFilter(this);
+    menu->installEventFilter(this);
 
-   const auto open = menu->addAction(tr("Open repo..."));
-   open->setShortcut(Qt::CTRL | Qt::Key_O);
-   connect(open, &QAction::triggered, this, &GitQlient::openRepo);
+    const auto open = menu->addAction(tr("Open repo..."));
+    open->setShortcut(Qt::CTRL | Qt::Key_O);
+    connect(open, &QAction::triggered, this, &GitQlient::openRepo);
 
-   const auto clone = menu->addAction(tr("Clone repo..."));
-   clone->setShortcut(Qt::CTRL | Qt::Key_I);
-   connect(clone, &QAction::triggered, this, &GitQlient::cloneRepo);
+    const auto clone = menu->addAction(tr("Clone repo..."));
+    clone->setShortcut(Qt::CTRL | Qt::Key_I);
+    connect(clone, &QAction::triggered, this, &GitQlient::cloneRepo);
 
-   const auto init = menu->addAction(tr("New repo..."));
-   init->setShortcut(Qt::CTRL | Qt::Key_N);
-   connect(init, &QAction::triggered, this, &GitQlient::initRepo);
+    const auto init = menu->addAction(tr("New repo..."));
+    init->setShortcut(Qt::CTRL | Qt::Key_N);
+    connect(init, &QAction::triggered, this, &GitQlient::initRepo);
 
-   const auto close = menu->addAction(tr("Close repo"));
-   close->setShortcut(Qt::CTRL | Qt::Key_W);
-   connect(close, &QAction::triggered, this, &GitQlient::closeRepoIfNotPinned);
+    const auto close = menu->addAction(tr("Close repo"));
+    close->setShortcut(Qt::CTRL | Qt::Key_W);
+    connect(close, &QAction::triggered, this, &GitQlient::closeRepoIfNotPinned);
 
-   menu->addSeparator();
+    menu->addSeparator();
 
-   GitQlientSettings settings;
-   const auto recent = new QMenu("Recent repos", menu);
-   const auto projects = settings.getRecentProjects();
+    GitQlientSettings settings;
+    const auto recent = new QMenu("Recent repos", menu);
+    const auto projects = settings.getRecentProjects();
 
-   for (const auto &project : projects)
-   {
-      const auto projectName = project.mid(project.lastIndexOf("/") + 1);
-      const auto action = recent->addAction(projectName);
-      action->setData(project);
-      connect(action, &QAction::triggered, this, [this, project]() { openRepoWithPath(project); });
-   }
+    for (const auto& project : projects)
+    {
+        const auto projectName = project.mid(project.lastIndexOf("/") + 1);
+        const auto action = recent->addAction(projectName);
+        action->setData(project);
+        connect(action, &QAction::triggered, this, [this, project]() {
+            openRepoWithPath(project);
+        });
+    }
 
-   menu->addMenu(recent);
+    menu->addMenu(recent);
 
-   const auto recentProjects = settings.getMostUsedProjects();
+    const auto recentProjects = settings.getMostUsedProjects();
 
-   if (!recentProjects.empty())
-   {
-      const auto mostUsed = new QMenu("Most used repos", menu);
+    if (!recentProjects.empty())
+    {
+        const auto mostUsed = new QMenu("Most used repos", menu);
 
-      for (const auto &project : recentProjects)
-      {
-         const auto projectName = project.mid(project.lastIndexOf("/") + 1);
-         const auto action = mostUsed->addAction(projectName);
-         action->setData(project);
-         connect(action, &QAction::triggered, this, [this, project]() { openRepoWithPath(project); });
-      }
+        for (const auto& project : recentProjects)
+        {
+            const auto projectName = project.mid(project.lastIndexOf("/") + 1);
+            const auto action = mostUsed->addAction(projectName);
+            action->setData(project);
+            connect(action, &QAction::triggered, this, [this, project]() {
+                openRepoWithPath(project);
+            });
+        }
 
-      menu->addMenu(mostUsed);
-   }
+        menu->addMenu(mostUsed);
+    }
 
-   mRepos->setCornerWidget(homeMenu, Qt::TopLeftCorner);
+    mRepos->setCornerWidget(homeMenu, Qt::TopLeftCorner);
 }
 
 void GitQlient::createOptionsMenu()
 {
-   const auto optMenu = new QPushButton(this);
+    const auto optMenu = new QPushButton(this);
 
-   optMenu->setIcon(QIcon(":/icons/config"));
-   optMenu->setIconSize(QSize(17, 17));
-   optMenu->setToolTip("Options");
-   optMenu->setObjectName("MainMenuBtn");
-   connect(optMenu, &QPushButton::clicked, this, [this]() {
-      mStackedLayout->setCurrentIndex(2);
-   });
+    optMenu->setIcon(QIcon(":/icons/config"));
+    optMenu->setIconSize(QSize(17, 17));
+    optMenu->setToolTip("Options");
+    optMenu->setObjectName("MainMenuBtn");
+    connect(optMenu, &QPushButton::clicked, this, [this]() {
+        mStackedLayout->setCurrentIndex(2);
+    });
 
-   mRepos->setCornerWidget(optMenu, Qt::TopRightCorner);
+    mRepos->setCornerWidget(optMenu, Qt::TopRightCorner);
 }
 
 void GitQlient::openRepo()
 {
-   const QString dirName(QFileDialog::getExistingDirectory(this, "Choose the directory of a Git project"));
+    const QString dirName(QFileDialog::getExistingDirectory(this, "Choose the directory of a Git project"));
 
-   if (!dirName.isEmpty())
-      openRepoWithPath(dirName);
+    if (!dirName.isEmpty())
+        openRepoWithPath(dirName);
 }
 
-void GitQlient::openRepoWithPath(const QString &path)
+void GitQlient::openRepoWithPath(const QString& path)
 {
-   QDir d(path);
-   addRepoTab(d.absolutePath());
+    QDir d(path);
+    addRepoTab(d.absolutePath());
 }
 
 void GitQlient::cloneRepo()
 {
-   mPathToOpen = "";
-   CreateRepoDlg cloneDlg(CreateRepoDlgType::CLONE, mGitConfig);
-   connect(&cloneDlg, &CreateRepoDlg::signalOpenWhenFinish, this, [this](const QString &path) { mPathToOpen = path; });
+    mPathToOpen = "";
+    CreateRepoDlg cloneDlg(CreateRepoDlgType::CLONE, mGitConfig);
+    connect(&cloneDlg, &CreateRepoDlg::signalOpenWhenFinish, this, [this](const QString& path) {
+        mPathToOpen = path;
+    });
 
-   if (cloneDlg.exec() == QDialog::Accepted)
-   {
-      const auto data = cloneDlg.getCloneInfo();
+    if (cloneDlg.exec() == QDialog::Accepted)
+    {
+        const auto data = cloneDlg.getCloneInfo();
 
-      mProgressDlg = new ProgressDlg(tr("Clonin g repository..."), QString(), 100, false);
-      connect(mProgressDlg, &ProgressDlg::destroyed, this, [this]() { mProgressDlg = nullptr; });
+        mProgressDlg = new ProgressDlg(tr("Clonin g repository..."), QString(), 100, false);
+        connect(mProgressDlg, &ProgressDlg::destroyed, this, [this]() {
+            mProgressDlg = nullptr;
+        });
 
-      mGitConfig->clone(data.first, data.second);
+        mGitConfig->clone(data.first, data.second);
 
-      mProgressDlg->show();
-   }
+        mProgressDlg->show();
+    }
 }
 
 void GitQlient::initRepo()
 {
-   CreateRepoDlg cloneDlg(CreateRepoDlgType::INIT, mGitConfig);
-   connect(&cloneDlg, &CreateRepoDlg::signalOpenWhenFinish, this, &GitQlient::openRepoWithPath);
-   cloneDlg.exec();
+    CreateRepoDlg cloneDlg(CreateRepoDlgType::INIT, mGitConfig);
+    connect(&cloneDlg, &CreateRepoDlg::signalOpenWhenFinish, this, &GitQlient::openRepoWithPath);
+    cloneDlg.exec();
 }
 
 void GitQlient::updateProgressDialog(QString stepDescription, int value)
 {
-   if (!mProgressDlg)
-      return;
+    if (!mProgressDlg)
+        return;
 
-   if (value >= 0)
-   {
-      mProgressDlg->setValue(value);
+    if (value >= 0)
+    {
+        mProgressDlg->setValue(value);
 
-      if (stepDescription.contains("done", Qt::CaseInsensitive) && !mPathToOpen.isEmpty())
-      {
-         mProgressDlg->close();
-         openRepoWithPath(mPathToOpen);
+        if (stepDescription.contains("done", Qt::CaseInsensitive) && !mPathToOpen.isEmpty())
+        {
+            mProgressDlg->close();
+            openRepoWithPath(mPathToOpen);
 
-         mPathToOpen = "";
-      }
-   }
+            mPathToOpen = "";
+        }
+    }
 
-   mProgressDlg->setLabelText(stepDescription);
-   mProgressDlg->repaint();
+    mProgressDlg->setLabelText(stepDescription);
+    mProgressDlg->repaint();
 }
 
 void GitQlient::showError(int, QString description)
 {
-   if (mProgressDlg)
-      mProgressDlg->deleteLater();
+    if (mProgressDlg)
+        mProgressDlg->deleteLater();
 
-   QMessageBox::critical(this, tr("Error!"), description);
+    QMessageBox::critical(this, tr("Error!"), description);
 }
 
-void GitQlient::setRepositories(const QStringList &repositories)
+void GitQlient::setRepositories(const QStringList& repositories)
 {
-   QLog_Info("UI", QString("Adding {%1} repositories").arg(repositories.count()));
+    QLog_Info("UI", QString("Adding {%1} repositories").arg(repositories.count()));
 
-   for (const auto &repo : repositories)
-      addRepoTab(repo);
+    for (const auto& repo : repositories)
+        addRepoTab(repo);
 }
 
-bool GitQlient::setArgumentsPostInit(const QStringList &arguments)
+bool GitQlient::setArgumentsPostInit(const QStringList& arguments)
 {
-   QLog_Info("UI", QString("External call with the params {%1}").arg(arguments.join(",")));
+    QLog_Info("UI", QString("External call with the params {%1}").arg(arguments.join(",")));
 
-   QStringList repos;
-   const auto ret = parseArguments(arguments, &repos);
-   if (ret)
-      setRepositories(repos);
-   return ret;
+    QStringList repos;
+    const auto ret = parseArguments(arguments, &repos);
+    if (ret)
+        setRepositories(repos);
+    return ret;
 }
 
-bool GitQlient::parseArguments(const QStringList &arguments, QStringList *repos)
+bool GitQlient::parseArguments(const QStringList& arguments, QStringList* repos)
 {
-   bool ret = true;
-   GitQlientSettings settings;
-   auto logLevel
-       = static_cast<LogLevel>(settings.globalValue("logsLevel", static_cast<int>(LogLevel::Warning)).toInt());
-   bool areLogsDisabled = settings.globalValue("logsDisabled", true).toBool();
+    bool ret = true;
+    GitQlientSettings settings;
+    auto logLevel = static_cast<LogLevel>(
+        settings.globalValue("logsLevel", static_cast<int>(LogLevel::Warning)).toInt());
+    bool areLogsDisabled = settings.globalValue("logsDisabled", true).toBool();
 
-   QCommandLineParser parser;
-   parser.setApplicationDescription(tr("Multi-platform Git client written with Qt"));
-   parser.addPositionalArgument("repos", tr("Git repositories to open"), tr("[repos...]"));
+    QCommandLineParser parser;
+    parser.setApplicationDescription(tr("Multi-platform Git client written with Qt"));
+    parser.addPositionalArgument("repos", tr("Git repositories to open"), tr("[repos...]"));
 
-   const QCommandLineOption helpOption = parser.addHelpOption();
-   // We don't use parser.addVersionOption() because then it is handled by Qt and we want to show Git SHA also
-   const QCommandLineOption versionOption(QStringList() << "v"
-                                                        << "version",
-                                          tr("Displays version information."));
-   parser.addOption(versionOption);
+    const QCommandLineOption helpOption = parser.addHelpOption();
+    // We don't use parser.addVersionOption() because then it is handled by Qt and we want to show Git SHA also
+    const QCommandLineOption versionOption(
+        QStringList()
+            << "v"
+            << "version",
+        tr("Displays version information."));
+    parser.addOption(versionOption);
 
-   const QCommandLineOption noLogOption("no-log", tr("Disables logs."));
-   parser.addOption(noLogOption);
+    const QCommandLineOption noLogOption("no-log", tr("Disables logs."));
+    parser.addOption(noLogOption);
 
-   const QCommandLineOption logLevelOption("log-level", tr("Sets log level."), tr("level"));
-   parser.addOption(logLevelOption);
+    const QCommandLineOption logLevelOption("log-level", tr("Sets log level."), tr("level"));
+    parser.addOption(logLevelOption);
 
-   parser.process(arguments);
+    parser.process(arguments);
 
-   *repos = parser.positionalArguments();
-   if (parser.isSet(noLogOption))
-      areLogsDisabled = true;
+    *repos = parser.positionalArguments();
+    if (parser.isSet(noLogOption))
+        areLogsDisabled = true;
 
-   if (!areLogsDisabled)
-   {
-      if (parser.isSet(logLevelOption))
-      {
-         const auto level = static_cast<LogLevel>(parser.value(logLevelOption).toInt());
-         if (level >= QLogger::LogLevel::Trace && level <= QLogger::LogLevel::Fatal)
-         {
-            logLevel = level;
-            settings.setGlobalValue("logsLevel", static_cast<int>(level));
-         }
-      }
+    if (!areLogsDisabled)
+    {
+        if (parser.isSet(logLevelOption))
+        {
+            const auto level = static_cast<LogLevel>(parser.value(logLevelOption).toInt());
+            if (level >= QLogger::LogLevel::Trace && level <= QLogger::LogLevel::Fatal)
+            {
+                logLevel = level;
+                settings.setGlobalValue("logsLevel", static_cast<int>(level));
+            }
+        }
 
-      QLoggerManager::getInstance()->overwriteLogLevel(logLevel);
-   }
-   else
-      QLoggerManager::getInstance()->pause();
+        QLoggerManager::getInstance()->overwriteLogLevel(logLevel);
+    }
+    else
+        QLoggerManager::getInstance()->pause();
 
-   const auto logsFolder = settings.globalValue("logsFolder").toString();
-   QLoggerManager::getInstance()->setDefaultFileDestinationFolder(logsFolder);
+    const auto logsFolder = settings.globalValue("logsFolder").toString();
+    QLoggerManager::getInstance()->setDefaultFileDestinationFolder(logsFolder);
 
-   if (parser.isSet(versionOption))
-   {
-      QTextStream out(stdout);
-      out << QCoreApplication::applicationName() << ' ' << tr("version") << ' '
-          << QCoreApplication::applicationVersion() << " (" << tr("Git SHA ") << SHA_VER << ")\n";
-      ret = false;
-   }
-   if (parser.isSet(helpOption))
-      ret = false;
+    if (parser.isSet(versionOption))
+    {
+        QTextStream out(stdout);
+        out << QCoreApplication::applicationName() << ' ' << tr("version") << ' '
+            << QCoreApplication::applicationVersion() << " (" << tr("Git SHA ") << SHA_VER << ")\n";
+        ret = false;
+    }
+    if (parser.isSet(helpOption))
+        ret = false;
 
-   const auto manager = QLoggerManager::getInstance();
-   manager->addDestination("GitQlient.log", { "UI", "Git", "Cache" }, logLevel, {}, LogMode::OnlyFile,
-                           LogFileDisplay::DateTime, LogMessageDisplay::Default, false);
+    const auto manager = QLoggerManager::getInstance();
+    manager->addDestination(
+        "GitQlient.log",
+        {"UI", "Git", "Cache"},
+        logLevel,
+        {},
+        LogMode::OnlyFile,
+        LogFileDisplay::DateTime,
+        LogMessageDisplay::Default,
+        false);
 
-   return ret;
+    return ret;
 }
 
-void GitQlient::addRepoTab(const QString &repoPath)
+void GitQlient::addRepoTab(const QString& repoPath)
 {
-   addNewRepoTab(repoPath, false);
-   mRepos->setCurrentIndex(mRepos->count() - 1);
-   mStackedLayout->setCurrentIndex(1);
+    addNewRepoTab(repoPath, false);
+    mRepos->setCurrentIndex(mRepos->count() - 1);
+    mStackedLayout->setCurrentIndex(1);
 }
 
-void GitQlient::addNewRepoTab(const QString &repoPathArg, bool pinned)
+void GitQlient::addNewRepoTab(const QString& repoPathArg, bool pinned)
 {
-   auto repoPath = QFileInfo(repoPathArg).canonicalFilePath();
+    auto repoPath = QFileInfo(repoPathArg).canonicalFilePath();
 
-   QSharedPointer<GitBase> git(new GitBase(repoPath));
-   repoPath = git->getTopLevelRepo(repoPath);
+    QSharedPointer<GitBase> git(new GitBase(repoPath));
+    repoPath = git->getTopLevelRepo(repoPath);
 
-   if (!mCurrentRepos.contains(repoPath))
-   {
-      QFileInfo info(QString("%1/.git").arg(repoPath));
+    if (!mCurrentRepos.contains(repoPath))
+    {
+        QFileInfo info(QString("%1/.git").arg(repoPath));
 
-      if (info.isFile() || info.isDir())
-      {
-         const auto repoName = repoPath.contains("/") ? repoPath.split("/").last() : "";
+        if (info.isFile() || info.isDir())
+        {
+            const auto repoName = repoPath.contains("/") ? repoPath.split("/").last() : "";
 
-         if (repoName.isEmpty())
-         {
-            QMessageBox::critical(
-                this, tr("Not a repository"),
-                tr("The selected folder is not a Git repository. Please make sure you open a Git repository."));
-            QLog_Error("UI", "The selected folder is not a Git repository");
-            return;
-         }
+            if (repoName.isEmpty())
+            {
+                QMessageBox::critical(
+                    this,
+                    tr("Not a repository"),
+                    tr("The selected folder is not a Git repository. Please make sure you open a Git repository."));
+                QLog_Error("UI", "The selected folder is not a Git repository");
+                return;
+            }
 
-         QSharedPointer<GitQlientSettings> settings(new GitQlientSettings(git->getGitDir()));
+            QSharedPointer<GitQlientSettings> settings(new GitQlientSettings(git->getGitDir()));
 
-         conditionallyOpenPreConfigDlg(git, settings);
+            conditionallyOpenPreConfigDlg(git, settings);
 
-         const auto repo = new GitQlientRepo(git, settings, this);
-         const auto index = pinned ? mRepos->addPinnedTab(repo, repoName) : mRepos->addTab(repo, repoName);
-         mTabsMap.insert(repo, repoName);
+            const auto repo = new GitQlientRepo(git, settings, this);
+            const auto index = pinned ? mRepos->addPinnedTab(repo, repoName) : mRepos->addTab(repo, repoName);
+            mTabsMap.insert(repo, repoName);
 
-         connect(repo, &GitQlientRepo::signalOpenSubmodule, this, &GitQlient::addRepoTab);
-         connect(repo, &GitQlientRepo::repoOpened, this, &GitQlient::onSuccessOpen);
-         connect(repo, &GitQlientRepo::currentBranchChanged, this, &GitQlient::updateTabName);
-         connect(repo, &GitQlientRepo::moveLogsAndClose, this, &GitQlient::moveLogsBeforeClose);
+            connect(repo, &GitQlientRepo::signalOpenSubmodule, this, &GitQlient::addRepoTab);
+            connect(repo, &GitQlientRepo::repoOpened, this, &GitQlient::onSuccessOpen);
+            connect(repo, &GitQlientRepo::currentBranchChanged, this, &GitQlient::updateTabName);
+            connect(repo, &GitQlientRepo::moveLogsAndClose, this, &GitQlient::moveLogsBeforeClose);
 
-         repo->loadRepo();
+            repo->loadRepo();
 
-         mCurrentRepos.insert(repoPath);
+            mCurrentRepos.insert(repoPath);
 
-         QProcess p;
-         p.setWorkingDirectory(repoPath);
-         p.start("git", { "rev-parse", "--show-superproject-working-tree" });
-         p.waitForFinished(5000);
+            QProcess p;
+            p.setWorkingDirectory(repoPath);
+            p.start("git", {"rev-parse", "--show-superproject-working-tree"});
+            p.waitForFinished(5000);
 
-         const auto output = p.readAll().trimmed();
-         const auto isSubmodule = !output.isEmpty();
+            const auto output = p.readAll().trimmed();
+            const auto isSubmodule = !output.isEmpty();
 
-         mRepos->setTabIcon(index, QIcon(isSubmodule ? QString(":/icons/submodules") : QString(":/icons/local")));
+            mRepos->setTabIcon(index, QIcon(isSubmodule ? QString(":/icons/submodules") : QString(":/icons/local")));
 
-         QLog_Info("UI", "Attaching repository to a new tab");
+            QLog_Info("UI", "Attaching repository to a new tab");
 
-         if (isSubmodule)
-         {
-            const auto parentRepo = QString::fromUtf8(output.split('/').last());
+            if (isSubmodule)
+            {
+                const auto parentRepo = QString::fromUtf8(output.split('/').last());
 
-            mRepos->setTabText(index, QString("%1 \u2192 %2").arg(parentRepo, repoName));
+                mRepos->setTabText(index, QString("%1 \u2192 %2").arg(parentRepo, repoName));
 
-            QLog_Info("UI",
-                      QString("Opening the submodule {%1} from the repo {%2} on tab index {%3}")
-                          .arg(repoName, parentRepo)
-                          .arg(index));
-         }
-      }
-      else
-      {
-         QLog_Info("UI", "Trying to open a directory that is not a Git repository.");
-         QMessageBox::information(
-             this, tr("Not a Git repository"),
-             tr("The selected path is not a Git repository. Please make sure you opened the correct directory."));
-      }
-   }
-   else
-      QLog_Warning("UI", QString("Repository at {%1} already opened. Skip adding it again.").arg(repoPath));
+                QLog_Info(
+                    "UI",
+                    QString("Opening the submodule {%1} from the repo {%2} on tab index {%3}")
+                        .arg(repoName, parentRepo)
+                        .arg(index));
+            }
+        }
+        else
+        {
+            QLog_Info("UI", "Trying to open a directory that is not a Git repository.");
+            QMessageBox::information(
+                this,
+                tr("Not a Git repository"),
+                tr("The selected path is not a Git repository. Please make sure you opened the correct directory."));
+        }
+    }
+    else
+        QLog_Warning("UI", QString("Repository at {%1} already opened. Skip adding it again.").arg(repoPath));
 }
 
 void GitQlient::closeTab(int tabIndex)
 {
-   const auto repoToRemove = dynamic_cast<GitQlientRepo *>(mRepos->widget(tabIndex));
+    const auto repoToRemove = dynamic_cast<GitQlientRepo*>(mRepos->widget(tabIndex));
 
-   mTabsMap.remove(repoToRemove);
+    mTabsMap.remove(repoToRemove);
 
-   QLog_Info("UI", QString("Removing repository {%1}").arg(repoToRemove->currentDir()));
+    QLog_Info("UI", QString("Removing repository {%1}").arg(repoToRemove->currentDir()));
 
-   mCurrentRepos.remove(repoToRemove->currentDir());
-   repoToRemove->close();
+    mCurrentRepos.remove(repoToRemove->currentDir());
+    repoToRemove->close();
 
-   if (const auto totalTabs = mRepos->count() - 1; totalTabs == 0)
-   {
-      mStackedLayout->setCurrentIndex(0);
-      setWindowTitle(QString("GitQlient %1").arg(VER));
-   }
+    if (const auto totalTabs = mRepos->count() - 1; totalTabs == 0)
+    {
+        mStackedLayout->setCurrentIndex(0);
+        setWindowTitle(QString("GitQlient %1").arg(VER));
+    }
 }
 
 void GitQlient::restorePinnedRepos()
 {
-   GitQlientSettings settings;
+    GitQlientSettings settings;
 
-   if (settings.globalValue("ShowFeaturesDlg", false).toBool())
-   {
-      NewVersionInfoDlg dlg(this);
-      dlg.exec();
-   }
+    if (settings.globalValue("ShowFeaturesDlg", false).toBool())
+    {
+        NewVersionInfoDlg dlg(this);
+        dlg.exec();
+    }
 
-   if (const auto pinnedRepos = settings.globalValue(GitQlientSettings::PinnedRepos).toStringList(); !pinnedRepos.isEmpty())
-   {
-      for (auto &repo : pinnedRepos)
-         addNewRepoTab(repo, true);
+    if (const auto pinnedRepos = settings.globalValue(GitQlientSettings::PinnedRepos).toStringList();
+        !pinnedRepos.isEmpty())
+    {
+        for (auto& repo : pinnedRepos)
+            addNewRepoTab(repo, true);
 
-      mRepos->setCurrentIndex(0);
-      mStackedLayout->setCurrentIndex(1);
-   }
+        mRepos->setCurrentIndex(0);
+        mStackedLayout->setCurrentIndex(1);
+    }
 }
 
-void GitQlient::onSuccessOpen(const QString &fullPath)
+void GitQlient::onSuccessOpen(const QString& fullPath)
 {
-   GitQlientSettings().setProjectOpened(fullPath);
+    GitQlientSettings().setProjectOpened(fullPath);
 
-   mInitWidget->onRepoOpened();
+    mInitWidget->onRepoOpened();
 }
 
-void GitQlient::conditionallyOpenPreConfigDlg(const QSharedPointer<GitBase> &git,
-                                              const QSharedPointer<GitQlientSettings> &settings)
+void GitQlient::conditionallyOpenPreConfigDlg(
+    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& settings)
 {
-   QScopedPointer<GitConfig> config(new GitConfig(git));
+    QScopedPointer<GitConfig> config(new GitConfig(git));
 
-   const auto showDlg = settings->localValue("ShowInitConfigDialog", true).toBool();
-   const auto maxCommits = settings->localValue("MaxCommits", -1).toInt();
+    const auto showDlg = settings->localValue("ShowInitConfigDialog", true).toBool();
+    const auto maxCommits = settings->localValue("MaxCommits", -1).toInt();
 
-   if (maxCommits == -1 || (config->getServerHost().contains("https") && showDlg))
-   {
-      const auto preConfig = new InitialRepoConfig(git, settings, this);
-      preConfig->exec();
-   }
+    if (maxCommits == -1 || (config->getServerHost().contains("https") && showDlg))
+    {
+        const auto preConfig = new InitialRepoConfig(git, settings, this);
+        preConfig->exec();
+    }
 }
 
 void GitQlient::updateTabName()
 {
-   if (const auto currentTab = dynamic_cast<GitQlientRepo *>(mRepos->currentWidget()))
-   {
-      mRepos->changeTabName(currentTab, QString("%1 (%2)").arg(mTabsMap[currentTab], currentTab->currentBranch()));
-   }
+    if (const auto currentTab = dynamic_cast<GitQlientRepo*>(mRepos->currentWidget()))
+    {
+        mRepos->changeTabName(currentTab, QString("%1 (%2)").arg(mTabsMap[currentTab], currentTab->currentBranch()));
+    }
 }
 
 void GitQlient::moveLogsBeforeClose()
 {
-   mMoveLogs = true;
+    mMoveLogs = true;
 
-   close();
+    close();
 }
 
 void GitQlient::closeRepoIfNotPinned()
 {
-   const auto totalTabs = mRepos->count();
+    const auto totalTabs = mRepos->count();
 
-   for (auto i = 0; i < totalTabs; ++i)
-   {
-      if (mRepos->widget(i) == mRepos->currentWidget())
-      {
-         if (!mRepos->isPinned(i))
-         {
-            closeTab(i);
-            mRepos->removeTab(i);
-         }
+    for (auto i = 0; i < totalTabs; ++i)
+    {
+        if (mRepos->widget(i) == mRepos->currentWidget())
+        {
+            if (!mRepos->isPinned(i))
+            {
+                closeTab(i);
+                mRepos->removeTab(i);
+            }
 
-         break;
-      }
-   }
+            break;
+        }
+    }
 }

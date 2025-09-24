@@ -24,331 +24,336 @@
 
 using namespace QLogger;
 
-Controls::Controls(const QSharedPointer<GitCache> &cache, const QSharedPointer<GitBase> &git, QWidget *parent)
-   : QFrame(parent)
-   , mCache(cache)
-   , mGit(git)
-   , mStashPop(createToolButton(":/icons/git_pop", tr("Stash Pop"), Qt::CTRL | Qt::Key_2))
-   , mStashPush(createToolButton(":/icons/git_stash", tr("Stash Push"), Qt::CTRL | Qt::Key_3))
-   , mPullBtn(createToolButton(":/icons/git_pull", tr("Pull"), Qt::CTRL | Qt::Key_4))
-   , mPullOptions(createToolButton(":/icons/arrow_down", tr("Remote actions")))
-   , mPushBtn(createToolButton(":/icons/git_push", tr("Push"), Qt::CTRL | Qt::Key_5))
-   , mRefreshBtn(createToolButton(":/icons/refresh", tr("Refresh"), Qt::Key_F5))
-   , mVersionCheck(new QToolButton(this))
-   , mMergeWarning(
-         new QPushButton(tr("WARNING: There is a merge pending to be committed! Click here to solve it."), this))
-   , mUpdater(new GitQlientUpdater(this))
-   , mLastSeparator(new QFrame(this))
+Controls::Controls(const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
+    : QFrame(parent)
+    , mCache(cache)
+    , mGit(git)
+    , mStashPop(createToolButton(":/icons/git_pop", tr("Stash Pop"), Qt::CTRL | Qt::Key_2))
+    , mStashPush(createToolButton(":/icons/git_stash", tr("Stash Push"), Qt::CTRL | Qt::Key_3))
+    , mPullBtn(createToolButton(":/icons/git_pull", tr("Pull"), Qt::CTRL | Qt::Key_4))
+    , mPullOptions(createToolButton(":/icons/arrow_down", tr("Remote actions")))
+    , mPushBtn(createToolButton(":/icons/git_push", tr("Push"), Qt::CTRL | Qt::Key_5))
+    , mRefreshBtn(createToolButton(":/icons/refresh", tr("Refresh"), Qt::Key_F5))
+    , mVersionCheck(new QToolButton(this))
+    , mMergeWarning(
+          new QPushButton(tr("WARNING: There is a merge pending to be committed! Click here to solve it."), this))
+    , mUpdater(new GitQlientUpdater(this))
+    , mLastSeparator(new QFrame(this))
 {
-   GitQlientSettings settings(mGit->getGitDir());
+    GitQlientSettings settings(mGit->getGitDir());
 
-   setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_DeleteOnClose);
 
-   connect(mUpdater, &GitQlientUpdater::newVersionAvailable, this, [this]() {
-      mVersionCheck->setVisible(true);
-      mLastSeparator->setVisible(mVersionCheck->isVisible());
-   });
+    connect(mUpdater, &GitQlientUpdater::newVersionAvailable, this, [this]() {
+        mVersionCheck->setVisible(true);
+        mLastSeparator->setVisible(mVersionCheck->isVisible());
+    });
 
-   const auto menu = new QMenu(mPullOptions);
-   menu->installEventFilter(this);
+    const auto menu = new QMenu(mPullOptions);
+    menu->installEventFilter(this);
 
-   auto action = menu->addAction(tr("Fetch all"));
-   connect(action, &QAction::triggered, this, &Controls::fetchAll);
+    auto action = menu->addAction(tr("Fetch all"));
+    connect(action, &QAction::triggered, this, &Controls::fetchAll);
 
-   action = menu->addAction(tr("Prune"));
-   connect(action, &QAction::triggered, this, &Controls::pruneBranches);
-   menu->addSeparator();
+    action = menu->addAction(tr("Prune"));
+    connect(action, &QAction::triggered, this, &Controls::pruneBranches);
+    menu->addSeparator();
 
-   mPullBtn->setPopupMode(QToolButton::InstantPopup);
-   mPullBtn->setObjectName("ToolButtonAboveMenu");
+    mPullBtn->setPopupMode(QToolButton::InstantPopup);
+    mPullBtn->setObjectName("ToolButtonAboveMenu");
 
-   mPullOptions->setMenu(menu);
-   mPullOptions->setPopupMode(QToolButton::InstantPopup);
-   mPullOptions->setObjectName("ToolButtonWithMenu");
+    mPullOptions->setMenu(menu);
+    mPullOptions->setPopupMode(QToolButton::InstantPopup);
+    mPullOptions->setObjectName("ToolButtonWithMenu");
 
-   const auto pullLayout = new QVBoxLayout();
-   pullLayout->setContentsMargins(QMargins());
-   pullLayout->setSpacing(0);
-   pullLayout->addWidget(mPullBtn);
-   pullLayout->addWidget(mPullOptions);
+    const auto pullLayout = new QVBoxLayout();
+    pullLayout->setContentsMargins(QMargins());
+    pullLayout->setSpacing(0);
+    pullLayout->addWidget(mPullBtn);
+    pullLayout->addWidget(mPullOptions);
 
-   const auto separator = new QFrame(this);
-   separator->setObjectName("orangeSeparator");
-   separator->setFixedHeight(20);
+    const auto separator = new QFrame(this);
+    separator->setObjectName("orangeSeparator");
+    separator->setFixedHeight(20);
 
-   const auto separator2 = new QFrame(this);
-   separator2->setObjectName("orangeSeparator");
-   separator2->setFixedHeight(20);
+    const auto separator2 = new QFrame(this);
+    separator2->setObjectName("orangeSeparator");
+    separator2->setFixedHeight(20);
 
-   const auto hLayout = new QHBoxLayout();
-   hLayout->setContentsMargins(QMargins());
-   hLayout->addStretch();
-   hLayout->setSpacing(5);
-   hLayout->addWidget(mStashPush);
-   hLayout->addWidget(mStashPop);
-   hLayout->addWidget(separator);
-   hLayout->addLayout(pullLayout);
-   hLayout->addWidget(mPushBtn);
-   hLayout->addWidget(separator2);
-   hLayout->addWidget(mRefreshBtn);
+    const auto hLayout = new QHBoxLayout();
+    hLayout->setContentsMargins(QMargins());
+    hLayout->addStretch();
+    hLayout->setSpacing(5);
+    hLayout->addWidget(mStashPush);
+    hLayout->addWidget(mStashPop);
+    hLayout->addWidget(separator);
+    hLayout->addLayout(pullLayout);
+    hLayout->addWidget(mPushBtn);
+    hLayout->addWidget(separator2);
+    hLayout->addWidget(mRefreshBtn);
 
-   mVersionCheck->setIcon(QIcon(":/icons/get_gitqlient"));
-   mVersionCheck->setIconSize(QSize(22, 22));
-   mVersionCheck->setText(tr("New version"));
-   mVersionCheck->setObjectName("longToolButton");
-   mVersionCheck->setToolButtonStyle(Qt::ToolButtonIconOnly);
-   mVersionCheck->setVisible(false);
+    mVersionCheck->setIcon(QIcon(":/icons/get_gitqlient"));
+    mVersionCheck->setIconSize(QSize(22, 22));
+    mVersionCheck->setText(tr("New version"));
+    mVersionCheck->setObjectName("longToolButton");
+    mVersionCheck->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    mVersionCheck->setVisible(false);
 
-   mUpdater->checkNewGitQlientVersion();
+    mUpdater->checkNewGitQlientVersion();
 
-   mLastSeparator->setObjectName("orangeSeparator");
-   mLastSeparator->setFixedHeight(20);
-   mLastSeparator->setVisible(mVersionCheck->isVisible());
+    mLastSeparator->setObjectName("orangeSeparator");
+    mLastSeparator->setFixedHeight(20);
+    mLastSeparator->setVisible(mVersionCheck->isVisible());
 
-   hLayout->addWidget(mLastSeparator);
-   hLayout->addWidget(mVersionCheck);
-   hLayout->addStretch();
+    hLayout->addWidget(mLastSeparator);
+    hLayout->addWidget(mVersionCheck);
+    hLayout->addStretch();
 
-   mMergeWarning->setObjectName("WarningButton");
-   mMergeWarning->setVisible(false);
+    mMergeWarning->setObjectName("WarningButton");
+    mMergeWarning->setVisible(false);
 
-   const auto vLayout = new QVBoxLayout(this);
-   vLayout->setContentsMargins(0, 5, 0, 0);
-   vLayout->setSpacing(10);
-   vLayout->addLayout(hLayout);
-   vLayout->addWidget(mMergeWarning);
+    const auto vLayout = new QVBoxLayout(this);
+    vLayout->setContentsMargins(0, 5, 0, 0);
+    vLayout->setSpacing(10);
+    vLayout->addLayout(hLayout);
+    vLayout->addWidget(mMergeWarning);
 
-   connect(mStashPush, &QToolButton::clicked, this, &Controls::stashPush);
-   connect(mStashPop, &QToolButton::clicked, this, &Controls::stashPop);
-   connect(mPullBtn, &QToolButton::clicked, this, &Controls::pullCurrentBranch);
-   connect(mPushBtn, &QToolButton::clicked, this, &Controls::pushCurrentBranch);
-   connect(mRefreshBtn, &QToolButton::clicked, this, &Controls::requestFullReload);
-   connect(mMergeWarning, &QPushButton::clicked, this, &Controls::signalGoMerge);
-   connect(mVersionCheck, &QToolButton::clicked, mUpdater, &GitQlientUpdater::showInfoMessage);
+    connect(mStashPush, &QToolButton::clicked, this, &Controls::stashPush);
+    connect(mStashPop, &QToolButton::clicked, this, &Controls::stashPop);
+    connect(mPullBtn, &QToolButton::clicked, this, &Controls::pullCurrentBranch);
+    connect(mPushBtn, &QToolButton::clicked, this, &Controls::pushCurrentBranch);
+    connect(mRefreshBtn, &QToolButton::clicked, this, &Controls::requestFullReload);
+    connect(mMergeWarning, &QPushButton::clicked, this, &Controls::signalGoMerge);
+    connect(mVersionCheck, &QToolButton::clicked, mUpdater, &GitQlientUpdater::showInfoMessage);
 
-   enableButtons(false);
+    enableButtons(false);
 }
 
 void Controls::enableButtons(bool enabled)
 {
-   mStashPush->setEnabled(enabled);
-   mStashPop->setEnabled(enabled);
-   mPullBtn->setEnabled(enabled);
-   mPullOptions->setEnabled(enabled);
-   mPushBtn->setEnabled(enabled);
-   mRefreshBtn->setEnabled(enabled);
+    mStashPush->setEnabled(enabled);
+    mStashPop->setEnabled(enabled);
+    mPullBtn->setEnabled(enabled);
+    mPullOptions->setEnabled(enabled);
+    mPushBtn->setEnabled(enabled);
+    mRefreshBtn->setEnabled(enabled);
 }
 
 void Controls::stashPush()
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitStashes> git(new GitStashes(mGit));
-   const auto ret = git->stash();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitStashes> git(new GitStashes(mGit));
+    const auto ret = git->stash();
+    QApplication::restoreOverrideCursor();
 
-   if (ret.success)
-   {
-      QLog_Debug("Controls", "Stash push successful");
-      emit requestFullReload();
-   }
-   else
-   {
-      QMessageBox msgBox(QMessageBox::Critical, tr("Error while stashing"),
-                         QString(tr("There were problems during the stash operation. Please, see the detailed "
-                                    "description for more information.")),
-                         QMessageBox::Ok, this);
-      msgBox.setDetailedText(ret.output);
-      msgBox.exec();
-   }
+    if (ret.success)
+    {
+        QLog_Debug("Controls", "Stash push successful");
+        emit requestFullReload();
+    }
+    else
+    {
+        QMessageBox msgBox(
+            QMessageBox::Critical,
+            tr("Error while stashing"),
+            QString(tr("There were problems during the stash operation. Please, see the detailed "
+                       "description for more information.")),
+            QMessageBox::Ok,
+            this);
+        msgBox.setDetailedText(ret.output);
+        msgBox.exec();
+    }
 }
 
 void Controls::stashPop()
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitStashes> git(new GitStashes(mGit));
-   const auto ret = git->pop();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitStashes> git(new GitStashes(mGit));
+    const auto ret = git->pop();
+    QApplication::restoreOverrideCursor();
 
-   if (ret.success)
-   {
-      QLog_Debug("Controls", "Stash pop successful");
+    if (ret.success)
+    {
+        QLog_Debug("Controls", "Stash pop successful");
 
-      if (ret.output.contains("CONFLICT", Qt::CaseInsensitive))
-      {
-         QMessageBox::warning(this, tr("Stash pop conflicts"),
-                              tr("There were merge conflicts when applying the stash. "
-                                 "Please resolve them manually."),
-                              QMessageBox::Ok);
-         emit signalPullConflict();
-      }
+        if (ret.output.contains("CONFLICT", Qt::CaseInsensitive))
+        {
+            QMessageBox::warning(
+                this,
+                tr("Stash pop conflicts"),
+                tr("There were merge conflicts when applying the stash. "
+                   "Please resolve them manually."),
+                QMessageBox::Ok);
+            emit signalPullConflict();
+        }
 
-      emit requestFullReload();
-   }
-   else
-   {
-      if (ret.output.contains("No stash entries found", Qt::CaseInsensitive) || ret.output.contains("No stash found", Qt::CaseInsensitive))
-      {
-         QMessageBox::information(this, tr("No stashes"),
-                                  tr("There are no stashes to pop."),
-                                  QMessageBox::Ok);
-      }
-      else
-      {
-         QMessageBox msgBox(QMessageBox::Critical, tr("Error while popping stash"),
-                            QString(tr("There were problems during the stash pop operation. Please, see the detailed "
-                                       "description for more information.")),
-                            QMessageBox::Ok, this);
-         msgBox.setDetailedText(ret.output);
-         msgBox.exec();
-      }
-   }
+        emit requestFullReload();
+    }
+    else
+    {
+        if (ret.output.contains("No stash entries found", Qt::CaseInsensitive)
+            || ret.output.contains("No stash found", Qt::CaseInsensitive))
+        {
+            QMessageBox::information(this, tr("No stashes"), tr("There are no stashes to pop."), QMessageBox::Ok);
+        }
+        else
+        {
+            QMessageBox msgBox(
+                QMessageBox::Critical,
+                tr("Error while popping stash"),
+                QString(tr("There were problems during the stash pop operation. Please, see the detailed "
+                           "description for more information.")),
+                QMessageBox::Ok,
+                this);
+            msgBox.setDetailedText(ret.output);
+            msgBox.exec();
+        }
+    }
 }
 
 void Controls::pullCurrentBranch()
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->pull();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitRemote> git(new GitRemote(mGit));
+    const auto ret = git->pull();
+    QApplication::restoreOverrideCursor();
 
-   if (ret.success)
-   {
-      if (ret.output.contains("merge conflict", Qt::CaseInsensitive))
-         emit signalPullConflict();
-      else
-         emit requestFullReload();
-   }
-   else
-   {
-      if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
-          && ret.output.contains("causing a conflict", Qt::CaseInsensitive))
-      {
-         emit signalPullConflict();
-      }
-      else
-      {
-         QMessageBox msgBox(QMessageBox::Critical, tr("Error while pulling"),
-                            QString(tr("There were problems during the pull operation. Please, see the detailed "
-                                       "description for more information.")),
-                            QMessageBox::Ok, this);
-         msgBox.setDetailedText(ret.output);
-         msgBox.exec();
-      }
-   }
+    if (ret.success)
+    {
+        if (ret.output.contains("merge conflict", Qt::CaseInsensitive))
+            emit signalPullConflict();
+        else
+            emit requestFullReload();
+    }
+    else
+    {
+        if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
+            && ret.output.contains("causing a conflict", Qt::CaseInsensitive))
+        {
+            emit signalPullConflict();
+        }
+        else
+        {
+            QMessageBox msgBox(
+                QMessageBox::Critical,
+                tr("Error while pulling"),
+                QString(tr("There were problems during the pull operation. Please, see the detailed "
+                           "description for more information.")),
+                QMessageBox::Ok,
+                this);
+            msgBox.setDetailedText(ret.output);
+            msgBox.exec();
+        }
+    }
 }
 
 void Controls::fetchAll()
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   GitQlientSettings settings(mGit->getGitDir());
-   QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->fetch();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    GitQlientSettings settings(mGit->getGitDir());
+    QScopedPointer<GitRemote> git(new GitRemote(mGit));
+    const auto ret = git->fetch();
+    QApplication::restoreOverrideCursor();
 
-   if (!ret)
-      emit requestFullReload();
+    if (!ret)
+        emit requestFullReload();
 }
 
-void Controls::activateMergeWarning()
-{
-   mMergeWarning->setVisible(true);
-}
+void Controls::activateMergeWarning() { mMergeWarning->setVisible(true); }
 
-void Controls::disableMergeWarning()
-{
-   mMergeWarning->setVisible(false);
-}
+void Controls::disableMergeWarning() { mMergeWarning->setVisible(false); }
 
 ControlsMainViews Controls::getCurrentSelectedButton() const
 {
-   return mStashPush->isChecked() ? ControlsMainViews::Blame : ControlsMainViews::History;
+    return mStashPush->isChecked() ? ControlsMainViews::Blame : ControlsMainViews::History;
 }
 
-QToolButton *Controls::createToolButton(const QString &iconPath, const QString &tooltip,
-                                        const QKeySequence &shortcut)
+QToolButton* Controls::createToolButton(const QString& iconPath, const QString& tooltip, const QKeySequence& shortcut)
 {
-   auto button = new QToolButton(this);
-   button->setIcon(QIcon(iconPath));
-   button->setIconSize(QSize(22, 22));
-   button->setToolTip(tooltip);
-   button->setToolButtonStyle(Qt::ToolButtonIconOnly);
-   if (!shortcut.isEmpty())
-   {
-      button->setShortcut(shortcut);
-   }
-   return button;
+    auto button = new QToolButton(this);
+    button->setIcon(QIcon(iconPath));
+    button->setIconSize(QSize(22, 22));
+    button->setToolTip(tooltip);
+    button->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    if (!shortcut.isEmpty())
+    {
+        button->setShortcut(shortcut);
+    }
+    return button;
 }
 
 void Controls::pushCurrentBranch()
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->push();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitRemote> git(new GitRemote(mGit));
+    const auto ret = git->push();
+    QApplication::restoreOverrideCursor();
 
-   if (ret.output.contains("has no upstream branch"))
-   {
-      const auto currentBranch = mGit->getCurrentBranch();
-      BranchDlg dlg({ currentBranch, BranchDlgMode::PUSH_UPSTREAM, mCache, mGit });
-      const auto dlgRet = dlg.exec();
+    if (ret.output.contains("has no upstream branch"))
+    {
+        const auto currentBranch = mGit->getCurrentBranch();
+        BranchDlg dlg({currentBranch, BranchDlgMode::PUSH_UPSTREAM, mCache, mGit});
+        const auto dlgRet = dlg.exec();
 
-      if (dlgRet == QDialog::Accepted)
-         emit signalRefreshPRsCache();
-   }
-   else if (ret.success)
-   {
-      const auto currentBranch = mGit->getCurrentBranch();
-      QScopedPointer<GitConfig> git(new GitConfig(mGit));
-      const auto remote = git->getRemoteForBranch(currentBranch);
+        if (dlgRet == QDialog::Accepted)
+            emit signalRefreshPRsCache();
+    }
+    else if (ret.success)
+    {
+        const auto currentBranch = mGit->getCurrentBranch();
+        QScopedPointer<GitConfig> git(new GitConfig(mGit));
+        const auto remote = git->getRemoteForBranch(currentBranch);
 
-      if (remote.success)
-      {
-         const auto oldSha = mCache->getShaOfReference(QString("%1/%2").arg(remote.output, currentBranch),
-                                                       References::Type::RemoteBranche);
-         const auto sha = mCache->getShaOfReference(currentBranch, References::Type::LocalBranch);
-         mCache->deleteReference(oldSha, References::Type::RemoteBranche,
-                                 QString("%1/%2").arg(remote.output, currentBranch));
-         mCache->insertReference(sha, References::Type::RemoteBranche,
-                                 QString("%1/%2").arg(remote.output, currentBranch));
-         emit mCache->signalCacheUpdated();
-         emit signalRefreshPRsCache();
-      }
-   }
-   else
-   {
-      QMessageBox msgBox(
-          QMessageBox::Critical, tr("Error while pushing"),
-          QString(tr("There were problems during the push operation. Please, see the detailed description "
-                     "for more information.")),
-          QMessageBox::Ok, this);
-      msgBox.setDetailedText(ret.output);
-      msgBox.exec();
-   }
+        if (remote.success)
+        {
+            const auto oldSha = mCache->getShaOfReference(
+                QString("%1/%2").arg(remote.output, currentBranch), References::Type::RemoteBranche);
+            const auto sha = mCache->getShaOfReference(currentBranch, References::Type::LocalBranch);
+            mCache->deleteReference(
+                oldSha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, currentBranch));
+            mCache->insertReference(
+                sha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, currentBranch));
+            emit mCache->signalCacheUpdated();
+            emit signalRefreshPRsCache();
+        }
+    }
+    else
+    {
+        QMessageBox msgBox(
+            QMessageBox::Critical,
+            tr("Error while pushing"),
+            QString(tr("There were problems during the push operation. Please, see the detailed description "
+                       "for more information.")),
+            QMessageBox::Ok,
+            this);
+        msgBox.setDetailedText(ret.output);
+        msgBox.exec();
+    }
 }
 
 void Controls::pruneBranches()
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitRemote> git(new GitRemote(mGit));
-   const auto ret = git->prune();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitRemote> git(new GitRemote(mGit));
+    const auto ret = git->prune();
+    QApplication::restoreOverrideCursor();
 
-   if (!ret.success)
-      emit requestReferencesReload();
+    if (!ret.success)
+        emit requestReferencesReload();
 }
 
-bool Controls::eventFilter(QObject *obj, QEvent *event)
+bool Controls::eventFilter(QObject* obj, QEvent* event)
 {
-   if (const auto menu = qobject_cast<QMenu *>(obj); menu && event->type() == QEvent::Show)
-   {
-      auto localPos = menu->parentWidget()->pos();
-      localPos.setX(localPos.x());
-      auto pos = mapToGlobal(localPos);
-      menu->show();
-      pos.setY(pos.y() + menu->parentWidget()->height());
-      menu->move(pos);
-      return true;
-   }
+    if (const auto menu = qobject_cast<QMenu*>(obj); menu && event->type() == QEvent::Show)
+    {
+        auto localPos = menu->parentWidget()->pos();
+        localPos.setX(localPos.x());
+        auto pos = mapToGlobal(localPos);
+        menu->show();
+        pos.setY(pos.y() + menu->parentWidget()->height());
+        menu->move(pos);
+        return true;
+    }
 
-   return false;
+    return false;
 }

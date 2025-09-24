@@ -9,52 +9,52 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-PullDlg::PullDlg(QSharedPointer<GitBase> git, const QString &text, QWidget *parent)
-   : QDialog(parent)
-   , ui(new Ui::PullDlg)
-   , mGit(git)
+PullDlg::PullDlg(QSharedPointer<GitBase> git, const QString& text, QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::PullDlg)
+    , mGit(git)
 {
-   ui->setupUi(this);
+    ui->setupUi(this);
 
-   ui->lText->setText(text);
-   ui->lQuestion->setText(tr("<strong>Would you like to pull the last changes?</strong>"));
-   ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Pull");
+    ui->lText->setText(text);
+    ui->lQuestion->setText(tr("<strong>Would you like to pull the last changes?</strong>"));
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Pull");
 }
 
-PullDlg::~PullDlg()
-{
-   delete ui;
-}
+PullDlg::~PullDlg() { delete ui; }
 
 void PullDlg::accept()
 {
-   QScopedPointer<GitRemote> git(new GitRemote(mGit));
+    QScopedPointer<GitRemote> git(new GitRemote(mGit));
 
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   const auto ret = git->pull();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    const auto ret = git->pull();
+    QApplication::restoreOverrideCursor();
 
-   if (ret.success)
-   {
-      emit signalRepositoryUpdated();
+    if (ret.success)
+    {
+        emit signalRepositoryUpdated();
 
-      QDialog::accept();
-   }
-   else
-   {
-      if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
-          && ret.output.contains("causing a conflict", Qt::CaseInsensitive))
-      {
-         emit signalPullConflict();
-      }
-      else
-      {
-         QMessageBox msgBox(QMessageBox::Critical, tr("Error while pulling"),
-                            QString(tr("There were problems during the pull operation. Please, see the detailed "
-                                       "description for more information.")),
-                            QMessageBox::Ok, this);
-         msgBox.setDetailedText(ret.output);
-         msgBox.exec();
-      }
-   }
+        QDialog::accept();
+    }
+    else
+    {
+        if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
+            && ret.output.contains("causing a conflict", Qt::CaseInsensitive))
+        {
+            emit signalPullConflict();
+        }
+        else
+        {
+            QMessageBox msgBox(
+                QMessageBox::Critical,
+                tr("Error while pulling"),
+                QString(tr("There were problems during the pull operation. Please, see the detailed "
+                           "description for more information.")),
+                QMessageBox::Ok,
+                this);
+            msgBox.setDetailedText(ret.output);
+            msgBox.exec();
+        }
+    }
 }

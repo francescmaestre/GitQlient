@@ -12,47 +12,48 @@ class BranchesViewDelegate;
 
 class RefTreeWidget : public QWidget
 {
-   Q_OBJECT
+    Q_OBJECT
 
 signals:
-   void fullReload();
-   void logReload();
-   void signalSelectCommit(const QString &sha);
-   void signalMergeRequired(const QString &currentBranch, const QString &fromBranch);
-   void mergeSqushRequested(const QString &origin, const QString &destination);
-   void signalPullConflict();
-   void clearSelection();
+    void fullReload();
+    void logReload();
+    void signalSelectCommit(const QString& sha);
+    void signalMergeRequired(const QString& currentBranch, const QString& fromBranch);
+    void mergeSqushRequested(const QString& origin, const QString& destination);
+    void signalPullConflict();
+    void clearSelection();
 
 public:
-   enum RefType
-   {
-      LocalBranches,
-      RemoteBranches,
-      Tags
-   };
+    enum RefType
+    {
+        LocalBranches,
+        RemoteBranches,
+        Tags
+    };
 
-   explicit RefTreeWidget(const QString &title,
-                          const QString &settingsKey,
-                          RefType type,
-                          const QSharedPointer<GitCache> &cache,
-                          const QSharedPointer<GitBase> &git,
-                          QWidget *parent = nullptr);
-   ~RefTreeWidget();
+    explicit RefTreeWidget(
+        const QString& title,
+        const QString& settingsKey,
+        RefType type,
+        const QSharedPointer<GitCache>& cache,
+        const QSharedPointer<GitBase>& git,
+        QWidget* parent = nullptr);
+    ~RefTreeWidget();
 
-   void setCount(int count);
-   void adjustBranchesTree();
-   void reloadCurrentBranchLink();
-   void clear();
-   void reloadVisibility();
-   void addItems(bool isCurrentBranch, const QString &fullBranchName, const QString &sha);
+    void setCount(int count);
+    void adjustBranchesTree();
+    void reloadCurrentBranchLink();
+    void clear();
+    void reloadVisibility();
+    void addItems(bool isCurrentBranch, const QString& fullBranchName, const QString& sha);
 
 private:
-   ClickableFrame *mFrame = nullptr;
-   BranchTreeWidget *mTreeWidget = nullptr;
-   RefType mRefType;
-   QString mSettingsKey;
-   std::unique_ptr<GitQlientSettings> mSettings;
-   BranchesViewDelegate *mDelegate = nullptr;
+    ClickableFrame* mFrame = nullptr;
+    BranchTreeWidget* mTreeWidget = nullptr;
+    RefType mRefType;
+    QString mSettingsKey;
+    std::unique_ptr<GitQlientSettings> mSettings;
+    BranchesViewDelegate* mDelegate = nullptr;
 
-   void saveExpansionState(bool expanded);
+    void saveExpansionState(bool expanded);
 };

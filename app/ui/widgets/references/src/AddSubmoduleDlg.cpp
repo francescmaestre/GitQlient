@@ -4,31 +4,28 @@
 #include <GitSubmodules.h>
 #include <system/GitQlientStyles.h>
 
-AddSubmoduleDlg::AddSubmoduleDlg(const QSharedPointer<GitSubmodules> &git, QWidget *parent)
-   : QDialog(parent)
-   , ui(new Ui::AddSubmoduleDlg)
-   , mGit(git)
+AddSubmoduleDlg::AddSubmoduleDlg(const QSharedPointer<GitSubmodules>& git, QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::AddSubmoduleDlg)
+    , mGit(git)
 {
-   ui->setupUi(this);
+    ui->setupUi(this);
 
-   connect(ui->lePath, &QLineEdit::returnPressed, this, &AddSubmoduleDlg::accept);
-   connect(ui->leUrl, &QLineEdit::returnPressed, this, &AddSubmoduleDlg::accept);
-   connect(ui->pbAccept, &QPushButton::clicked, this, &AddSubmoduleDlg::accept);
-   connect(ui->pbCancel, &QPushButton::clicked, this, &QDialog::reject);
+    connect(ui->lePath, &QLineEdit::returnPressed, this, &AddSubmoduleDlg::accept);
+    connect(ui->leUrl, &QLineEdit::returnPressed, this, &AddSubmoduleDlg::accept);
+    connect(ui->pbAccept, &QPushButton::clicked, this, &AddSubmoduleDlg::accept);
+    connect(ui->pbCancel, &QPushButton::clicked, this, &QDialog::reject);
 }
 
-AddSubmoduleDlg::~AddSubmoduleDlg()
-{
-   delete ui;
-}
+AddSubmoduleDlg::~AddSubmoduleDlg() { delete ui; }
 
 void AddSubmoduleDlg::accept()
 {
-   const auto submodulePath = ui->lePath->text();
-   const auto submoduleUrl = ui->leUrl->text();
+    const auto submodulePath = ui->lePath->text();
+    const auto submoduleUrl = ui->leUrl->text();
 
-   const auto ret = mGit->submoduleAdd(submoduleUrl, submodulePath);
+    const auto ret = mGit->submoduleAdd(submoduleUrl, submodulePath);
 
-   if (ret)
-      QDialog::accept();
+    if (ret)
+        QDialog::accept();
 }

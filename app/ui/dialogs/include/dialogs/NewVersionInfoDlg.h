@@ -4,23 +4,21 @@
 
 namespace Ui
 {
-class NewVersionInfoDlg;
+    class NewVersionInfoDlg;
 }
 
 class NewVersionInfoDlg : public QDialog
 {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   explicit NewVersionInfoDlg(QWidget *parent = nullptr);
-   ~NewVersionInfoDlg();
+    explicit NewVersionInfoDlg(QWidget* parent = nullptr);
+    ~NewVersionInfoDlg();
 
 private:
-   Ui::NewVersionInfoDlg *ui;
-
-   void goPreviousPage();
-   void goNextPage();
-
-   void createAddPage(const QString &title, const QStringList &imgsSrc, const QString &desc);
-   void saveConfig();
+    Ui::NewVersionInfoDlg* ui;
+    void goPreviousPage();
+    void goNextPage();
+    void createAddPage(const QString& title, const QStringList& imgsSrc, const QString& desc);
+    void saveConfig();
 };

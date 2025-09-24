@@ -11,37 +11,37 @@
 
 using namespace QLogger;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-   QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-   QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-   QApplication::setOrganizationName("CescSoftware");
-   QApplication::setOrganizationDomain("francescmm.com");
-   QApplication::setApplicationName("GitQlient");
-   QApplication::setApplicationVersion(VER);
-   QApplication::setWindowIcon(QIcon(":/icons/GitQlientLogoIco"));
+    QApplication::setOrganizationName("CescSoftware");
+    QApplication::setOrganizationDomain("francescmm.com");
+    QApplication::setApplicationName("GitQlient");
+    QApplication::setApplicationVersion(VER);
+    QApplication::setWindowIcon(QIcon(":/icons/GitQlientLogoIco"));
 
-   QFontDatabase::addApplicationFont(":/DejaVuSans");
-   QFontDatabase::addApplicationFont(":/DejaVuSansMono");
+    QFontDatabase::addApplicationFont(":/DejaVuSans");
+    QFontDatabase::addApplicationFont(":/DejaVuSansMono");
 
-   const auto languageFile = GitQlientSettings().globalValue("UILanguage", "gitqlient_en").toString();
-   QTranslator qtTranslator;
+    const auto languageFile = GitQlientSettings().globalValue("UILanguage", "gitqlient_en").toString();
+    QTranslator qtTranslator;
 
-   if (qtTranslator.load(languageFile, QString::fromUtf8(":/translations/")))
-      app.installTranslator(&qtTranslator);
+    if (qtTranslator.load(languageFile, QString::fromUtf8(":/translations/")))
+        app.installTranslator(&qtTranslator);
 
-   QStringList repos;
-   if (GitQlient::parseArguments(app.arguments(), &repos))
-   {
-      GitQlient mainWin;
-      mainWin.setRepositories(repos);
-      mainWin.restorePinnedRepos();
-      mainWin.show();
+    QStringList repos;
+    if (GitQlient::parseArguments(app.arguments(), &repos))
+    {
+        GitQlient mainWin;
+        mainWin.setRepositories(repos);
+        mainWin.restorePinnedRepos();
+        mainWin.show();
 
-      return app.exec();
-   }
+        return app.exec();
+    }
 
-   return 0;
+    return 0;
 }

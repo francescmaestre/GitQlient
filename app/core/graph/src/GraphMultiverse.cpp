@@ -3,8 +3,6 @@
 namespace Graph
 {
 
-Multiverse::Multiverse()
-{
-}
+    Multiverse::Multiverse() { }
 
-}
+} // namespace Graph

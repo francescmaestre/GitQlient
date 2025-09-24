@@ -1,75 +1,78 @@
 #include "FileContextMenu.h"
 
-#include <system/GitQlientSettings.h>
 #include <QApplication>
 #include <QClipboard>
 #include <QDir>
 #include <QMessageBox>
 #include <QProcess>
+#include <system/GitQlientSettings.h>
 
-FileContextMenu::FileContextMenu(const QString gitProject, const QString &file, bool editionAllowed, QWidget *parent)
-   : QMenu(parent)
-   , mFile(file)
-   , mGitProject(gitProject.endsWith("/") ? gitProject : gitProject + QString("/"))
+FileContextMenu::FileContextMenu(const QString gitProject, const QString& file, bool editionAllowed, QWidget* parent)
+    : QMenu(parent)
+    , mFile(file)
+    , mGitProject(gitProject.endsWith("/") ? gitProject : gitProject + QString("/"))
 {
-   setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_DeleteOnClose);
 
-   const auto fileHistoryAction = addAction(tr("History"));
-   fileHistoryAction->setEnabled(false);
+    const auto fileHistoryAction = addAction(tr("History"));
+    fileHistoryAction->setEnabled(false);
 
-   connect(addAction(tr("Blame")), &QAction::triggered, this, &FileContextMenu::signalShowFileHistory);
+    connect(addAction(tr("Blame")), &QAction::triggered, this, &FileContextMenu::signalShowFileHistory);
 
-   const auto fileDiffAction = addAction(tr("Diff"));
-   connect(fileDiffAction, &QAction::triggered, this, &FileContextMenu::signalOpenFileDiff);
+    const auto fileDiffAction = addAction(tr("Diff"));
+    connect(fileDiffAction, &QAction::triggered, this, &FileContextMenu::signalOpenFileDiff);
 
-   addSeparator();
+    addSeparator();
 
-   if (editionAllowed)
-   {
-      connect(addAction(tr("Edit file")), &QAction::triggered, this, &FileContextMenu::signalEditFile);
+    if (editionAllowed)
+    {
+        connect(addAction(tr("Edit file")), &QAction::triggered, this, &FileContextMenu::signalEditFile);
 
-      addSeparator();
-   }
+        addSeparator();
+    }
 
-   connect(addAction(tr("Open containing folder")), &QAction::triggered, this, &FileContextMenu::openFileExplorer);
-   connect(addAction(tr("Copy path")), &QAction::triggered, this,
-           [this]() { QApplication::clipboard()->setText(mFile); });
+    connect(addAction(tr("Open containing folder")), &QAction::triggered, this, &FileContextMenu::openFileExplorer);
+    connect(addAction(tr("Copy path")), &QAction::triggered, this, [this]() {
+        QApplication::clipboard()->setText(mFile);
+    });
 }
 
 void FileContextMenu::openFileExplorer()
 {
-   QString absoluteFilePath = mGitProject + mFile;
-   absoluteFilePath = absoluteFilePath.left(absoluteFilePath.lastIndexOf("/"));
-   QString app;
-   QStringList arguments;
+    QString absoluteFilePath = mGitProject + mFile;
+    absoluteFilePath = absoluteFilePath.left(absoluteFilePath.lastIndexOf("/"));
+    QString app;
+    QStringList arguments;
 #ifdef Q_OS_LINUX
-   GitQlientSettings settings;
-   const auto fileExplorer = settings.globalValue("FileBrowser", "xdg-open").toString();
+    GitQlientSettings settings;
+    const auto fileExplorer = settings.globalValue("FileBrowser", "xdg-open").toString();
 
-   if (fileExplorer.isEmpty())
-   {
-      QMessageBox::critical(parentWidget(), tr("Error opening file explorer"),
-                            tr("The file explorer value in the settings is invalid. Please define what file explorer "
-                               "you want to use to open file locations."));
-      return;
-   }
+    if (fileExplorer.isEmpty())
+    {
+        QMessageBox::critical(
+            parentWidget(),
+            tr("Error opening file explorer"),
+            tr("The file explorer value in the settings is invalid. Please define what file explorer "
+               "you want to use to open file locations."));
+        return;
+    }
 
-   arguments = fileExplorer.split(" ");
-   arguments.append(absoluteFilePath);
-   app = arguments.takeFirst();
+    arguments = fileExplorer.split(" ");
+    arguments.append(absoluteFilePath);
+    app = arguments.takeFirst();
 #elif defined(Q_OS_WIN)
-   app = QString::fromUtf8("explorer.ext");
-   arguments = QStringList { "/select", QDir::toNativeSeparators(absoluteFilePath) };
+    app = QString::fromUtf8("explorer.ext");
+    arguments = QStringList{"/select", QDir::toNativeSeparators(absoluteFilePath)};
 #elif defined(Q_OS_MACOS)
-   app = QString::fromUtf8("/usr/bin/open");
-   arguments = QStringList { "-R", absoluteFilePath };
+    app = QString::fromUtf8("/usr/bin/open");
+    arguments = QStringList{"-R", absoluteFilePath};
 #endif
 
-   auto ret = QProcess::startDetached(app, arguments);
+    auto ret = QProcess::startDetached(app, arguments);
 
-   if (!ret)
-   {
-      QMessageBox::critical(parentWidget(), tr("Error opening file explorer"),
-                            tr("There was a problem opening the file explorer."));
-   }
+    if (!ret)
+    {
+        QMessageBox::critical(
+            parentWidget(), tr("Error opening file explorer"), tr("There was a problem opening the file explorer."));
+    }
 }

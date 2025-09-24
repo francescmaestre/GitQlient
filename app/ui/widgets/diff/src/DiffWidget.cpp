@@ -3,11 +3,11 @@
 #include <commit-widgets/FileListWidget.h>
 
 #include <GitHistory.h>
-#include <commit-widgets/CommitInfoPanel.h>
 #include <cache/GitCache.h>
-#include <system/GitQlientSettings.h>
+#include <commit-widgets/CommitInfoPanel.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FullDiffWidget.h>
+#include <system/GitQlientSettings.h>
 
 #include <QLogger>
 #include <QPinnableTabWidget.h>
@@ -17,209 +17,207 @@
 
 using namespace QLogger;
 
-DiffWidget::DiffWidget(const QSharedPointer<GitBase> git, QSharedPointer<GitCache> cache, QWidget *parent)
-   : QFrame(parent)
-   , mGit(git)
-   , mCache(cache)
-   , mInfoPanelBase(new CommitInfoPanel(this))
-   , mInfoPanelParent(new CommitInfoPanel(this))
-   , mCenterStackedWidget(new QPinnableTabWidget(this))
-   , fileListWidget(new FileListWidget(mGit, cache, this))
+DiffWidget::DiffWidget(const QSharedPointer<GitBase> git, QSharedPointer<GitCache> cache, QWidget* parent)
+    : QFrame(parent)
+    , mGit(git)
+    , mCache(cache)
+    , mInfoPanelBase(new CommitInfoPanel(this))
+    , mInfoPanelParent(new CommitInfoPanel(this))
+    , mCenterStackedWidget(new QPinnableTabWidget(this))
+    , fileListWidget(new FileListWidget(mGit, cache, this))
 {
-   setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_DeleteOnClose);
 
-   mInfoPanelParent->setObjectName("InfoPanel");
-   mInfoPanelParent->setFixedWidth(350);
+    mInfoPanelParent->setObjectName("InfoPanel");
+    mInfoPanelParent->setFixedWidth(350);
 
-   mCenterStackedWidget->setCurrentIndex(0);
-   mCenterStackedWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-   connect(mCenterStackedWidget, &QTabWidget::currentChanged, this, &DiffWidget::changeSelection);
-   connect(mCenterStackedWidget, &QTabWidget::tabCloseRequested, this, &DiffWidget::onTabClosed);
+    mCenterStackedWidget->setCurrentIndex(0);
+    mCenterStackedWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    connect(mCenterStackedWidget, &QTabWidget::currentChanged, this, &DiffWidget::changeSelection);
+    connect(mCenterStackedWidget, &QTabWidget::tabCloseRequested, this, &DiffWidget::onTabClosed);
 
-   const auto wipSeparator = new QFrame(this);
-   wipSeparator->setObjectName("separator");
+    const auto wipSeparator = new QFrame(this);
+    wipSeparator->setObjectName("separator");
 
-   const auto infoPanel = new QFrame(this);
-   infoPanel->setFixedWidth(350);
-   infoPanel->setObjectName("InfoPanel");
-   const auto diffsLayout = new QVBoxLayout(infoPanel);
-   diffsLayout->setContentsMargins(QMargins());
-   diffsLayout->setSpacing(0);
-   diffsLayout->addWidget(mInfoPanelBase);
-   diffsLayout->addWidget(wipSeparator);
-   diffsLayout->addWidget(fileListWidget);
+    const auto infoPanel = new QFrame(this);
+    infoPanel->setFixedWidth(350);
+    infoPanel->setObjectName("InfoPanel");
+    const auto diffsLayout = new QVBoxLayout(infoPanel);
+    diffsLayout->setContentsMargins(QMargins());
+    diffsLayout->setSpacing(0);
+    diffsLayout->addWidget(mInfoPanelBase);
+    diffsLayout->addWidget(wipSeparator);
+    diffsLayout->addWidget(fileListWidget);
 
-   const auto panelLayout = new QVBoxLayout();
-   panelLayout->setContentsMargins(QMargins());
-   panelLayout->setSpacing(0);
-   panelLayout->addWidget(infoPanel);
-   panelLayout->addStretch();
-   panelLayout->addWidget(mInfoPanelParent);
+    const auto panelLayout = new QVBoxLayout();
+    panelLayout->setContentsMargins(QMargins());
+    panelLayout->setSpacing(0);
+    panelLayout->addWidget(infoPanel);
+    panelLayout->addStretch();
+    panelLayout->addWidget(mInfoPanelParent);
 
-   const auto layout = new QHBoxLayout();
-   layout->setContentsMargins(QMargins());
-   layout->addLayout(panelLayout);
-   layout->setSpacing(10);
-   layout->addWidget(mCenterStackedWidget);
+    const auto layout = new QHBoxLayout();
+    layout->setContentsMargins(QMargins());
+    layout->addLayout(panelLayout);
+    layout->setSpacing(10);
+    layout->addWidget(mCenterStackedWidget);
 
-   setLayout(layout);
+    setLayout(layout);
 
-   connect(fileListWidget, &FileListWidget::itemDoubleClicked, this, &DiffWidget::onDoubleClick);
-   connect(fileListWidget, &FileListWidget::signalShowFileHistory, this, &DiffWidget::signalShowFileHistory);
+    connect(fileListWidget, &FileListWidget::itemDoubleClicked, this, &DiffWidget::onDoubleClick);
+    connect(fileListWidget, &FileListWidget::signalShowFileHistory, this, &DiffWidget::signalShowFileHistory);
 
-   fileListWidget->setVisible(false);
+    fileListWidget->setVisible(false);
 }
 
 DiffWidget::~DiffWidget()
 {
-   mDiffWidgets.clear();
-   blockSignals(true);
+    mDiffWidgets.clear();
+    blockSignals(true);
 }
 
 void DiffWidget::reload()
 {
-   if (mCenterStackedWidget->count() > 0)
-   {
-      if (const auto fileDiff = dynamic_cast<FileDiffWidget *>(mCenterStackedWidget->currentWidget()))
-         fileDiff->reload();
-   }
+    if (mCenterStackedWidget->count() > 0)
+    {
+        if (const auto fileDiff = dynamic_cast<FileDiffWidget*>(mCenterStackedWidget->currentWidget()))
+            fileDiff->reload();
+    }
 }
 
-void DiffWidget::clear() const
+void DiffWidget::clear() const { mCenterStackedWidget->setCurrentIndex(0); }
+
+bool DiffWidget::loadFileDiff(const QString& currentSha, const QString& previousSha, const QString& file)
 {
-   mCenterStackedWidget->setCurrentIndex(0);
+    const auto id = QString("%1 (%2 \u2194 %3)").arg(file.split("/").last(), currentSha.left(6), previousSha.left(6));
+
+    mCurrentSha = currentSha;
+    mParentSha = previousSha;
+
+    if (!mDiffWidgets.contains(id))
+    {
+        QLog_Info(
+            "UI",
+            QString("Requested diff for file {%1} on between commits {%2} and {%3}")
+                .arg(file, currentSha, previousSha));
+
+        const auto fileDiffWidget = new FileDiffWidget(mGit, mCache);
+        const auto fileWithModifications = fileDiffWidget->setup(file, false, false, currentSha, previousSha);
+
+        if (fileWithModifications)
+        {
+            mInfoPanelBase->configure(mCache->commitInfo(currentSha));
+            mInfoPanelParent->configure(mCache->commitInfo(previousSha));
+
+            mDiffWidgets.insert(id, fileDiffWidget);
+
+            const auto index = mCenterStackedWidget->addTab(fileDiffWidget, file.split("/").last());
+            mCenterStackedWidget->setCurrentIndex(index);
+
+            fileListWidget->insertFiles(currentSha, previousSha);
+            fileListWidget->setVisible(true);
+
+            return true;
+        }
+        else
+        {
+            QMessageBox::information(
+                this, tr("No modifications"), tr("There are no content modifications for this file"));
+            delete fileDiffWidget;
+
+            return false;
+        }
+    }
+    else
+    {
+        const auto diffWidget = mDiffWidgets.value(id);
+        const auto diff = dynamic_cast<FileDiffWidget*>(diffWidget);
+        diff->reload();
+
+        mCenterStackedWidget->setCurrentWidget(diff);
+
+        return true;
+    }
 }
 
-bool DiffWidget::loadFileDiff(const QString &currentSha, const QString &previousSha, const QString &file)
+bool DiffWidget::loadCommitDiff(const QString& sha, const QString& parentSha)
 {
-   const auto id = QString("%1 (%2 \u2194 %3)").arg(file.split("/").last(), currentSha.left(6), previousSha.left(6));
+    const auto id = QString("Commit diff (%1 \u2194 %2)").arg(sha.left(6), parentSha.left(6));
 
-   mCurrentSha = currentSha;
-   mParentSha = previousSha;
+    mCurrentSha = sha;
+    mParentSha = parentSha;
 
-   if (!mDiffWidgets.contains(id))
-   {
-      QLog_Info(
-          "UI",
-          QString("Requested diff for file {%1} on between commits {%2} and {%3}").arg(file, currentSha, previousSha));
+    if (!mDiffWidgets.contains(id))
+    {
+        QScopedPointer<GitHistory> git(new GitHistory(mGit));
+        const auto ret = git->getCommitDiff(sha, parentSha);
 
-      const auto fileDiffWidget = new FileDiffWidget(mGit, mCache);
-      const auto fileWithModifications = fileDiffWidget->setup(file, false, false, currentSha, previousSha);
+        if (ret.success && !ret.output.isEmpty())
+        {
+            const auto fullDiffWidget = new FullDiffWidget(mGit, mCache);
+            fullDiffWidget->loadDiff(sha, parentSha, ret.output);
 
-      if (fileWithModifications)
-      {
-         mInfoPanelBase->configure(mCache->commitInfo(currentSha));
-         mInfoPanelParent->configure(mCache->commitInfo(previousSha));
+            mInfoPanelBase->configure(mCache->commitInfo(sha));
+            mInfoPanelParent->configure(mCache->commitInfo(parentSha));
 
-         mDiffWidgets.insert(id, fileDiffWidget);
+            mDiffWidgets.insert(id, fullDiffWidget);
 
-         const auto index = mCenterStackedWidget->addTab(fileDiffWidget, file.split("/").last());
-         mCenterStackedWidget->setCurrentIndex(index);
+            const auto index = mCenterStackedWidget->addTab(
+                fullDiffWidget, QString("(%1 \u2194 %2)").arg(sha.left(6), parentSha.left(6)));
+            mCenterStackedWidget->setCurrentIndex(index);
 
-         fileListWidget->insertFiles(currentSha, previousSha);
-         fileListWidget->setVisible(true);
+            fileListWidget->insertFiles(sha, parentSha);
+            fileListWidget->setVisible(true);
 
-         return true;
-      }
-      else
-      {
-         QMessageBox::information(this, tr("No modifications"), tr("There are no content modifications for this file"));
-         delete fileDiffWidget;
+            return true;
+        }
+        else
+            QMessageBox::information(
+                this,
+                tr("No diff to show!"),
+                tr("There is no diff to show between commit SHAs {%1} and {%2}").arg(sha, parentSha));
 
-         return false;
-      }
-   }
-   else
-   {
-      const auto diffWidget = mDiffWidgets.value(id);
-      const auto diff = dynamic_cast<FileDiffWidget *>(diffWidget);
-      diff->reload();
+        return false;
+    }
+    else
+    {
+        const auto diffWidget = mDiffWidgets.value(id);
+        const auto diff = dynamic_cast<FullDiffWidget*>(diffWidget);
+        diff->reload();
+        mCenterStackedWidget->setCurrentWidget(diff);
+    }
 
-      mCenterStackedWidget->setCurrentWidget(diff);
-
-      return true;
-   }
-}
-
-bool DiffWidget::loadCommitDiff(const QString &sha, const QString &parentSha)
-{
-   const auto id = QString("Commit diff (%1 \u2194 %2)").arg(sha.left(6), parentSha.left(6));
-
-   mCurrentSha = sha;
-   mParentSha = parentSha;
-
-   if (!mDiffWidgets.contains(id))
-   {
-      QScopedPointer<GitHistory> git(new GitHistory(mGit));
-      const auto ret = git->getCommitDiff(sha, parentSha);
-
-      if (ret.success && !ret.output.isEmpty())
-      {
-         const auto fullDiffWidget = new FullDiffWidget(mGit, mCache);
-         fullDiffWidget->loadDiff(sha, parentSha, ret.output);
-
-         mInfoPanelBase->configure(mCache->commitInfo(sha));
-         mInfoPanelParent->configure(mCache->commitInfo(parentSha));
-
-         mDiffWidgets.insert(id, fullDiffWidget);
-
-         const auto index = mCenterStackedWidget->addTab(fullDiffWidget,
-                                                         QString("(%1 \u2194 %2)").arg(sha.left(6), parentSha.left(6)));
-         mCenterStackedWidget->setCurrentIndex(index);
-
-         fileListWidget->insertFiles(sha, parentSha);
-         fileListWidget->setVisible(true);
-
-         return true;
-      }
-      else
-         QMessageBox::information(this, tr("No diff to show!"),
-                                  tr("There is no diff to show between commit SHAs {%1} and {%2}").arg(sha, parentSha));
-
-      return false;
-   }
-   else
-   {
-      const auto diffWidget = mDiffWidgets.value(id);
-      const auto diff = dynamic_cast<FullDiffWidget *>(diffWidget);
-      diff->reload();
-      mCenterStackedWidget->setCurrentWidget(diff);
-   }
-
-   return true;
+    return true;
 }
 
 void DiffWidget::onDiffFontSizeChanged()
 {
-   for (const auto &diffWidget : std::as_const(mDiffWidgets))
-      diffWidget->updateFontSize();
+    for (const auto& diffWidget : std::as_const(mDiffWidgets))
+        diffWidget->updateFontSize();
 }
 
 void DiffWidget::changeSelection(int index)
 {
-   const auto widget = qobject_cast<IDiffWidget *>(mCenterStackedWidget->widget(index));
+    const auto widget = qobject_cast<IDiffWidget*>(mCenterStackedWidget->widget(index));
 
-   if (widget)
-   {
-      mInfoPanelBase->configure(mCache->commitInfo(widget->getCurrentSha()));
-      mInfoPanelParent->configure(mCache->commitInfo(widget->getPreviousSha()));
-   }
-   else
-      emit signalDiffEmpty();
+    if (widget)
+    {
+        mInfoPanelBase->configure(mCache->commitInfo(widget->getCurrentSha()));
+        mInfoPanelParent->configure(mCache->commitInfo(widget->getPreviousSha()));
+    }
+    else
+        emit signalDiffEmpty();
 }
 
 void DiffWidget::onTabClosed(int index)
 {
-   const auto widget = qobject_cast<IDiffWidget *>(mCenterStackedWidget->widget(index));
+    const auto widget = qobject_cast<IDiffWidget*>(mCenterStackedWidget->widget(index));
 
-   if (widget)
-   {
-      const auto key = mDiffWidgets.key(widget);
-      mDiffWidgets.remove(key);
-   }
+    if (widget)
+    {
+        const auto key = mDiffWidgets.key(widget);
+        mDiffWidgets.remove(key);
+    }
 }
 
-void DiffWidget::onDoubleClick(QListWidgetItem *item)
-{
-   loadFileDiff(mCurrentSha, mParentSha, item->text());
-}
+void DiffWidget::onDoubleClick(QListWidgetItem* item) { loadFileDiff(mCurrentSha, mParentSha, item->text()); }

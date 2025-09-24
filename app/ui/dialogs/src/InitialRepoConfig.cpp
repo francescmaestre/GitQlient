@@ -7,53 +7,56 @@
 #include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
-InitialRepoConfig::InitialRepoConfig(const QSharedPointer<GitBase> &git,
-                                     const QSharedPointer<GitQlientSettings> &settings, QWidget *parent)
-   : QDialog(parent)
-   , ui(new Ui::InitialRepoConfig)
-   , mGit(git)
-   , mSettings(settings)
+InitialRepoConfig::InitialRepoConfig(
+    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& settings, QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::InitialRepoConfig)
+    , mGit(git)
+    , mSettings(settings)
 {
-   setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_DeleteOnClose);
 
-   ui->setupUi(this);
+    ui->setupUi(this);
 
-   ui->sbMaxCommits->setValue(settings->localValue("MaxCommits", 0).toInt());
+    ui->sbMaxCommits->setValue(settings->localValue("MaxCommits", 0).toInt());
 
-   QScopedPointer<GitConfig> gitConfig(new GitConfig(git));
+    QScopedPointer<GitConfig> gitConfig(new GitConfig(git));
 
-   const auto url = gitConfig->getServerUrl();
-   ui->credentialsFrames->setVisible(url.startsWith("https"));
+    const auto url = gitConfig->getServerUrl();
+    ui->credentialsFrames->setVisible(url.startsWith("https"));
 
-   connect(ui->buttonGroup, qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
-           &InitialRepoConfig::onCredentialsOptionChanged);
+    connect(
+        ui->buttonGroup,
+        qOverload<QAbstractButton*>(&QButtonGroup::buttonClicked),
+        this,
+        &InitialRepoConfig::onCredentialsOptionChanged);
 }
 
 InitialRepoConfig::~InitialRepoConfig()
 {
-   mSettings->setLocalValue("MaxCommits", ui->sbMaxCommits->value());
+    mSettings->setLocalValue("MaxCommits", ui->sbMaxCommits->value());
 
-   delete ui;
+    delete ui;
 }
 
 void InitialRepoConfig::accept()
 {
-   // Store credentials if allowed and the user checked the box
-   if (ui->credentialsFrames->isVisible() && ui->chbCredentials->isChecked())
-   {
-      if (ui->rbCache->isChecked())
-         GitCredentials::configureCache(ui->sbTimeout->value(), mGit);
-      else
-      {
-         CredentialsDlg dlg(mGit, this);
-         dlg.exec();
-      }
-   }
+    // Store credentials if allowed and the user checked the box
+    if (ui->credentialsFrames->isVisible() && ui->chbCredentials->isChecked())
+    {
+        if (ui->rbCache->isChecked())
+            GitCredentials::configureCache(ui->sbTimeout->value(), mGit);
+        else
+        {
+            CredentialsDlg dlg(mGit, this);
+            dlg.exec();
+        }
+    }
 
-   QDialog::accept();
+    QDialog::accept();
 }
 
-void InitialRepoConfig::onCredentialsOptionChanged(QAbstractButton *button)
+void InitialRepoConfig::onCredentialsOptionChanged(QAbstractButton* button)
 {
-   ui->sbTimeout->setEnabled(button == ui->rbCache);
+    ui->sbTimeout->setEnabled(button == ui->rbCache);
 }

@@ -60,202 +60,197 @@
 
 using namespace QLogger;
 
-FileDiffView::FileDiffView(QColor additionColor, QColor removalColor, QColor commentColor, QWidget *parent)
-   : QPlainTextEdit(parent)
+FileDiffView::FileDiffView(QColor additionColor, QColor removalColor, QColor commentColor, QWidget* parent)
+    : QPlainTextEdit(parent)
 {
-   mDiffHighlighter = new FileDiffHighlighter(additionColor, removalColor, commentColor, document());
+    mDiffHighlighter = new FileDiffHighlighter(additionColor, removalColor, commentColor, document());
 
-   setAttribute(Qt::WA_DeleteOnClose);
-   setReadOnly(true);
-   setContextMenuPolicy(Qt::CustomContextMenu);
+    setAttribute(Qt::WA_DeleteOnClose);
+    setReadOnly(true);
+    setContextMenuPolicy(Qt::CustomContextMenu);
 
-   connect(this, &FileDiffView::blockCountChanged, this, &FileDiffView::updateLineNumberAreaWidth);
-   connect(this, &FileDiffView::updateRequest, this, &FileDiffView::updateLineNumberArea);
-   connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &FileDiffView::signalScrollChanged);
+    connect(this, &FileDiffView::blockCountChanged, this, &FileDiffView::updateLineNumberAreaWidth);
+    connect(this, &FileDiffView::updateRequest, this, &FileDiffView::updateLineNumberArea);
+    connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &FileDiffView::signalScrollChanged);
 }
 
 FileDiffView::~FileDiffView()
 {
-   delete mDiffHighlighter;
+    delete mDiffHighlighter;
 
-   if (mLineNumberArea)
-      mLineNumberArea->deleteLater();
+    if (mLineNumberArea)
+        mLineNumberArea->deleteLater();
 }
 
-void FileDiffView::addNumberArea(LineNumberArea *numberArea)
+void FileDiffView::addNumberArea(LineNumberArea* numberArea)
 {
-   if (mLineNumberArea)
-      mLineNumberArea->deleteLater();
+    if (mLineNumberArea)
+        mLineNumberArea->deleteLater();
 
-   mLineNumberArea = numberArea;
+    mLineNumberArea = numberArea;
 
-   if (mLineNumberArea->commentsAllowed())
-   {
-      installEventFilter(this);
-      setMouseTracking(true);
-   }
+    if (mLineNumberArea->commentsAllowed())
+    {
+        installEventFilter(this);
+        setMouseTracking(true);
+    }
 }
 
-void FileDiffView::loadDiff(const QString &text, const QVector<ChunkDiffInfo::ChunkInfo> &fileDiffInfo)
+void FileDiffView::loadDiff(const QString& text, const QVector<ChunkDiffInfo::ChunkInfo>& fileDiffInfo)
 {
-   QLog_Trace("UI", QString("FileDiffView::loadDiff"));
+    QLog_Trace("UI", QString("FileDiffView::loadDiff"));
 
-   mFileDiffInfo = fileDiffInfo;
+    mFileDiffInfo = fileDiffInfo;
 
-   mDiffHighlighter->setDiffInfo(mFileDiffInfo);
+    mDiffHighlighter->setDiffInfo(mFileDiffInfo);
 
-   const auto pos = verticalScrollBar()->value();
-   auto cursor = textCursor();
+    const auto pos = verticalScrollBar()->value();
+    auto cursor = textCursor();
 
-   const auto cursorBlock = cursor.blockNumber();
-   const auto textInBlock = cursor.block().text();
-   const auto charsInBlock = textInBlock.length();
-   const auto posInBlock = cursor.positionInBlock();
-   const auto totalBlocks = blockCount();
+    const auto cursorBlock = cursor.blockNumber();
+    const auto textInBlock = cursor.block().text();
+    const auto charsInBlock = textInBlock.length();
+    const auto posInBlock = cursor.positionInBlock();
+    const auto totalBlocks = blockCount();
 
-   setPlainText(text);
+    setPlainText(text);
 
-   if (totalBlocks <= cursorBlock || charsInBlock < posInBlock)
-      return;
+    if (totalBlocks <= cursorBlock || charsInBlock < posInBlock)
+        return;
 
-   setTextCursor(cursor);
+    setTextCursor(cursor);
 
-   blockSignals(true);
-   verticalScrollBar()->setValue(pos);
-   blockSignals(false);
+    blockSignals(true);
+    verticalScrollBar()->setValue(pos);
+    blockSignals(false);
 
-   emit updateRequest(viewport()->rect(), 0);
+    emit updateRequest(viewport()->rect(), 0);
 
-   QLog_Trace("UI",
-              QString("FileDiffView::loadDiff - {%1} move scroll to pos {%2}").arg(objectName(), QString::number(pos)));
+    QLog_Trace(
+        "UI", QString("FileDiffView::loadDiff - {%1} move scroll to pos {%2}").arg(objectName(), QString::number(pos)));
 }
 
 void FileDiffView::moveScrollBarToPos(int value)
 {
-   blockSignals(true);
-   verticalScrollBar()->setValue(value);
-   blockSignals(false);
+    blockSignals(true);
+    verticalScrollBar()->setValue(value);
+    blockSignals(false);
 
-   emit updateRequest(viewport()->rect(), 0);
+    emit updateRequest(viewport()->rect(), 0);
 
-   if (mLineNumberArea)
-      mLineNumberArea->repaint();
+    if (mLineNumberArea)
+        mLineNumberArea->repaint();
 
-   QLog_Trace("UI",
-              QString("FileDiffView::moveScrollBarToPos - {%1} move scroll to pos {%2}")
-                  .arg(objectName(), QString::number(value)));
+    QLog_Trace(
+        "UI",
+        QString("FileDiffView::moveScrollBarToPos - {%1} move scroll to pos {%2}")
+            .arg(objectName(), QString::number(value)));
 }
 
 int FileDiffView::getHeight() const
 {
-   auto block = firstVisibleBlock();
-   auto height = 0;
+    auto block = firstVisibleBlock();
+    auto height = 0;
 
-   while (block.isValid())
-   {
-      height += blockBoundingRect(block).height();
-      block = block.next();
-   }
+    while (block.isValid())
+    {
+        height += blockBoundingRect(block).height();
+        block = block.next();
+    }
 
-   return height;
+    return height;
 }
 
-int FileDiffView::getLineHeigth() const
-{
-   return blockBoundingRect(firstVisibleBlock()).height();
-}
+int FileDiffView::getLineHeigth() const { return blockBoundingRect(firstVisibleBlock()).height(); }
 
-QSize FileDiffView::sizeHint() const
-{
-   return viewport()->size();
-}
+QSize FileDiffView::sizeHint() const { return viewport()->size(); }
 
 int FileDiffView::lineNumberAreaWidth()
 {
-   const auto width = fontMetrics().horizontalAdvance(QLatin1Char('9'));
-   auto digits = mLineNumberArea ? mLineNumberArea->widthInDigitsSize() : 0;
-   auto max = blockCount() + mStartingLine;
+    const auto width = fontMetrics().horizontalAdvance(QLatin1Char('9'));
+    auto digits = mLineNumberArea ? mLineNumberArea->widthInDigitsSize() : 0;
+    auto max = blockCount() + mStartingLine;
 
-   while (max >= 10)
-   {
-      max /= 10;
-      ++digits;
-   }
+    while (max >= 10)
+    {
+        max /= 10;
+        ++digits;
+    }
 
-   auto offset = 0;
+    auto offset = 0;
 
-   if (mLineNumberArea && mLineNumberArea->commentsAllowed())
-   {
-      const auto padding = 3;
-      offset = (fontMetrics().height() * 2 + padding * 4);
-   }
+    if (mLineNumberArea && mLineNumberArea->commentsAllowed())
+    {
+        const auto padding = 3;
+        offset = (fontMetrics().height() * 2 + padding * 4);
+    }
 
-   return offset + (width * digits);
+    return offset + (width * digits);
 }
 
 void FileDiffView::updateLineNumberAreaWidth(int /* newBlockCount */)
 {
-   setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
-void FileDiffView::updateLineNumberArea(const QRect &rect, int dy)
+void FileDiffView::updateLineNumberArea(const QRect& rect, int dy)
 {
-   if (mLineNumberArea)
-   {
-      if (dy != 0)
-         mLineNumberArea->scroll(0, dy);
+    if (mLineNumberArea)
+    {
+        if (dy != 0)
+            mLineNumberArea->scroll(0, dy);
 
-      if (rect.contains(viewport()->rect()))
-         updateLineNumberAreaWidth(0);
-   }
+        if (rect.contains(viewport()->rect()))
+            updateLineNumberAreaWidth(0);
+    }
 }
 
-void FileDiffView::resizeEvent(QResizeEvent *e)
+void FileDiffView::resizeEvent(QResizeEvent* e)
 {
-   QPlainTextEdit::resizeEvent(e);
+    QPlainTextEdit::resizeEvent(e);
 
-   if (mLineNumberArea)
-   {
-      const auto cr = contentsRect();
+    if (mLineNumberArea)
+    {
+        const auto cr = contentsRect();
 
-      mLineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
-   }
+        mLineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    }
 }
 
-bool FileDiffView::eventFilter(QObject *obj, QEvent *event)
+bool FileDiffView::eventFilter(QObject* obj, QEvent* event)
 {
-   if (mLineNumberArea && event->type() == QEvent::Enter)
-   {
-      const auto height = mLineNumberArea->width();
-      const auto helpPos = mapFromGlobal(QCursor::pos());
-      const auto x = helpPos.x();
-      if (x >= 0 && x <= height)
-      {
-         QTextCursor cursor = cursorForPosition(helpPos);
-         const auto textRow = cursor.block().blockNumber();
-         auto found = false;
+    if (mLineNumberArea && event->type() == QEvent::Enter)
+    {
+        const auto height = mLineNumberArea->width();
+        const auto helpPos = mapFromGlobal(QCursor::pos());
+        const auto x = helpPos.x();
+        if (x >= 0 && x <= height)
+        {
+            QTextCursor cursor = cursorForPosition(helpPos);
+            const auto textRow = cursor.block().blockNumber();
+            auto found = false;
 
-         for (const auto &diff : std::as_const(mFileDiffInfo))
-         {
-            if (textRow + 1 >= diff.startLine && textRow + 1 <= diff.endLine)
+            for (const auto& diff : std::as_const(mFileDiffInfo))
             {
-               mRow = textRow + mStartingLine + 1;
-               found = true;
-               break;
+                if (textRow + 1 >= diff.startLine && textRow + 1 <= diff.endLine)
+                {
+                    mRow = textRow + mStartingLine + 1;
+                    found = true;
+                    break;
+                }
             }
-         }
 
-         if (!found)
-            mRow = -1;
+            if (!found)
+                mRow = -1;
 
-         repaint();
-      }
-   }
-   else if (event->type() == QEvent::Leave)
-   {
-      mRow = -1;
-      repaint();
-   }
+            repaint();
+        }
+    }
+    else if (event->type() == QEvent::Leave)
+    {
+        mRow = -1;
+        repaint();
+    }
 
-   return QPlainTextEdit::eventFilter(obj, event);
+    return QPlainTextEdit::eventFilter(obj, event);
 }

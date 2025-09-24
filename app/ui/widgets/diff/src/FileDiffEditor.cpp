@@ -5,44 +5,44 @@
 #include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
-FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget *parent)
-   : FileDiffView(additionColor, removalColor, commentColor, parent)
+FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget* parent)
+    : FileDiffView(additionColor, removalColor, commentColor, parent)
 {
-   setReadOnly(false);
+    setReadOnly(false);
 
-   const auto textColor = QSettings().value("colorSchema", 0).toInt() == 1 ? textColorBright : textColorDark;
+    const auto textColor = QSettings().value("colorSchema", 0).toInt() == 1 ? textColorBright : textColorDark;
 
-   addNumberArea(new LineNumberArea(this, textColor));
+    addNumberArea(new LineNumberArea(this, textColor));
 
-   connect(this, &FileDiffView::cursorPositionChanged, this, &FileDiffEditor::highlightCurrentLine);
+    connect(this, &FileDiffView::cursorPositionChanged, this, &FileDiffEditor::highlightCurrentLine);
 
-   highlightCurrentLine();
+    highlightCurrentLine();
 }
 
 void FileDiffEditor::highlightCurrentLine()
 {
-   QList<QTextEdit::ExtraSelection> extraSelections;
+    QList<QTextEdit::ExtraSelection> extraSelections;
 
-   if (!isReadOnly())
-   {
-      prevSelection.format.setBackground(QBrush("transparent"));
-      prevSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
-      prevSelection.cursor.clearSelection();
+    if (!isReadOnly())
+    {
+        prevSelection.format.setBackground(QBrush("transparent"));
+        prevSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        prevSelection.cursor.clearSelection();
 
-      QTextEdit::ExtraSelection selection;
+        QTextEdit::ExtraSelection selection;
 
-      selection.format.setBackground(QPalette().color(QPalette::AlternateBase));
-      selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-      selection.cursor = textCursor();
-      selection.cursor.clearSelection();
+        selection.format.setBackground(QPalette().color(QPalette::AlternateBase));
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = textCursor();
+        selection.cursor.clearSelection();
 
-      extraSelections.append(prevSelection);
-      extraSelections.append(selection);
+        extraSelections.append(prevSelection);
+        extraSelections.append(selection);
 
-      prevSelection = selection;
-   }
+        prevSelection = selection;
+    }
 
-   setExtraSelections(extraSelections);
+    setExtraSelections(extraSelections);
 
-   viewport()->update();
+    viewport()->update();
 }

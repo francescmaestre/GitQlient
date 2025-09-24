@@ -4,22 +4,22 @@
 
 namespace Ui
 {
-class PomodoroConfigDlg;
+    class PomodoroConfigDlg;
 }
 
 class GitBase;
 
 class PomodoroConfigDlg : public QDialog
 {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   explicit PomodoroConfigDlg(const QSharedPointer<GitBase> &git, QWidget *parent = nullptr);
-   ~PomodoroConfigDlg();
+    explicit PomodoroConfigDlg(const QSharedPointer<GitBase>& git, QWidget* parent = nullptr);
+    ~PomodoroConfigDlg();
 
-   void accept() override;
+    void accept() override;
 
 private:
-   Ui::PomodoroConfigDlg *ui;
-   QSharedPointer<GitBase> mGit;
+    Ui::PomodoroConfigDlg* ui;
+    QSharedPointer<GitBase> mGit;
 };

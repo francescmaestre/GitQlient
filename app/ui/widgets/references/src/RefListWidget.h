@@ -12,32 +12,33 @@ class RefListDelegate;
 
 class RefListWidget : public QWidget
 {
-   Q_OBJECT
+    Q_OBJECT
 
 signals:
-   void itemSelected(const QString &data);
-   void itemDoubleClicked(const QString &data);
-   void contextMenuRequested(const QPoint &pos, const QString &data);
+    void itemSelected(const QString& data);
+    void itemDoubleClicked(const QString& data);
+    void contextMenuRequested(const QPoint& pos, const QString& data);
 
 public:
-   explicit RefListWidget(const QString &title,
-                          const QString &settingsKey,
-                          const QSharedPointer<GitCache> &cache,
-                          const QSharedPointer<GitBase> &git,
-                          QWidget *parent = nullptr);
+    explicit RefListWidget(
+        const QString& title,
+        const QString& settingsKey,
+        const QSharedPointer<GitCache>& cache,
+        const QSharedPointer<GitBase>& git,
+        QWidget* parent = nullptr);
 
-   void setCount(int count);
-   void addItem(const QString &text, const QString &data = QString());
-   void clear();
-   void reloadVisibility();
-   QListWidget *listWidget() const { return mList; }
+    void setCount(int count);
+    void addItem(const QString& text, const QString& data = QString());
+    void clear();
+    void reloadVisibility();
+    QListWidget* listWidget() const { return mList; }
 
 private:
-   ClickableFrame *mFrame = nullptr;
-   QListWidget *mList = nullptr;
-   QString mSettingsKey;
-   std::unique_ptr<GitQlientSettings> mSettings;
-   RefListDelegate *mDelegate = nullptr;
+    ClickableFrame* mFrame = nullptr;
+    QListWidget* mList = nullptr;
+    QString mSettingsKey;
+    std::unique_ptr<GitQlientSettings> mSettings;
+    RefListDelegate* mDelegate = nullptr;
 
-   void saveExpansionState(bool expanded);
+    void saveExpansionState(bool expanded);
 };

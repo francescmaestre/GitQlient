@@ -5,123 +5,120 @@
 QString GitQlientSettings::PinnedRepos = "Config/PinnedRepos";
 QString GitQlientSettings::SplitFileDiffView = "SplitDiff";
 
-GitQlientSettings::GitQlientSettings(const QString &gitRepoPath)
-   : mGitRepoPath(gitRepoPath)
+GitQlientSettings::GitQlientSettings(const QString& gitRepoPath)
+    : mGitRepoPath(gitRepoPath)
 {
 }
 
-void GitQlientSettings::setGlobalValue(const QString &key, const QVariant &value)
+void GitQlientSettings::setGlobalValue(const QString& key, const QVariant& value)
 {
-   globalSettings.setValue(key, value);
-   globalSettings.sync();
+    globalSettings.setValue(key, value);
+    globalSettings.sync();
 }
 
-QVariant GitQlientSettings::globalValue(const QString &key, const QVariant &defaultValue) const
+QVariant GitQlientSettings::globalValue(const QString& key, const QVariant& defaultValue) const
 {
-   return globalSettings.value(key, defaultValue);
+    return globalSettings.value(key, defaultValue);
 }
 
-void GitQlientSettings::setLocalValue(const QString &key, const QVariant &value)
+void GitQlientSettings::setLocalValue(const QString& key, const QVariant& value)
 {
-   QSettings localSettings(mGitRepoPath + "/GitQlientConfig.ini", QSettings::IniFormat);
-   localSettings.setValue(key, value);
-   localSettings.sync();
+    QSettings localSettings(mGitRepoPath + "/GitQlientConfig.ini", QSettings::IniFormat);
+    localSettings.setValue(key, value);
+    localSettings.sync();
 }
 
-QVariant GitQlientSettings::localValue(const QString &key, const QVariant &defaultValue) const
+QVariant GitQlientSettings::localValue(const QString& key, const QVariant& defaultValue) const
 {
-   QSettings localSettings(mGitRepoPath + "/GitQlientConfig.ini", QSettings::IniFormat);
-   return localSettings.value(key, defaultValue);
+    QSettings localSettings(mGitRepoPath + "/GitQlientConfig.ini", QSettings::IniFormat);
+    return localSettings.value(key, defaultValue);
 }
 
-void GitQlientSettings::setProjectOpened(const QString &projectPath)
+void GitQlientSettings::setProjectOpened(const QString& projectPath)
 {
-   saveMostUsedProjects(projectPath);
+    saveMostUsedProjects(projectPath);
 
-   saveRecentProjects(projectPath);
+    saveRecentProjects(projectPath);
 }
 
 QStringList GitQlientSettings::getRecentProjects() const
 {
-   auto projects = globalSettings.value("Config/RecentProjects", QStringList()).toStringList();
+    auto projects = globalSettings.value("Config/RecentProjects", QStringList()).toStringList();
 
-   QStringList recentProjects;
-   const auto end = std::min(static_cast<int>(projects.count()), 5);
+    QStringList recentProjects;
+    const auto end = std::min(static_cast<int>(projects.count()), 5);
 
-   for (auto i = 0; i < end; ++i)
-      recentProjects.append(projects.takeFirst());
+    for (auto i = 0; i < end; ++i)
+        recentProjects.append(projects.takeFirst());
 
-   return recentProjects;
+    return recentProjects;
 }
 
-void GitQlientSettings::saveRecentProjects(const QString &projectPath)
+void GitQlientSettings::saveRecentProjects(const QString& projectPath)
 {
-   auto usedProjects = globalSettings.value("Config/RecentProjects", QStringList()).toStringList();
+    auto usedProjects = globalSettings.value("Config/RecentProjects", QStringList()).toStringList();
 
-   if (usedProjects.contains(projectPath))
-   {
-      const auto index = usedProjects.indexOf(projectPath);
-      usedProjects.takeAt(index);
-   }
+    if (usedProjects.contains(projectPath))
+    {
+        const auto index = usedProjects.indexOf(projectPath);
+        usedProjects.takeAt(index);
+    }
 
-   usedProjects.prepend(projectPath);
+    usedProjects.prepend(projectPath);
 
-   while (!usedProjects.isEmpty() && usedProjects.count() > 5)
-      usedProjects.removeLast();
+    while (!usedProjects.isEmpty() && usedProjects.count() > 5)
+        usedProjects.removeLast();
 
-   GitQlientSettings::setGlobalValue("Config/RecentProjects", usedProjects);
+    GitQlientSettings::setGlobalValue("Config/RecentProjects", usedProjects);
 }
 
-void GitQlientSettings::clearRecentProjects()
+void GitQlientSettings::clearRecentProjects() { globalSettings.remove("Config/RecentProjects"); }
+
+void GitQlientSettings::saveMostUsedProjects(const QString& projectPath)
 {
-   globalSettings.remove("Config/RecentProjects");
-}
+    auto projects = globalSettings.value("Config/UsedProjects", QStringList()).toStringList();
+    auto timesUsed = globalSettings.value("Config/UsedProjectsCount", QList<QVariant>()).toList();
 
-void GitQlientSettings::saveMostUsedProjects(const QString &projectPath)
-{
-   auto projects = globalSettings.value("Config/UsedProjects", QStringList()).toStringList();
-   auto timesUsed = globalSettings.value("Config/UsedProjectsCount", QList<QVariant>()).toList();
+    if (projects.contains(projectPath))
+    {
+        const auto index = projects.indexOf(projectPath);
+        timesUsed[index] = QString::number(timesUsed[index].toInt() + 1);
+    }
+    else
+    {
+        projects.append(projectPath);
+        timesUsed.append(1);
+    }
 
-   if (projects.contains(projectPath))
-   {
-      const auto index = projects.indexOf(projectPath);
-      timesUsed[index] = QString::number(timesUsed[index].toInt() + 1);
-   }
-   else
-   {
-      projects.append(projectPath);
-      timesUsed.append(1);
-   }
-
-   GitQlientSettings::setGlobalValue("Config/UsedProjects", projects);
-   GitQlientSettings::setGlobalValue("Config/UsedProjectsCount", timesUsed);
+    GitQlientSettings::setGlobalValue("Config/UsedProjects", projects);
+    GitQlientSettings::setGlobalValue("Config/UsedProjectsCount", timesUsed);
 }
 
 void GitQlientSettings::clearMostUsedProjects()
 {
-   globalSettings.remove("Config/UsedProjects");
-   globalSettings.remove("Config/UsedProjectsCount");
+    globalSettings.remove("Config/UsedProjects");
+    globalSettings.remove("Config/UsedProjectsCount");
 }
 
 QStringList GitQlientSettings::getMostUsedProjects() const
 {
-   const auto projects = globalSettings.value("Config/UsedProjects", QStringList()).toStringList();
-   const auto timesUsed = globalSettings.value("Config/UsedProjectsCount", QString()).toList();
+    const auto projects = globalSettings.value("Config/UsedProjects", QStringList()).toStringList();
+    const auto timesUsed = globalSettings.value("Config/UsedProjectsCount", QString()).toList();
 
-   QMultiMap<int, QString> projectOrderedByUse;
+    QMultiMap<int, QString> projectOrderedByUse;
 
-   const auto projectsCount = projects.count();
-   const auto timesCount = timesUsed.count();
+    const auto projectsCount = projects.count();
+    const auto timesCount = timesUsed.count();
 
-   for (auto i = 0; i < projectsCount && i < timesCount; ++i)
-      projectOrderedByUse.insert(timesUsed.at(i).toInt(), projects.at(i));
+    for (auto i = 0; i < projectsCount && i < timesCount; ++i)
+        projectOrderedByUse.insert(timesUsed.at(i).toInt(), projects.at(i));
 
-   QStringList recentProjects;
-   const auto end = std::min(static_cast<int>(projectOrderedByUse.count()), 5);
-   const auto orderedProjects = projectOrderedByUse.values();
+    QStringList recentProjects;
+    const auto end = std::min(static_cast<int>(projectOrderedByUse.count()), 5);
+    const auto orderedProjects = projectOrderedByUse.values();
 
-   for (auto i = 0; i < end; ++i)
-      recentProjects.append(orderedProjects.at(orderedProjects.count() - 1 - i));
+    for (auto i = 0; i < end; ++i)
+        recentProjects.append(orderedProjects.at(orderedProjects.count() - 1 - i));
 
-   return recentProjects;
+    return recentProjects;
 }

@@ -1,308 +1,125 @@
 #pragma once
 
-/****************************************************************************************
- ** GitQlient is an application to manage and operate one or several Git repositories. With
- ** GitQlient you will be able to add commits, branches and manage all the options Git provides.
- ** Copyright (C) 2021  Francesc Martinez
- **
- ** LinkedIn: www.linkedin.com/in/cescmm/
- ** Web: www.francescmm.com
- **
- ** This program is free software; you can redistribute it and/or
- ** modify it under the terms of the GNU Lesser General Public
- ** License as published by the Free Software Foundation; either
- ** version 2 of the License, or (at your option) any later version.
- **
- ** This program is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied warranty of
- ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- ** Lesser General Public License for more details.
- **
- ** You should have received a copy of the GNU Lesser General Public
- ** License along with this library; if not, write to the Free Software
- ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- ***************************************************************************************/
-
 #include <QFrame>
 
 class GitCache;
 class GitBase;
-class CommitHistoryModel;
-class CommitHistoryView;
+class GraphModel;
+class GraphView;
 class QLineEdit;
 class BranchesWidget;
 class QStackedWidget;
 class CommitChangesWidget;
 class CommitInfoWidget;
 class CheckBox;
-class RepositoryViewDelegate;
+class GraphViewDelegate;
 class FileDiffWidget;
 class FullDiffWidget;
 class BranchesWidgetMinimal;
 class QPushButton;
 namespace Graph
 {
-class Cache;
+    class Cache;
 }
 class QLabel;
 class GitQlientSettings;
 struct GitExecResult;
 
-/*!
- \brief The HistoryWidget is responsible for showing the history of the repository. It is the first widget shown
- when a repository is open and manages all the signals from its subwidgets to the GitQlientRepo class. It also creates
- the layout and acts as a bridge to transfer the signals from one subwidget to the other.
-
- The layout is formed by four important widgets:
- - In the left side two different widgets are shown depending on the conditions. If the user selects the Work In
- Progress (WIP) commit, the WorkInProgressWidget will be shown. In case it's any another commit, the CommitWidgetInfo
- will be shown.
- - In the center is located the repository view with the graph tree and the commits information.
- - In the right side the BranchWidget is shown where the user has control of everything related with branches, tags,
- stashes and submodules.
-
-*/
 class HistoryWidget : public QFrame
 {
-   Q_OBJECT
+    Q_OBJECT
 
 signals:
-   void fullReload();
-
-   void referencesReload();
-
-   void logReload();
-
-   /*!
-    \brief Signal triggered when the user opens a new submodule. It is necessary to propagate this signal since is the
-    GitQlient class the responsible of opening a new tab for the submodule.
-
-    \param submodule The submodule to be opened.
-   */
-   void signalOpenSubmodule(const QString &submodule);
-
-   /*!
-    \brief Signal triggered when changes are committed.
-
-    \param committed True if there was no error, false otherwise.
-   */
-   void changesCommitted();
-   /*!
-    \brief Signal triggered when the user wants to see the History & Blame for a specific file.
-
-    \param fileName The file name.
-   */
-   void signalShowFileHistory(const QString &fileName);
-   /*!
-    \brief Signal triggered when toggles the option of seeing all the branches in the repository graph view.
-
-    \param showAll True to show all the branches, false if only the current branch must be shown.
-   */
-   void signalAllBranchesActive(bool showAll);
-   /*!
-    \brief Signal triggered when the user performs a merge and it contains conflicts.
-   */
-   void signalMergeConflicts();
-
-   /**
-    * @brief Signal triggered when trying to rebase and a conflict happens.
-    */
-   void signalRebaseConflict();
-
-   /*!
-    * \brief signalConflict Signal triggered when trying to cherry-pick or pull and a conflict happens.
-    */
-   void signalCherryPickConflict(const QStringList &pendingShas);
-   /*!
-    * \brief signalPullConflict Signal triggered when trying to pull and a conflict happens.
-    */
-   void signalPullConflict();
-   /*!
-    \brief Signal triggered when the WIP needs to be updated.
-   */
-   void signalUpdateWip();
-   /**
-    * @brief panelsVisibilityChanged Signal triggered whenever the visibility of the panels in the BranchesWidget
-    * changes.
-    */
-   void panelsVisibilityChanged();
+    void fullReload();
+    void referencesReload();
+    void logReload();
+    void signalOpenSubmodule(const QString& submodule);
+    void changesCommitted();
+    void signalShowFileHistory(const QString& fileName);
+    void signalAllBranchesActive(bool showAll);
+    void signalMergeConflicts();
+    void signalRebaseConflict();
+    void signalCherryPickConflict(const QStringList& pendingShas);
+    void signalPullConflict();
+    void signalUpdateWip();
+    void panelsVisibilityChanged();
 
 public:
-   /*!
-    \brief Default constructor.
+    explicit HistoryWidget(
+        const QSharedPointer<GitCache>& cache,
+        const QSharedPointer<Graph::Cache>& graphCache,
+        const QSharedPointer<GitBase> git,
+        const QSharedPointer<GitQlientSettings>& settings,
+        QWidget* parent = nullptr);
+    ~HistoryWidget();
 
-    \param cache The internal repository cache.
-    \param git The git object to perform Git operations.
-    \param parent The parent widget if needed.
-   */
-   explicit HistoryWidget(const QSharedPointer<GitCache> &cache,
-                          const QSharedPointer<Graph::Cache> &graphCache,
-                          const QSharedPointer<GitBase> git,
-                          const QSharedPointer<GitQlientSettings> &settings,
-                          QWidget *parent = nullptr);
-   /*!
-    \brief Destructor.
-
-   */
-   ~HistoryWidget();
-
-   /*!
-    \brief Clears all the information in the subwidgets.
-
-   */
-   void clear();
-   /*!
-    \brief Resets the WIP widget.
-
-   */
-   void resetWip();
-
-   /**
-    * @brief loadBranches Loads the information on the branches widget: branches, tags, stashes and submodules.
-    * @brief fullReload Indicates that the information on the panel should be fully reloaded, otherwise only refreshes
-    * the link to the current branch.
-    */
-   void loadBranches(bool fullReload);
-
-   /*!
-    \brief If the current view is the WIP widget, updates it.
-
-   */
-   void updateUiFromWatcher();
-   /*!
-    \brief Configures the CommitInfoWidget or the WorkInProgress widget depending on the given SHA. It sets the
-    configured widget to visible.
-
-    \param goToSha The SHA to show.
-   */
-   void selectCommit(const QString &goToSha);
-
-   /*!
-    \brief Reloads the history model of the repository graph view when it finishes the loading process.
-
-    \param totalCommits The new total of commits to show in the graph.
-   */
-   void updateGraphView(int totalCommits);
+    void clear();
+    void resetWip();
+    void loadBranches(bool fullReload);
+    void updateUiFromWatcher();
+    void selectCommit(const QString& goToSha);
+    void updateGraphView(int totalCommits);
 
 protected:
-   void keyPressEvent(QKeyEvent *event) override;
-   void keyReleaseEvent(QKeyEvent *event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
-   enum class Pages
-   {
-      Graph,
-      FileDiff,
-      FullDiff
-   };
+    enum class Pages
+    {
+        Graph,
+        FileDiff,
+        FullDiff
+    };
 
-   QSharedPointer<GitBase> mGit;
-   QSharedPointer<GitCache> mCache;
-   QSharedPointer<Graph::Cache> mGraphCache;
-   QSharedPointer<GitQlientSettings> mSettings;
-   QFrame *mCommitInfoFrame = nullptr;
-   CommitHistoryModel *mRepositoryModel = nullptr;
-   CommitHistoryView *mRepositoryView = nullptr;
-   BranchesWidget *mBranchesWidget = nullptr;
-   QLineEdit *mSearchInput = nullptr;
-   QStackedWidget *mCommitStackedWidget = nullptr;
-   QStackedWidget *mCenterStackedWidget = nullptr;
-   CommitChangesWidget *mCommitChangesWidget = nullptr;
-   CommitInfoWidget *mCommitInfoWidget = nullptr;
-   CheckBox *mChShowAllBranches = nullptr;
-   RepositoryViewDelegate *mItemDelegate = nullptr;
-   QFrame *mGraphFrame = nullptr;
-   FileDiffWidget *mWipFileDiff = nullptr;
-   FullDiffWidget *mFullDiffWidget = nullptr;
-   QPushButton *mReturnFromFull = nullptr;
-   bool mReverseSearch = false;
-   int mLastSelectedRow = -1;
+    QSharedPointer<GitBase> mGit;
+    QSharedPointer<GitCache> mCache;
+    QSharedPointer<Graph::Cache> mGraphCache;
+    QSharedPointer<GitQlientSettings> mSettings;
+    QFrame* mCommitInfoFrame = nullptr;
+    GraphModel* mRepositoryModel = nullptr;
+    GraphView* mRepositoryView = nullptr;
+    BranchesWidget* mBranchesWidget = nullptr;
+    QLineEdit* mSearchInput = nullptr;
+    QStackedWidget* mCommitStackedWidget = nullptr;
+    QStackedWidget* mCenterStackedWidget = nullptr;
+    CommitChangesWidget* mCommitChangesWidget = nullptr;
+    CommitInfoWidget* mCommitInfoWidget = nullptr;
+    CheckBox* mChShowAllBranches = nullptr;
+    GraphViewDelegate* mItemDelegate = nullptr;
+    QFrame* mGraphFrame = nullptr;
+    FileDiffWidget* mWipFileDiff = nullptr;
+    FullDiffWidget* mFullDiffWidget = nullptr;
+    QPushButton* mReturnFromFull = nullptr;
+    bool mReverseSearch = false;
+    int mLastSelectedRow = -1;
 
-   /*!
-    \brief Performs a search based on the input of the search QLineEdit with the users input.
+    void search();
+    void goToSha(const QString& sha);
+    void commitSelected(const QModelIndex& index);
+    void onShowAllUpdated(bool showAll);
 
-   */
-   void search();
-   /*!
-    \brief Goes to the selected SHA.
+    void onAmendCommit(const QString& sha);
 
-    \param sha The selected SHA.
-   */
-   void goToSha(const QString &sha);
-   /*!
-    \brief Retrieves the SHA from the QModelIndex from the repository graph model when the user clicks over an item.
-    Then, performs the \ref onCommitSelected action.
+    void mergeBranch(const QString& current, const QString& branchToMerge);
 
-    \param index The index from the model.
-   */
-   void commitSelected(const QModelIndex &index);
-   /*!
-    \brief Action that stores in the settings the new value for the check box to show all the branches. It also triggers
-    the \ref signalAllBranchesActive signal.
+    void mergeSquashBranch(const QString& current, const QString& branchToMerge);
 
-    \param showAll True to show all branches, false to show only the current branch.
-   */
-   void onShowAllUpdated(bool showAll);
+    void processMergeResponse(const GitExecResult& ret);
 
-   /*!
-    \brief Opens the AmendWidget.
+    void returnToView();
 
-    \param sha The commit SHA to amend.
-   */
-   void onAmendCommit(const QString &sha);
+    void returnToViewIfObsolete(const QString& fileName);
 
-   /*!
-    \brief Tries to perform the git merge operation from \p branchToMerge into the \p current. If there are conflicts
-    the GitQlientRepo class is notified to take actions.
+    void cherryPickCommit();
 
-    \param current The current branch.
-    \param branchToMerge The branch to merge from.
-   */
-   void mergeBranch(const QString &current, const QString &branchToMerge);
+    void showWipFileDiff(const QString& fileName, bool isCached);
 
-   /**
-    * @brief mergeSquashBranch Tries to perform the git merge operation squashing all commits from \p branchToMerge into
-    the \p current. If there are conflicts the GitQlientRepo class is notified to take actions.
-    * @param current The current branch
-    * @param branchToMerge The branch to merge from
-    */
-   void mergeSquashBranch(const QString &current, const QString &branchToMerge);
+    void showFileDiff(const QString& fileName, const QString& currentSha, const QString& parentSha);
 
-   /**
-    * @brief processMergeResponse
-    * @param ret
-    */
-   void processMergeResponse(const GitExecResult &ret);
+    void onOpenFullDiff(const QString& sha);
 
-   /**
-    * @brief endEditFile Closes the file diff view.
-    */
-   void returnToView();
+    void rearrangeSplittrer(bool minimalActive);
 
-   void returnToViewIfObsolete(const QString &fileName);
-
-   /**
-    * @brief cherryPickCommit Cherry-picks the commit defined by the SHA in the QLineEdit of the filter.
-    */
-   void cherryPickCommit();
-
-   /**
-    * @brief showWipFileDiff Shows the file diff.
-    * @param fileName The file name to diff.
-    * @param isCached Indicates if the file to show the diff is already cached or is still unstaged.
-    */
-   void showWipFileDiff(const QString &fileName, bool isCached);
-
-   void showFileDiff(const QString &fileName, const QString &currentSha, const QString &parentSha);
-
-   /**
-    * @brief showFullDiff Shows the full commit diff.
-    * @param sha The base commit SHA.
-    * @param parentSha The commit SHA to compare with.
-    */
-   void onOpenFullDiff(const QString &sha);
-
-   void rearrangeSplittrer(bool minimalActive);
-
-   void onRevertedChanges();
+    void onRevertedChanges();
 };

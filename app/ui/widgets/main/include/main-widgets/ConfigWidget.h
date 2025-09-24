@@ -13,57 +13,57 @@ class QAbstractButton;
 
 namespace Ui
 {
-class ConfigWidget;
+    class ConfigWidget;
 }
 
 class ConfigWidget : public QWidget
 {
-   Q_OBJECT
+    Q_OBJECT
 
 signals:
-   void goBack();
-   void reloadDiffFont();
-   void buildSystemEnabled(bool enabled);
-   void gitServerEnabled(bool enabled);
-   void terminalEnabled(bool enabled);
-   void commitTitleMaxLenghtChanged();
-   void moveLogsAndClose();
-   void autoRefreshChanged(int seconds);
+    void goBack();
+    void reloadDiffFont();
+    void buildSystemEnabled(bool enabled);
+    void gitServerEnabled(bool enabled);
+    void terminalEnabled(bool enabled);
+    void commitTitleMaxLenghtChanged();
+    void moveLogsAndClose();
+    void autoRefreshChanged(int seconds);
 
 public:
-   explicit ConfigWidget(const QSharedPointer<GitBase> &git, QWidget *parent = nullptr);
-   ~ConfigWidget();
+    explicit ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent = nullptr);
+    ~ConfigWidget();
 
-   void onPanelsVisibilityChanged();
+    void onPanelsVisibilityChanged();
 
 private:
-   Ui::ConfigWidget *ui;
-   QSharedPointer<GitBase> mGit;
-   bool mShowResetMsg = false;
-   QTimer *mFeedbackTimer = nullptr;
-   QPushButton *mSave = nullptr;
-   FileEditor *mLocalGit = nullptr;
-   FileEditor *mGlobalGit = nullptr;
-   QButtonGroup *mDownloadButtons = nullptr;
-   QVector<QWidget *> mPluginWidgets;
-   QStringList mPluginNames;
-   QPushButton *mPbFeaturesTour;
+    Ui::ConfigWidget* ui;
+    QSharedPointer<GitBase> mGit;
+    bool mShowResetMsg = false;
+    QTimer* mFeedbackTimer = nullptr;
+    QPushButton* mSave = nullptr;
+    FileEditor* mLocalGit = nullptr;
+    FileEditor* mGlobalGit = nullptr;
+    QButtonGroup* mDownloadButtons = nullptr;
+    QVector<QWidget*> mPluginWidgets;
+    QStringList mPluginNames;
+    QPushButton* mPbFeaturesTour;
 
-   void clearLogs();
-   void clearFolder(const QString &folder, QLabel *label);
-   void calculateLogsSize();
-   uint64_t calculateDirSize(const QString &dirPath);
-   void enableWidgets();
-   void saveFile();
-   void showCredentialsDlg();
-   void selectFolder();
-   void selectEditor();
-   void useDefaultLogsFolder();
-   void readRemotePluginsInfo();
-   void showFeaturesTour();
-   void fillLanguageBox() const;
+    void clearLogs();
+    void clearFolder(const QString& folder, QLabel* label);
+    void calculateLogsSize();
+    uint64_t calculateDirSize(const QString& dirPath);
+    void enableWidgets();
+    void saveFile();
+    void showCredentialsDlg();
+    void selectFolder();
+    void selectEditor();
+    void useDefaultLogsFolder();
+    void readRemotePluginsInfo();
+    void showFeaturesTour();
+    void fillLanguageBox() const;
 
 private slots:
-   void saveConfig();
-   void onCredentialsOptionChanged(QAbstractButton *button);
+    void saveConfig();
+    void onCredentialsOptionChanged(QAbstractButton* button);
 };

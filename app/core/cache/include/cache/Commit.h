@@ -11,59 +11,61 @@
 class Commit
 {
 public:
-   enum class Field
-   {
-      SHA,
-      PARENTS_SHA,
-      COMMITTER,
-      AUTHOR,
-      DATE,
-      SHORT_LOG,
-      LONG_LOG
-   };
+    enum class Field
+    {
+        SHA,
+        PARENTS_SHA,
+        COMMITTER,
+        AUTHOR,
+        DATE,
+        SHORT_LOG,
+        LONG_LOG
+    };
 
-   Commit() = default;
-   ~Commit() = default;
-   Commit(QByteArray commitData);
-   Commit(QByteArray commitData, const QString &gpg, bool goodSignature);
-   explicit Commit(const QString &sha, const QStringList &parents, std::chrono::seconds commitDate,
-                   const QString &log);
-   bool operator==(const Commit &commit) const;
-   bool operator!=(const Commit &commit) const;
+    Commit() = default;
+    ~Commit() = default;
+    Commit(QByteArray commitData);
 
-   bool isValid() const;
-   bool contains(const QString &value) const;
+    Commit(QByteArray commitData, const QString& gpg, bool goodSignature);
+    explicit Commit(
+        const QString& sha, const QStringList& parents, std::chrono::seconds commitDate, const QString& log);
 
-   int parentsCount() const;
-   QString firstParent() const;
-   QStringList parents() const;
-   void setParents(const QStringList &parents);
-   bool isInWorkingBranch() const;
+    bool operator==(const Commit& commit) const;
+    bool operator!=(const Commit& commit) const;
 
-   void appendChild(Commit *commit) { mChilds.append(commit); }
-   void removeChild(Commit *commit);
-   bool hasChilds() const { return !mChilds.empty(); }
-   QString getFirstChildSha() const;
-   int getChildsCount() const { return mChilds.count(); }
+    bool isValid() const;
+    bool contains(const QString& value) const;
 
-   bool isSigned() const { return !gpgKey.isEmpty(); }
-   bool verifiedSignature() const { return mGoodSignature && !gpgKey.isEmpty(); }
+    int parentsCount() const;
+    QString firstParent() const;
+    QStringList parents() const;
+    void setParents(const QStringList& parents);
+    bool isInWorkingBranch() const;
 
-   uint pos = 0;
-   QString sha;
-   QString committer;
-   QString author;
-   std::chrono::seconds dateSinceEpoch;
-   QString shortLog;
-   QString longLog;
-   QString gpgKey;
+    void appendChild(Commit* commit) { mChilds.append(commit); }
+    void removeChild(Commit* commit);
+    bool hasChilds() const { return !mChilds.empty(); }
+    QString getFirstChildSha() const;
+    int getChildsCount() const { return mChilds.count(); }
+
+    bool isSigned() const { return !gpgKey.isEmpty(); }
+    bool verifiedSignature() const { return mGoodSignature && !gpgKey.isEmpty(); }
+
+    uint pos = 0;
+    QString sha;
+    QString committer;
+    QString author;
+    std::chrono::seconds dateSinceEpoch;
+    QString shortLog;
+    QString longLog;
+    QString gpgKey;
 
 private:
-   bool mGoodSignature = false;
-   QStringList mParentsSha;
-   QVector<Commit *> mChilds;
+    bool mGoodSignature = false;
+    QStringList mParentsSha;
+    QVector<Commit*> mChilds;
 
-   friend class GitCache;
+    friend class GitCache;
 
-   void parseDiff(QByteArray &data, qsizetype startingField);
+    void parseDiff(QByteArray& data, qsizetype startingField);
 };

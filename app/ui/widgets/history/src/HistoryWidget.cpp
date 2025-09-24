@@ -1,8 +1,8 @@
 #include <history-widgets/HistoryWidget.h>
 
-#include "CommitHistoryModel.h"
-#include "CommitHistoryView.h"
-#include "RepositoryViewDelegate.h"
+#include "GraphModel.h"
+#include "GraphView.h"
+#include "GraphViewDelegate.h"
 
 #include <GitBase.h>
 #include <GitBranches.h>
@@ -44,551 +44,558 @@
 
 using namespace QLogger;
 
-HistoryWidget::HistoryWidget(const QSharedPointer<GitCache> &cache,
-                             const QSharedPointer<Graph::Cache> &graphCache,
-                             const QSharedPointer<GitBase> git,
-                             const QSharedPointer<GitQlientSettings> &settings,
-                             QWidget *parent)
-   : QFrame(parent)
-   , mGit(git)
-   , mCache(cache)
-   , mGraphCache(graphCache)
-   , mSettings(settings)
-   , mCommitInfoFrame(new QFrame(this))
-   , mReturnFromFull(new QPushButton(QIcon(":/icons/back"), "", this))
+HistoryWidget::HistoryWidget(
+    const QSharedPointer<GitCache>& cache,
+    const QSharedPointer<Graph::Cache>& graphCache,
+    const QSharedPointer<GitBase> git,
+    const QSharedPointer<GitQlientSettings>& settings,
+    QWidget* parent)
+    : QFrame(parent)
+    , mGit(git)
+    , mCache(cache)
+    , mGraphCache(graphCache)
+    , mSettings(settings)
+    , mCommitInfoFrame(new QFrame(this))
+    , mReturnFromFull(new QPushButton(QIcon(":/icons/back"), "", this))
 {
-   QLog_Info("Performance", "HistoryWidget loading...");
-   setAttribute(Qt::WA_DeleteOnClose);
+    QLog_Info("Performance", "HistoryWidget loading...");
+    setAttribute(Qt::WA_DeleteOnClose);
 
-   mCommitChangesWidget = new CommitChangesWidget(mCache, mGraphCache, mGit, this);
-   mCommitInfoWidget = new CommitInfoWidget(mCache, mGit, this);
+    mCommitChangesWidget = new CommitChangesWidget(mCache, mGraphCache, mGit, this);
+    mCommitInfoWidget = new CommitInfoWidget(mCache, mGit, this);
 
-   mCommitStackedWidget = new QStackedWidget(this);
-   mCommitStackedWidget->setCurrentIndex(0);
-   mCommitStackedWidget->addWidget(mCommitInfoWidget);
-   mCommitStackedWidget->addWidget(mCommitChangesWidget);
+    mCommitStackedWidget = new QStackedWidget(this);
+    mCommitStackedWidget->setCurrentIndex(0);
+    mCommitStackedWidget->addWidget(mCommitInfoWidget);
+    mCommitStackedWidget->addWidget(mCommitChangesWidget);
 
-   const auto wipLayout = new QVBoxLayout();
-   wipLayout->setContentsMargins(QMargins());
-   wipLayout->setSpacing(5);
-   wipLayout->addWidget(mCommitStackedWidget);
+    const auto wipLayout = new QVBoxLayout();
+    wipLayout->setContentsMargins(QMargins());
+    wipLayout->setSpacing(5);
+    wipLayout->addWidget(mCommitStackedWidget);
 
-   mCommitInfoFrame->setVisible(false);
-   mCommitInfoFrame->setLayout(wipLayout);
-   mCommitInfoFrame->setMinimumWidth(200);
-   mCommitInfoFrame->setMaximumWidth(500);
+    mCommitInfoFrame->setVisible(false);
+    mCommitInfoFrame->setLayout(wipLayout);
+    mCommitInfoFrame->setMinimumWidth(200);
+    mCommitInfoFrame->setMaximumWidth(500);
 
-   connect(mCommitChangesWidget, &CommitChangesWidget::signalShowDiff, this, &HistoryWidget::showWipFileDiff);
-   connect(mCommitChangesWidget, &CommitChangesWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
-   connect(mCommitChangesWidget, &CommitChangesWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
-   connect(mCommitChangesWidget, &CommitChangesWidget::fileStaged, this, &HistoryWidget::returnToViewIfObsolete);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::returnToView);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::changesCommitted);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, [this]() {
-      mCommitInfoFrame->setVisible(false);
-   });
-   connect(mCommitChangesWidget, &CommitChangesWidget::unstagedFilesChanged, this, &HistoryWidget::onRevertedChanges);
-   connect(mCommitChangesWidget, &CommitChangesWidget::signalUpdateWip, this, &HistoryWidget::signalUpdateWip);
-   connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, [this](const QString &revertedFile) {
-      if (mWipFileDiff->getCurrentFile().contains(revertedFile))
-         returnToView();
-   });
-   connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, &HistoryWidget::onRevertedChanges);
-   connect(mCommitChangesWidget, &CommitChangesWidget::logReload, this, &HistoryWidget::logReload);
+    connect(mCommitChangesWidget, &CommitChangesWidget::signalShowDiff, this, &HistoryWidget::showWipFileDiff);
+    connect(
+        mCommitChangesWidget, &CommitChangesWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
+    connect(mCommitChangesWidget, &CommitChangesWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
+    connect(mCommitChangesWidget, &CommitChangesWidget::fileStaged, this, &HistoryWidget::returnToViewIfObsolete);
+    connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::returnToView);
+    connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, &HistoryWidget::changesCommitted);
+    connect(mCommitChangesWidget, &CommitChangesWidget::changesCommitted, this, [this]() {
+        mCommitInfoFrame->setVisible(false);
+    });
+    connect(mCommitChangesWidget, &CommitChangesWidget::unstagedFilesChanged, this, &HistoryWidget::onRevertedChanges);
+    connect(mCommitChangesWidget, &CommitChangesWidget::signalUpdateWip, this, &HistoryWidget::signalUpdateWip);
+    connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, [this](const QString& revertedFile) {
+        if (mWipFileDiff->getCurrentFile().contains(revertedFile))
+            returnToView();
+    });
+    connect(mCommitChangesWidget, &CommitChangesWidget::changeReverted, this, &HistoryWidget::onRevertedChanges);
+    connect(mCommitChangesWidget, &CommitChangesWidget::logReload, this, &HistoryWidget::logReload);
 
-   connect(mCommitInfoWidget, &CommitInfoWidget::showFileDiff, this, &HistoryWidget::showFileDiff);
-   connect(mCommitInfoWidget, &CommitInfoWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
-   connect(mCommitInfoWidget, &CommitInfoWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
+    connect(mCommitInfoWidget, &CommitInfoWidget::showFileDiff, this, &HistoryWidget::showFileDiff);
+    connect(mCommitInfoWidget, &CommitInfoWidget::signalShowFileHistory, this, &HistoryWidget::signalShowFileHistory);
+    connect(mCommitInfoWidget, &CommitInfoWidget::signalReturnToHistory, this, &HistoryWidget::returnToView);
 
-   mSearchInput = new QLineEdit(this);
-   mSearchInput->setObjectName("SearchInput");
+    mSearchInput = new QLineEdit(this);
+    mSearchInput->setObjectName("SearchInput");
 
-   mSearchInput->setPlaceholderText(
-       tr("Press Return/Enter to search by SHA/message. Press Ctrl+Return/Enter to cherry-pick the SHA."));
-   connect(mSearchInput, &QLineEdit::returnPressed, this, &HistoryWidget::search);
+    mSearchInput->setPlaceholderText(
+        tr("Press Return/Enter to search by SHA/message. Press Ctrl+Return/Enter to cherry-pick the SHA."));
+    connect(mSearchInput, &QLineEdit::returnPressed, this, &HistoryWidget::search);
 
-   mRepositoryModel = new CommitHistoryModel(mCache, mGit);
-   mRepositoryView = new CommitHistoryView(mCache, mGraphCache, mGit, mSettings, this);
+    mRepositoryModel = new GraphModel(mCache, mGit);
+    mRepositoryView = new GraphView(mCache, mGraphCache, mGit, mSettings, this);
 
-   connect(mRepositoryView, &CommitHistoryView::fullReload, this, &HistoryWidget::fullReload);
-   connect(mRepositoryView, &CommitHistoryView::referencesReload, this, &HistoryWidget::referencesReload);
-   connect(mRepositoryView, &CommitHistoryView::logReload, this, &HistoryWidget::logReload);
-   connect(mRepositoryView, &CommitHistoryView::signalOpenDiff, this, &HistoryWidget::onOpenFullDiff);
-   connect(mRepositoryView, &CommitHistoryView::onClick, this, &HistoryWidget::commitSelected);
-   connect(mRepositoryView, &CommitHistoryView::customContextMenuRequested, this, [this](const QPoint &pos) {
-      const auto rowIndex = mRepositoryView->indexAt(pos);
-      commitSelected(rowIndex);
-   });
-   connect(mRepositoryView, &CommitHistoryView::signalAmendCommit, this, &HistoryWidget::onAmendCommit);
-   connect(mRepositoryView, &CommitHistoryView::signalRebaseConflict, this, &HistoryWidget::signalRebaseConflict);
-   connect(mRepositoryView, &CommitHistoryView::signalMergeRequired, this, &HistoryWidget::mergeBranch);
-   connect(mRepositoryView, &CommitHistoryView::mergeSqushRequested, this, &HistoryWidget::mergeSquashBranch);
-   connect(mRepositoryView, &CommitHistoryView::signalCherryPickConflict, this,
-           &HistoryWidget::signalCherryPickConflict);
-   connect(mRepositoryView, &CommitHistoryView::signalPullConflict, this, &HistoryWidget::signalPullConflict);
+    connect(mRepositoryView, &GraphView::fullReload, this, &HistoryWidget::fullReload);
+    connect(mRepositoryView, &GraphView::referencesReload, this, &HistoryWidget::referencesReload);
+    connect(mRepositoryView, &GraphView::logReload, this, &HistoryWidget::logReload);
+    connect(mRepositoryView, &GraphView::signalOpenDiff, this, &HistoryWidget::onOpenFullDiff);
+    connect(mRepositoryView, &GraphView::onClick, this, &HistoryWidget::commitSelected);
+    connect(mRepositoryView, &GraphView::customContextMenuRequested, this, [this](const QPoint& pos) {
+        const auto rowIndex = mRepositoryView->indexAt(pos);
+        commitSelected(rowIndex);
+    });
+    connect(mRepositoryView, &GraphView::signalAmendCommit, this, &HistoryWidget::onAmendCommit);
+    connect(mRepositoryView, &GraphView::signalRebaseConflict, this, &HistoryWidget::signalRebaseConflict);
+    connect(mRepositoryView, &GraphView::signalMergeRequired, this, &HistoryWidget::mergeBranch);
+    connect(mRepositoryView, &GraphView::mergeSqushRequested, this, &HistoryWidget::mergeSquashBranch);
+    connect(mRepositoryView, &GraphView::signalCherryPickConflict, this, &HistoryWidget::signalCherryPickConflict);
+    connect(mRepositoryView, &GraphView::signalPullConflict, this, &HistoryWidget::signalPullConflict);
 
-   mRepositoryView->setObjectName("historyGraphView");
-   mRepositoryView->setModel(mRepositoryModel);
-   mRepositoryView->setItemDelegate(mItemDelegate
-                                    = new RepositoryViewDelegate(mCache, mGraphCache, mGit, mRepositoryView));
-   mRepositoryView->setEnabled(true);
+    mRepositoryView->setObjectName("historyGraphView");
+    mRepositoryView->setModel(mRepositoryModel);
+    mRepositoryView->setItemDelegate(mItemDelegate = new GraphViewDelegate(mCache, mGraphCache, mGit, mRepositoryView));
+    mRepositoryView->setEnabled(true);
 
-   mBranchesWidget = new BranchesWidget(mCache, mGit, this);
+    mBranchesWidget = new BranchesWidget(mCache, mGit, this);
 
-   connect(mBranchesWidget, &BranchesWidget::fullReload, this, &HistoryWidget::fullReload);
-   connect(mBranchesWidget, &BranchesWidget::logReload, this, &HistoryWidget::logReload);
-   connect(mBranchesWidget, &BranchesWidget::signalSelectCommit, this, &HistoryWidget::goToSha);
-   connect(mBranchesWidget, &BranchesWidget::signalOpenSubmodule, this, &HistoryWidget::signalOpenSubmodule);
-   connect(mBranchesWidget, &BranchesWidget::signalMergeRequired, this, &HistoryWidget::mergeBranch);
-   connect(mBranchesWidget, &BranchesWidget::mergeSqushRequested, this, &HistoryWidget::mergeSquashBranch);
-   connect(mBranchesWidget, &BranchesWidget::signalPullConflict, this, &HistoryWidget::signalPullConflict);
-   connect(mBranchesWidget, &BranchesWidget::panelsVisibilityChanged, this, &HistoryWidget::panelsVisibilityChanged);
+    connect(mBranchesWidget, &BranchesWidget::fullReload, this, &HistoryWidget::fullReload);
+    connect(mBranchesWidget, &BranchesWidget::logReload, this, &HistoryWidget::logReload);
+    connect(mBranchesWidget, &BranchesWidget::signalSelectCommit, this, &HistoryWidget::goToSha);
+    connect(mBranchesWidget, &BranchesWidget::signalOpenSubmodule, this, &HistoryWidget::signalOpenSubmodule);
+    connect(mBranchesWidget, &BranchesWidget::signalMergeRequired, this, &HistoryWidget::mergeBranch);
+    connect(mBranchesWidget, &BranchesWidget::mergeSqushRequested, this, &HistoryWidget::mergeSquashBranch);
+    connect(mBranchesWidget, &BranchesWidget::signalPullConflict, this, &HistoryWidget::signalPullConflict);
+    connect(mBranchesWidget, &BranchesWidget::panelsVisibilityChanged, this, &HistoryWidget::panelsVisibilityChanged);
 
-   const auto cherryPickBtn = new QPushButton(tr("Cherry-pick"), this);
-   cherryPickBtn->setEnabled(false);
-   cherryPickBtn->setObjectName("cherryPickBtn");
-   cherryPickBtn->setToolTip("Cherry-pick the commit");
-   cherryPickBtn->setShortcut(Qt::CTRL | Qt::Key_Return);
-   cherryPickBtn->setShortcut(Qt::CTRL | Qt::Key_Enter);
-   connect(cherryPickBtn, &QPushButton::clicked, this, &HistoryWidget::cherryPickCommit);
-   connect(mSearchInput, &QLineEdit::textChanged, this,
-           [cherryPickBtn](const QString &text) { cherryPickBtn->setEnabled(!text.isEmpty()); });
+    const auto cherryPickBtn = new QPushButton(tr("Cherry-pick"), this);
+    cherryPickBtn->setEnabled(false);
+    cherryPickBtn->setObjectName("cherryPickBtn");
+    cherryPickBtn->setToolTip("Cherry-pick the commit");
+    cherryPickBtn->setShortcut(Qt::CTRL | Qt::Key_Return);
+    cherryPickBtn->setShortcut(Qt::CTRL | Qt::Key_Enter);
+    connect(cherryPickBtn, &QPushButton::clicked, this, &HistoryWidget::cherryPickCommit);
+    connect(mSearchInput, &QLineEdit::textChanged, this, [cherryPickBtn](const QString& text) {
+        cherryPickBtn->setEnabled(!text.isEmpty());
+    });
 
-   mChShowAllBranches = new CheckBox(tr("Show all branches"), this);
-   mChShowAllBranches->setChecked(mSettings->localValue("ShowAllBranches", true).toBool());
-   connect(mChShowAllBranches, &CheckBox::toggled, this, &HistoryWidget::onShowAllUpdated);
+    mChShowAllBranches = new CheckBox(tr("Show all branches"), this);
+    mChShowAllBranches->setChecked(mSettings->localValue("ShowAllBranches", true).toBool());
+    connect(mChShowAllBranches, &CheckBox::toggled, this, &HistoryWidget::onShowAllUpdated);
 
-   const auto graphOptionsLayout = new QHBoxLayout();
-   graphOptionsLayout->setContentsMargins(QMargins());
-   graphOptionsLayout->setSpacing(10);
-   graphOptionsLayout->addWidget(mSearchInput);
-   graphOptionsLayout->addWidget(cherryPickBtn);
-   graphOptionsLayout->addWidget(mChShowAllBranches);
+    const auto graphOptionsLayout = new QHBoxLayout();
+    graphOptionsLayout->setContentsMargins(QMargins());
+    graphOptionsLayout->setSpacing(10);
+    graphOptionsLayout->addWidget(mSearchInput);
+    graphOptionsLayout->addWidget(cherryPickBtn);
+    graphOptionsLayout->addWidget(mChShowAllBranches);
 
-   const auto viewLayout = new QVBoxLayout();
-   viewLayout->setContentsMargins(QMargins());
-   viewLayout->setSpacing(5);
-   viewLayout->addLayout(graphOptionsLayout);
-   viewLayout->addWidget(mRepositoryView);
+    const auto viewLayout = new QVBoxLayout();
+    viewLayout->setContentsMargins(QMargins());
+    viewLayout->setSpacing(5);
+    viewLayout->addLayout(graphOptionsLayout);
+    viewLayout->addWidget(mRepositoryView);
 
-   mGraphFrame = new QFrame(this);
-   mGraphFrame->setLayout(viewLayout);
+    mGraphFrame = new QFrame(this);
+    mGraphFrame->setLayout(viewLayout);
 
-   mWipFileDiff = new FileDiffWidget(mGit, mCache, this);
+    mWipFileDiff = new FileDiffWidget(mGit, mCache, this);
 
-   connect(mReturnFromFull, &QPushButton::clicked, this, &HistoryWidget::returnToView);
+    connect(mReturnFromFull, &QPushButton::clicked, this, &HistoryWidget::returnToView);
 
-   mFullDiffWidget = new FullDiffWidget(mGit, mCache);
+    mFullDiffWidget = new FullDiffWidget(mGit, mCache);
 
-   const auto fullFrame = new QFrame(this);
-   const auto fullLayout = new QGridLayout(fullFrame);
-   fullLayout->setSpacing(10);
-   fullLayout->setContentsMargins(QMargins());
-   fullLayout->addWidget(mReturnFromFull, 0, 0);
-   fullLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed), 0, 1);
-   fullLayout->addWidget(mFullDiffWidget, 1, 0, 1, 2);
+    const auto fullFrame = new QFrame(this);
+    const auto fullLayout = new QGridLayout(fullFrame);
+    fullLayout->setSpacing(10);
+    fullLayout->setContentsMargins(QMargins());
+    fullLayout->addWidget(mReturnFromFull, 0, 0);
+    fullLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed), 0, 1);
+    fullLayout->addWidget(mFullDiffWidget, 1, 0, 1, 2);
 
-   mCenterStackedWidget = new QStackedWidget(this);
-   mCenterStackedWidget->setMinimumWidth(600);
-   mCenterStackedWidget->insertWidget(static_cast<int>(Pages::Graph), mGraphFrame);
-   mCenterStackedWidget->insertWidget(static_cast<int>(Pages::FileDiff), mWipFileDiff);
-   mCenterStackedWidget->insertWidget(static_cast<int>(Pages::FullDiff), fullFrame);
+    mCenterStackedWidget = new QStackedWidget(this);
+    mCenterStackedWidget->setMinimumWidth(600);
+    mCenterStackedWidget->insertWidget(static_cast<int>(Pages::Graph), mGraphFrame);
+    mCenterStackedWidget->insertWidget(static_cast<int>(Pages::FileDiff), mWipFileDiff);
+    mCenterStackedWidget->insertWidget(static_cast<int>(Pages::FullDiff), fullFrame);
 
-   connect(mWipFileDiff, &FileDiffWidget::exitRequested, this, &HistoryWidget::returnToView);
-   connect(mWipFileDiff, &FileDiffWidget::fileStaged, this, &HistoryWidget::signalUpdateWip);
-   connect(mWipFileDiff, &FileDiffWidget::fileReverted, this, &HistoryWidget::signalUpdateWip);
-   connect(mWipFileDiff, &FileDiffWidget::exitRequested, this, &HistoryWidget::signalUpdateWip);
+    connect(mWipFileDiff, &FileDiffWidget::exitRequested, this, &HistoryWidget::returnToView);
+    connect(mWipFileDiff, &FileDiffWidget::fileStaged, this, &HistoryWidget::signalUpdateWip);
+    connect(mWipFileDiff, &FileDiffWidget::fileReverted, this, &HistoryWidget::signalUpdateWip);
+    connect(mWipFileDiff, &FileDiffWidget::exitRequested, this, &HistoryWidget::signalUpdateWip);
 
-   const auto minimalActive = mBranchesWidget->isMinimalViewActive();
-   rearrangeSplittrer(minimalActive);
+    const auto minimalActive = mBranchesWidget->isMinimalViewActive();
+    rearrangeSplittrer(minimalActive);
 
-   connect(mBranchesWidget, &BranchesWidget::minimalViewStateChanged, this, &HistoryWidget::rearrangeSplittrer);
+    connect(mBranchesWidget, &BranchesWidget::minimalViewStateChanged, this, &HistoryWidget::rearrangeSplittrer);
 
-   const auto layout = new QHBoxLayout(this);
-   layout->setContentsMargins(QMargins());
-   layout->addWidget(mBranchesWidget);
-   layout->addWidget(mCenterStackedWidget);
-   layout->addWidget(mCommitInfoFrame);
+    const auto layout = new QHBoxLayout(this);
+    layout->setContentsMargins(QMargins());
+    layout->addWidget(mBranchesWidget);
+    layout->addWidget(mCenterStackedWidget);
+    layout->addWidget(mCommitInfoFrame);
 
-   mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::Graph));
-   mCenterStackedWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-   mBranchesWidget->setMinimumWidth(300);
-   mBranchesWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::Graph));
+    mCenterStackedWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    mBranchesWidget->setMinimumWidth(300);
+    mBranchesWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 }
 
 HistoryWidget::~HistoryWidget()
 {
-   delete mItemDelegate;
-   delete mRepositoryModel;
+    delete mItemDelegate;
+    delete mRepositoryModel;
 }
 
 void HistoryWidget::clear()
 {
-   mRepositoryView->clear();
-   resetWip();
-   mBranchesWidget->clear();
-   mCommitInfoWidget->clear();
-   mCommitChangesWidget->clear();
+    mRepositoryView->clear();
+    resetWip();
+    mBranchesWidget->clear();
+    mCommitInfoWidget->clear();
+    mCommitChangesWidget->clear();
 
-   mCommitStackedWidget->setCurrentIndex(mCommitStackedWidget->currentIndex());
+    mCommitStackedWidget->setCurrentIndex(mCommitStackedWidget->currentIndex());
 }
 
-void HistoryWidget::resetWip()
-{
-   mCommitChangesWidget->clear();
-}
+void HistoryWidget::resetWip() { mCommitChangesWidget->clear(); }
 
 void HistoryWidget::loadBranches(bool fullReload)
 {
-   if (fullReload)
-      mBranchesWidget->showBranches();
-   else
-      mBranchesWidget->refreshCurrentBranchLink();
+    if (fullReload)
+        mBranchesWidget->showBranches();
+    else
+        mBranchesWidget->refreshCurrentBranchLink();
 }
 
 void HistoryWidget::updateUiFromWatcher()
 {
-   mCommitChangesWidget->reload();
+    mCommitChangesWidget->reload();
 
-   if (const auto widget = dynamic_cast<IDiffWidget *>(mCenterStackedWidget->currentWidget()))
-      widget->reload();
+    if (const auto widget = dynamic_cast<IDiffWidget*>(mCenterStackedWidget->currentWidget()))
+        widget->reload();
 }
 
 void HistoryWidget::updateGraphView(int totalCommits)
 {
-   mRepositoryModel->onNewRevisions(totalCommits);
+    mRepositoryModel->onNewRevisions(totalCommits);
 
-   const auto currentSha = mRepositoryView->getCurrentSha();
-   mRepositoryView->focusOnCommit(currentSha);
+    const auto currentSha = mRepositoryView->getCurrentSha();
+    mRepositoryView->focusOnCommit(currentSha);
 
-   mCommitChangesWidget->reload();
+    mCommitChangesWidget->reload();
 
-   if (const auto widget = dynamic_cast<IDiffWidget *>(mCenterStackedWidget->currentWidget()))
-      widget->reload();
+    if (const auto widget = dynamic_cast<IDiffWidget*>(mCenterStackedWidget->currentWidget()))
+        widget->reload();
 }
 
-void HistoryWidget::keyPressEvent(QKeyEvent *event)
+void HistoryWidget::keyPressEvent(QKeyEvent* event)
 {
-   if (event->key() == Qt::Key_Shift)
-      mReverseSearch = true;
+    if (event->key() == Qt::Key_Shift)
+        mReverseSearch = true;
 
-   QFrame::keyPressEvent(event);
+    QFrame::keyPressEvent(event);
 }
 
-void HistoryWidget::keyReleaseEvent(QKeyEvent *event)
+void HistoryWidget::keyReleaseEvent(QKeyEvent* event)
 {
-   if (event->key() == Qt::Key_Shift)
-      mReverseSearch = false;
+    if (event->key() == Qt::Key_Shift)
+        mReverseSearch = false;
 
-   QFrame::keyReleaseEvent(event);
+    QFrame::keyReleaseEvent(event);
 }
 
-void HistoryWidget::onOpenFullDiff(const QString &sha)
+void HistoryWidget::onOpenFullDiff(const QString& sha)
 {
-   const auto commit = mCache->commitInfo(sha);
-   QScopedPointer<GitHistory> git(new GitHistory(mGit));
-   const auto ret = git->getCommitDiff(sha, commit.firstParent());
+    const auto commit = mCache->commitInfo(sha);
+    QScopedPointer<GitHistory> git(new GitHistory(mGit));
+    const auto ret = git->getCommitDiff(sha, commit.firstParent());
 
-   if (ret.success && !ret.output.isEmpty())
-   {
-      mFullDiffWidget->loadDiff(sha, commit.firstParent(), ret.output);
-      mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FullDiff));
-   }
-   else
-      QMessageBox::warning(this, tr("No diff available!"), tr("There is no diff to show."));
+    if (ret.success && !ret.output.isEmpty())
+    {
+        mFullDiffWidget->loadDiff(sha, commit.firstParent(), ret.output);
+        mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FullDiff));
+    }
+    else
+        QMessageBox::warning(this, tr("No diff available!"), tr("There is no diff to show."));
 }
 
 void HistoryWidget::rearrangeSplittrer(bool minimalActive)
 {
-   if (minimalActive)
-   {
-      mBranchesWidget->setFixedWidth(50);
-   }
-   else
-   {
-      mBranchesWidget->setMinimumWidth(250);
-      mBranchesWidget->setMaximumWidth(500);
-   }
+    if (minimalActive)
+    {
+        mBranchesWidget->setFixedWidth(50);
+    }
+    else
+    {
+        mBranchesWidget->setMinimumWidth(250);
+        mBranchesWidget->setMaximumWidth(500);
+    }
 }
 
 void HistoryWidget::onRevertedChanges()
 {
-   WipHelper::update(mGit, mCache);
+    WipHelper::update(mGit, mCache);
 
-   updateUiFromWatcher();
+    updateUiFromWatcher();
 }
 
 void HistoryWidget::search()
 {
-   if (const auto text = mSearchInput->text(); !text.isEmpty())
-   {
-      auto commitInfo = mCache->commitInfo(text);
+    if (const auto text = mSearchInput->text(); !text.isEmpty())
+    {
+        auto commitInfo = mCache->commitInfo(text);
 
-      if (commitInfo.isValid())
-         goToSha(text);
-      else
-      {
-         auto selectedItems = mRepositoryView->selectedIndexes();
-         auto startingRow = 0;
+        if (commitInfo.isValid())
+            goToSha(text);
+        else
+        {
+            auto selectedItems = mRepositoryView->selectedIndexes();
+            auto startingRow = 0;
 
-         if (!selectedItems.isEmpty())
-         {
-            std::sort(selectedItems.begin(), selectedItems.end(),
-                      [](const QModelIndex index1, const QModelIndex index2) { return index1.row() <= index2.row(); });
-            startingRow = selectedItems.constFirst().row();
-         }
+            if (!selectedItems.isEmpty())
+            {
+                std::sort(
+                    selectedItems.begin(), selectedItems.end(), [](const QModelIndex index1, const QModelIndex index2) {
+                        return index1.row() <= index2.row();
+                    });
+                startingRow = selectedItems.constFirst().row();
+            }
 
-         commitInfo = mCache->searchCommitInfo(text, startingRow + 1, mReverseSearch);
+            commitInfo = mCache->searchCommitInfo(text, startingRow + 1, mReverseSearch);
 
-         if (commitInfo.isValid())
-            goToSha(commitInfo.sha);
-         else
-            QMessageBox::information(this, tr("Not found!"), tr("No commits where found based on the search text."));
-      }
-   }
+            if (commitInfo.isValid())
+                goToSha(commitInfo.sha);
+            else
+                QMessageBox::information(
+                    this, tr("Not found!"), tr("No commits where found based on the search text."));
+        }
+    }
 }
 
-void HistoryWidget::goToSha(const QString &sha)
-{
-   mRepositoryView->focusOnCommit(sha);
-}
+void HistoryWidget::goToSha(const QString& sha) { mRepositoryView->focusOnCommit(sha); }
 
-void HistoryWidget::commitSelected(const QModelIndex &index)
+void HistoryWidget::commitSelected(const QModelIndex& index)
 {
-   if (mLastSelectedRow == index.row())
-   {
-      mLastSelectedRow = -1;
-      mCommitInfoFrame->setVisible(false);
-   }
-   else
-   {
-      mLastSelectedRow = index.row();
+    if (mLastSelectedRow == index.row())
+    {
+        mLastSelectedRow = -1;
+        mCommitInfoFrame->setVisible(false);
+    }
+    else
+    {
+        mLastSelectedRow = index.row();
 
-      const auto sha = mRepositoryModel->sha(index.row());
-      selectCommit(sha);
-      mCommitInfoFrame->setVisible(true);
-   }
+        const auto sha = mRepositoryModel->sha(index.row());
+        selectCommit(sha);
+        mCommitInfoFrame->setVisible(true);
+    }
 }
 
 void HistoryWidget::onShowAllUpdated(bool showAll)
 {
-   GitQlientSettings settings(mGit->getGitDir());
-   settings.setLocalValue("ShowAllBranches", showAll);
+    GitQlientSettings settings(mGit->getGitDir());
+    settings.setLocalValue("ShowAllBranches", showAll);
 
-   emit signalAllBranchesActive(showAll);
-   emit logReload();
+    emit signalAllBranchesActive(showAll);
+    emit logReload();
 }
 
-void HistoryWidget::mergeBranch(const QString &current, const QString &branchToMerge)
+void HistoryWidget::mergeBranch(const QString& current, const QString& branchToMerge)
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitMerge> git(new GitMerge(mGit));
-   const auto ret = git->merge(current, { branchToMerge });
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitMerge> git(new GitMerge(mGit));
+    const auto ret = git->merge(current, {branchToMerge});
 
-   if (ret.success)
-      WipHelper::update(mGit, mCache);
+    if (ret.success)
+        WipHelper::update(mGit, mCache);
 
-   WipHelper::update(mGit, mCache);
+    WipHelper::update(mGit, mCache);
 
-   QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 
-   processMergeResponse(ret);
+    processMergeResponse(ret);
 }
 
-void HistoryWidget::mergeSquashBranch(const QString &current, const QString &branchToMerge)
+void HistoryWidget::mergeSquashBranch(const QString& current, const QString& branchToMerge)
 {
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   QScopedPointer<GitMerge> git(new GitMerge(mGit));
-   const auto ret = git->squashMerge(current, { branchToMerge });
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QScopedPointer<GitMerge> git(new GitMerge(mGit));
+    const auto ret = git->squashMerge(current, {branchToMerge});
 
-   if (ret.success)
-      WipHelper::update(mGit, mCache);
+    if (ret.success)
+        WipHelper::update(mGit, mCache);
 
-   WipHelper::update(mGit, mCache);
+    WipHelper::update(mGit, mCache);
 
-   QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 
-   processMergeResponse(ret);
+    processMergeResponse(ret);
 }
 
-void HistoryWidget::processMergeResponse(const GitExecResult &ret)
+void HistoryWidget::processMergeResponse(const GitExecResult& ret)
 {
-   if (!ret.success)
-   {
-      QMessageBox msgBox(
-          QMessageBox::Critical, tr("Merge failed"),
-          QString(tr("There were problems during the merge. Please, see the detailed description for more "
-                     "information.<br><br>GitQlient will show the merge helper tool.")),
-          QMessageBox::Ok, this);
-      msgBox.setDetailedText(ret.output);
-      msgBox.exec();
+    if (!ret.success)
+    {
+        QMessageBox msgBox(
+            QMessageBox::Critical,
+            tr("Merge failed"),
+            QString(tr("There were problems during the merge. Please, see the detailed description for more "
+                       "information.<br><br>GitQlient will show the merge helper tool.")),
+            QMessageBox::Ok,
+            this);
+        msgBox.setDetailedText(ret.output);
+        msgBox.exec();
 
-      emit signalMergeConflicts();
-   }
-   else
-   {
-      if (!ret.output.isEmpty())
-      {
-         if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
-             || ret.output.contains(" conflict", Qt::CaseInsensitive))
-         {
-            QMessageBox msgBox(
-                QMessageBox::Warning, tr("Merge status"),
-                tr("There were problems during the merge. Please, see the detailed description for more information."),
-                QMessageBox::Ok, this);
-            msgBox.setDetailedText(ret.output);
-            msgBox.exec();
+        emit signalMergeConflicts();
+    }
+    else
+    {
+        if (!ret.output.isEmpty())
+        {
+            if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
+                || ret.output.contains(" conflict", Qt::CaseInsensitive))
+            {
+                QMessageBox msgBox(
+                    QMessageBox::Warning,
+                    tr("Merge status"),
+                    tr("There were problems during the merge. Please, see the detailed description for more information."),
+                    QMessageBox::Ok,
+                    this);
+                msgBox.setDetailedText(ret.output);
+                msgBox.exec();
 
-            emit signalMergeConflicts();
-         }
-         else
-         {
-            emit fullReload();
+                emit signalMergeConflicts();
+            }
+            else
+            {
+                emit fullReload();
 
-            QMessageBox msgBox(
-                QMessageBox::Information, tr("Merge successful"),
-                tr("The merge was successfully done. See the detailed description for more information."),
-                QMessageBox::Ok, this);
-            msgBox.setDetailedText(ret.output);
-            msgBox.exec();
-         }
-      }
-   }
+                QMessageBox msgBox(
+                    QMessageBox::Information,
+                    tr("Merge successful"),
+                    tr("The merge was successfully done. See the detailed description for more information."),
+                    QMessageBox::Ok,
+                    this);
+                msgBox.setDetailedText(ret.output);
+                msgBox.exec();
+            }
+        }
+    }
 }
 
-void HistoryWidget::selectCommit(const QString &goToSha)
+void HistoryWidget::selectCommit(const QString& goToSha)
 {
-   const auto isWip = goToSha == ZERO_SHA;
-   mCommitStackedWidget->setCurrentIndex(isWip);
+    const auto isWip = goToSha == ZERO_SHA;
+    mCommitStackedWidget->setCurrentIndex(isWip);
 
-   QLog_Info("UI", QString("Selected commit {%1}").arg(goToSha));
+    QLog_Info("UI", QString("Selected commit {%1}").arg(goToSha));
 
-   if (isWip)
-      mCommitChangesWidget->setCommitMode(CommitChangesWidget::CommitMode::Wip);
+    if (isWip)
+        mCommitChangesWidget->setCommitMode(CommitChangesWidget::CommitMode::Wip);
 
-   mCommitInfoWidget->configure(goToSha);
+    mCommitInfoWidget->configure(goToSha);
 }
 
-void HistoryWidget::onAmendCommit(const QString &sha)
+void HistoryWidget::onAmendCommit(const QString& sha)
 {
-   mCommitStackedWidget->setCurrentIndex(1);
+    mCommitStackedWidget->setCurrentIndex(1);
 
-   const auto commitToAmend = (sha == ZERO_SHA) ? mGit->getLastCommit().output.trimmed() : sha;
+    const auto commitToAmend = (sha == ZERO_SHA) ? mGit->getLastCommit().output.trimmed() : sha;
 
-   mCommitChangesWidget->setCommitMode(CommitChangesWidget::CommitMode::Amend);
-   mCommitChangesWidget->configure(commitToAmend);
+    mCommitChangesWidget->setCommitMode(CommitChangesWidget::CommitMode::Amend);
+    mCommitChangesWidget->configure(commitToAmend);
 }
 
 void HistoryWidget::returnToView()
 {
-   mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::Graph));
-   mBranchesWidget->returnToSavedView();
+    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::Graph));
+    mBranchesWidget->returnToSavedView();
 }
 
-void HistoryWidget::returnToViewIfObsolete(const QString &fileName)
+void HistoryWidget::returnToViewIfObsolete(const QString& fileName)
 {
-   if (mWipFileDiff->getCurrentFile().contains(fileName, Qt::CaseInsensitive))
-      returnToView();
+    if (mWipFileDiff->getCurrentFile().contains(fileName, Qt::CaseInsensitive))
+        returnToView();
 }
 
 void HistoryWidget::cherryPickCommit()
 {
-   auto error = false;
-   QString errorStr;
+    auto error = false;
+    QString errorStr;
 
-   if (auto commit = mCache->commitInfo(mSearchInput->text()); commit.isValid())
-   {
-      const auto lastShaBeforeCommit = mGit->getLastCommit().output.trimmed();
-      const auto git = QScopedPointer<GitLocal>(new GitLocal(mGit));
-      const auto ret = git->cherryPickCommit(commit.sha);
+    if (auto commit = mCache->commitInfo(mSearchInput->text()); commit.isValid())
+    {
+        const auto lastShaBeforeCommit = mGit->getLastCommit().output.trimmed();
+        const auto git = QScopedPointer<GitLocal>(new GitLocal(mGit));
+        const auto ret = git->cherryPickCommit(commit.sha);
 
-      if (ret.success)
-      {
-         mSearchInput->clear();
+        if (ret.success)
+        {
+            mSearchInput->clear();
 
-         commit.sha = mGit->getLastCommit().output.trimmed();
+            commit.sha = mGit->getLastCommit().output.trimmed();
 
-         mCache->insertCommit(commit);
-         mGraphCache->createMultiverse(mCache->getCommits());
-         mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
-         mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
+            mCache->insertCommit(commit);
+            mGraphCache->createMultiverse(mCache->getCommits());
+            mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
+            mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
-         QScopedPointer<GitHistory> gitHistory(new GitHistory(mGit));
-         const auto ret = gitHistory->getDiffFiles(commit.sha, lastShaBeforeCommit);
+            QScopedPointer<GitHistory> gitHistory(new GitHistory(mGit));
+            const auto ret = gitHistory->getDiffFiles(commit.sha, lastShaBeforeCommit);
 
-         mCache->insertRevisionFiles(commit.sha, lastShaBeforeCommit, RevisionFiles(ret.output));
+            mCache->insertRevisionFiles(commit.sha, lastShaBeforeCommit, RevisionFiles(ret.output));
 
-         emit mCache->signalCacheUpdated();
-         emit logReload();
-      }
-      else
-      {
-         if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
-             || ret.output.contains(" conflict", Qt::CaseInsensitive))
-         {
-            emit signalCherryPickConflict(QStringList());
-         }
-         else
-         {
+            emit mCache->signalCacheUpdated();
+            emit logReload();
+        }
+        else
+        {
+            if (ret.output.contains("error: could not apply", Qt::CaseInsensitive)
+                || ret.output.contains(" conflict", Qt::CaseInsensitive))
+            {
+                emit signalCherryPickConflict(QStringList());
+            }
+            else
+            {
+                error = true;
+                errorStr = ret.output;
+            }
+        }
+    }
+    else
+    {
+        const auto lastShaBeforeCommit = mGit->getLastCommit().output.trimmed();
+        const auto git = QScopedPointer<GitLocal>(new GitLocal(mGit));
+        const auto ret = git->cherryPickCommit(mSearchInput->text());
+
+        if (ret.success)
+        {
+            mSearchInput->clear();
+
+            commit.sha = mGit->getLastCommit().output.trimmed();
+
+            mCache->insertCommit(commit);
+            mGraphCache->createMultiverse(mCache->getCommits());
+            mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
+            mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
+
+            QScopedPointer<GitHistory> gitHistory(new GitHistory(mGit));
+            const auto ret = gitHistory->getDiffFiles(commit.sha, lastShaBeforeCommit);
+
+            mCache->insertRevisionFiles(commit.sha, lastShaBeforeCommit, RevisionFiles(ret.output));
+
+            emit mCache->signalCacheUpdated();
+
+            emit logReload();
+        }
+        else
+        {
             error = true;
             errorStr = ret.output;
-         }
-      }
-   }
-   else
-   {
-      const auto lastShaBeforeCommit = mGit->getLastCommit().output.trimmed();
-      const auto git = QScopedPointer<GitLocal>(new GitLocal(mGit));
-      const auto ret = git->cherryPickCommit(mSearchInput->text());
+        }
+    }
 
-      if (ret.success)
-      {
-         mSearchInput->clear();
-
-         commit.sha = mGit->getLastCommit().output.trimmed();
-
-         mCache->insertCommit(commit);
-         mGraphCache->createMultiverse(mCache->getCommits());
-         mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
-         mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
-
-         QScopedPointer<GitHistory> gitHistory(new GitHistory(mGit));
-         const auto ret = gitHistory->getDiffFiles(commit.sha, lastShaBeforeCommit);
-
-         mCache->insertRevisionFiles(commit.sha, lastShaBeforeCommit, RevisionFiles(ret.output));
-
-         emit mCache->signalCacheUpdated();
-
-         emit logReload();
-      }
-      else
-      {
-         error = true;
-         errorStr = ret.output;
-      }
-   }
-
-   if (error)
-   {
-      QMessageBox msgBox(QMessageBox::Critical, tr("Error while cherry-pick"),
-                         tr("There were problems during the cherry-pick operation. Please, see the detailed "
-                            "description for more information."),
-                         QMessageBox::Ok, this);
-      msgBox.setDetailedText(errorStr);
-      msgBox.exec();
-   }
+    if (error)
+    {
+        QMessageBox msgBox(
+            QMessageBox::Critical,
+            tr("Error while cherry-pick"),
+            tr("There were problems during the cherry-pick operation. Please, see the detailed "
+               "description for more information."),
+            QMessageBox::Ok,
+            this);
+        msgBox.setDetailedText(errorStr);
+        msgBox.exec();
+    }
 }
 
-void HistoryWidget::showWipFileDiff(const QString &fileName, bool isCached)
+void HistoryWidget::showWipFileDiff(const QString& fileName, bool isCached)
 {
-   mWipFileDiff->setup(fileName, isCached, false, ZERO_SHA);
-   mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FileDiff));
-   mBranchesWidget->forceMinimalView();
+    mWipFileDiff->setup(fileName, isCached, false, ZERO_SHA);
+    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FileDiff));
+    mBranchesWidget->forceMinimalView();
 }
 
-void HistoryWidget::showFileDiff(const QString &fileName, const QString &currentSha, const QString &parentSha)
+void HistoryWidget::showFileDiff(const QString& fileName, const QString& currentSha, const QString& parentSha)
 {
-   mWipFileDiff->setup(fileName, false, false, currentSha, parentSha);
-   mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FileDiff));
-   mBranchesWidget->forceMinimalView();
+    mWipFileDiff->setup(fileName, false, false, currentSha, parentSha);
+    mCenterStackedWidget->setCurrentIndex(static_cast<int>(Pages::FileDiff));
+    mBranchesWidget->forceMinimalView();
 }

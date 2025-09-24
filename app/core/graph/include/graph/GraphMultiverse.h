@@ -3,10 +3,10 @@
 namespace Graph
 {
 
-class Multiverse
-{
-public:
-   Multiverse();
-};
+    class Multiverse
+    {
+    public:
+        Multiverse();
+    };
 
-}
+} // namespace Graph

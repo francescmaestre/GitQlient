@@ -9,11 +9,10 @@ PenaltyBreakAssignment: 1000
 PenaltyBreakFirstLessLess: 0
 PenaltyReturnTypeOnItsOwnLine: 200
 PenaltyIndentedWhitespace: 1000
-
 AlignConsecutiveMacros: None
 AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
-AllowShortLambdasOnASingleLine: All
+AllowShortLambdasOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Custom
@@ -31,7 +30,7 @@ BraceWrapping:
     IndentBraces: false
 
 FixNamespaceComments: true
-
+NamespaceIndentation: All
 SpaceAfterLogicalNot: false
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true

@@ -26,9 +26,9 @@ add_compile_definitions(SHA_VER="${GQ_SHA}")
 add_compile_definitions(VER="${VERSION}")
 add_compile_definitions(QT_DEPRECATED_WARNINGS)
 
-if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/QLogger/.git" OR
-    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/QPinnableTabWidget/.git" OR
-    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/git/.git")
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QLogger/.git" OR
+    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QPinnableTabWidget/.git" OR
+    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/git/.git")
     message(STATUS "Submodule update:")
     execute_process(COMMAND git submodule update --init --recursive
                     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

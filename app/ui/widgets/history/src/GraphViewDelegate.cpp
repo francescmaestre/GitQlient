@@ -1,8 +1,8 @@
-#include "RepositoryViewDelegate.h"
+#include "GraphViewDelegate.h"
 
-#include "CommitHistoryColumns.h"
-#include "CommitHistoryModel.h"
-#include "CommitHistoryView.h"
+#include "GraphColumns.h"
+#include "GraphModel.h"
+#include "GraphView.h"
 
 #include <GitBase.h>
 #include <GitLocal.h>
@@ -38,11 +38,11 @@
 
 using namespace Graph;
 
-RepositoryViewDelegate::RepositoryViewDelegate(
+GraphViewDelegate::GraphViewDelegate(
     const QSharedPointer<GitCache>& cache,
     const QSharedPointer<Graph::Cache>& graphCache,
     const QSharedPointer<GitBase>& git,
-    CommitHistoryView* view)
+    GraphView* view)
     : mCache(cache)
     , mGraphCache(graphCache)
     , mGit(git)
@@ -50,7 +50,7 @@ RepositoryViewDelegate::RepositoryViewDelegate(
 {
 }
 
-void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, const QModelIndex& index) const
+void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, const QModelIndex& index) const
 {
     if (const auto newTextColor = QPalette().color(QPalette::Base); mCurrentTextColor != newTextColor)
     {
@@ -87,7 +87,7 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
         {
             color = opt.palette.color(QPalette::Highlight);
 
-            if (index.column() == static_cast<int>(CommitHistoryColumns::Graph))
+            if (index.column() == static_cast<int>(GraphColumns::Graph))
                 color.setAlpha(230);
             else
                 color.setAlpha(180);
@@ -99,19 +99,19 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
                     ? 0
                     : mGraphCache->getSacredTimeline(commit.sha) % GitQlientStyles::getTotalBranchColors());
 
-            if (index.column() == static_cast<int>(CommitHistoryColumns::Graph))
+            if (index.column() == static_cast<int>(GraphColumns::Graph))
                 color.setAlpha(90);
             else
                 color.setAlpha(30);
         }
 
-        if (index.column() == static_cast<int>(CommitHistoryColumns::Graph))
+        if (index.column() == static_cast<int>(GraphColumns::Graph))
             newOpt.rect.setWidth(newOpt.rect.width() - 3);
 
         p->fillRect(newOpt.rect, color);
     }
 
-    if (index.column() == static_cast<int>(CommitHistoryColumns::Graph))
+    if (index.column() == static_cast<int>(GraphColumns::Graph))
     {
         newOpt.rect.setX(newOpt.rect.x() + 10);
         paintGraph(p, newOpt, commit);
@@ -119,8 +119,8 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
     else
     {
         const auto currentColVisualIndex = mView->header()->visualIndex(index.column());
-        const auto firstNonGraphColVisualIndex
-            = mView->header()->visualIndex(static_cast<int>(CommitHistoryColumns::Graph)) + 1;
+        const auto firstNonGraphColVisualIndex = mView->header()->visualIndex(static_cast<int>(GraphColumns::Graph))
+            + 1;
 
         if (currentColVisualIndex == firstNonGraphColVisualIndex)
         {
@@ -129,7 +129,7 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
                 paintBranchHelper(p, newOpt, commit, activeColor);
         }
 
-        if (index.column() == static_cast<int>(CommitHistoryColumns::Log))
+        if (index.column() == static_cast<int>(GraphColumns::Log))
         {
             paintLog(p, newOpt, commit);
         }
@@ -142,7 +142,7 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
             QTextOption textalignment(Qt::AlignLeft | Qt::AlignVCenter);
             auto text = index.data().toString();
 
-            if (index.column() == static_cast<int>(CommitHistoryColumns::Date))
+            if (index.column() == static_cast<int>(GraphColumns::Date))
             {
                 textalignment = QTextOption(Qt::AlignRight | Qt::AlignVCenter);
                 const auto prev = QDateTime::fromString(
@@ -156,14 +156,14 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
 
                 newOpt.rect.setWidth(newOpt.rect.width() - 5);
             }
-            else if (index.column() == static_cast<int>(CommitHistoryColumns::Sha))
+            else if (index.column() == static_cast<int>(GraphColumns::Sha))
             {
                 newOpt.font.setPointSize(defaultFontSize - 2);
                 newOpt.font.setFamily("DejaVu Sans Mono");
 
                 text = commit.sha != ZERO_SHA ? text.left(8) : "";
             }
-            else if (index.column() == static_cast<int>(CommitHistoryColumns::Author) && commit.isSigned())
+            else if (index.column() == static_cast<int>(GraphColumns::Author) && commit.isSigned())
             {
                 static const auto size = 15;
                 static const auto offset = 5;
@@ -176,7 +176,7 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
 
                 newOpt.rect.setX(newOpt.rect.x() + size + offset);
             }
-            else if (index.column() == static_cast<int>(CommitHistoryColumns::Refs))
+            else if (index.column() == static_cast<int>(GraphColumns::Refs))
             {
                 auto offset = 5;
 
@@ -188,7 +188,7 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
 
             if (const auto cursorColumn = mView->indexAt(mView->mapFromGlobal(QCursor::pos())).column();
                 newOpt.state & QStyle::State_MouseOver && cursorColumn == index.column()
-                && cursorColumn == static_cast<int>(CommitHistoryColumns::Sha))
+                && cursorColumn == static_cast<int>(GraphColumns::Sha))
             {
                 p->setPen(gitQlientOrange);
             }
@@ -198,12 +198,12 @@ void RepositoryViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt,
     }
 }
 
-QSize RepositoryViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const
+QSize GraphViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const
 {
     return QSize(LANE_WIDTH, ROW_HEIGHT);
 }
 
-bool RepositoryViewDelegate::helpEvent(
+bool GraphViewDelegate::helpEvent(
     QHelpEvent* event, QAbstractItemView* view, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
     if (!event || !view)
@@ -232,13 +232,13 @@ bool RepositoryViewDelegate::helpEvent(
     return QStyledItemDelegate::helpEvent(event, view, option, index);
 }
 
-bool RepositoryViewDelegate::editorEvent(
+bool GraphViewDelegate::editorEvent(
     QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
     const auto cursorColumn = mView->indexAt(mView->mapFromGlobal(QCursor::pos())).column();
 
     if (event->type() == QEvent::MouseButtonPress && cursorColumn == index.column()
-        && cursorColumn == static_cast<int>(CommitHistoryColumns::Sha))
+        && cursorColumn == static_cast<int>(GraphColumns::Sha))
     {
         mColumnPressed = cursorColumn;
         return true;
@@ -246,7 +246,7 @@ bool RepositoryViewDelegate::editorEvent(
     else if (event->type() == QEvent::MouseButtonRelease && cursorColumn == index.column() && mColumnPressed != -1)
     {
         const auto text = index.data().toString();
-        if (cursorColumn == static_cast<int>(CommitHistoryColumns::Sha) && text != ZERO_SHA)
+        if (cursorColumn == static_cast<int>(GraphColumns::Sha) && text != ZERO_SHA)
         {
             QApplication::clipboard()->setText(text);
             auto pal = qApp->palette();
@@ -266,7 +266,7 @@ bool RepositoryViewDelegate::editorEvent(
     return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
-void RepositoryViewDelegate::paintBranchHelper(
+void GraphViewDelegate::paintBranchHelper(
     QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit, const QColor& activeColor) const
 {
     static const auto LINE_OFFSET = 6;
@@ -284,7 +284,7 @@ void RepositoryViewDelegate::paintBranchHelper(
     p->restore();
 }
 
-void RepositoryViewDelegate::paintGraphLane(
+void GraphViewDelegate::paintGraphLane(
     QPainter* p,
     const QStyleOptionViewItem& opt,
     const State& lane,
@@ -458,7 +458,7 @@ void RepositoryViewDelegate::paintGraphLane(
     }
 }
 
-QColor RepositoryViewDelegate::getMergeColor(
+QColor GraphViewDelegate::getMergeColor(
     const State& currentLane, const Commit& commit, int currentLaneIndex, const QColor& defaultColor, bool& isSet) const
 {
     auto mergeColor = defaultColor;
@@ -494,7 +494,7 @@ QColor RepositoryViewDelegate::getMergeColor(
     return mergeColor;
 }
 
-QImage RepositoryViewDelegate::renderSvgToPixmap(const QString& fileName, QSize forcedSize) const
+QImage GraphViewDelegate::renderSvgToPixmap(const QString& fileName, QSize forcedSize) const
 {
     auto file = QFile(fileName);
     QByteArray svgData;
@@ -566,7 +566,7 @@ QImage RepositoryViewDelegate::renderSvgToPixmap(const QString& fileName, QSize 
     return img;
 }
 
-QColor RepositoryViewDelegate::getActiveColor(const Commit& commit) const
+QColor GraphViewDelegate::getActiveColor(const Commit& commit) const
 {
     const auto colorIndex = mView->hasActiveFilter() ? 0
         : commit.sha != ZERO_SHA
@@ -581,7 +581,7 @@ QColor RepositoryViewDelegate::getActiveColor(const Commit& commit) const
     return activeColor;
 }
 
-void RepositoryViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
+void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
 {
     p->save();
     p->setClipRect(opt.rect, Qt::IntersectClip);
@@ -683,7 +683,7 @@ void RepositoryViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem&
     p->restore();
 }
 
-void RepositoryViewDelegate::paintLog(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
+void GraphViewDelegate::paintLog(QPainter* p, const QStyleOptionViewItem& opt, const Commit& commit) const
 {
     if (commit.sha.isEmpty())
         return;
@@ -707,7 +707,7 @@ void RepositoryViewDelegate::paintLog(QPainter* p, const QStyleOptionViewItem& o
         QTextOption(Qt::AlignLeft | Qt::AlignVCenter));
 }
 
-void RepositoryViewDelegate::paintTagBranch(
+void GraphViewDelegate::paintTagBranch(
     QPainter* painter, QStyleOptionViewItem o, int& startPoint, const Commit& commit) const
 {
     const auto currentLaneColor = getActiveColor(commit);

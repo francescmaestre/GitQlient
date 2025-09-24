@@ -18,97 +18,98 @@
 #include <QPainter>
 #include <QPalette>
 
-FileListWidget::FileListWidget(const QSharedPointer<GitBase> &git, QSharedPointer<GitCache> cache, QWidget *p)
-   : QListWidget(p)
-   , mGit(git)
-   , mCache(std::move(cache))
+FileListWidget::FileListWidget(const QSharedPointer<GitBase>& git, QSharedPointer<GitCache> cache, QWidget* p)
+    : QListWidget(p)
+    , mGit(git)
+    , mCache(std::move(cache))
 {
-   setContextMenuPolicy(Qt::CustomContextMenu);
-   setItemDelegate(mFileDelegate = new FileListDelegate(this));
-   setAttribute(Qt::WA_DeleteOnClose);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    setItemDelegate(mFileDelegate = new FileListDelegate(this));
+    setAttribute(Qt::WA_DeleteOnClose);
 
-   connect(this, &FileListWidget::customContextMenuRequested, this, &FileListWidget::showContextMenu);
+    connect(this, &FileListWidget::customContextMenuRequested, this, &FileListWidget::showContextMenu);
 }
 
-FileListWidget::~FileListWidget()
+FileListWidget::~FileListWidget() { delete mFileDelegate; }
+
+void FileListWidget::addItem(const QString& label, const QColor& clr)
 {
-   delete mFileDelegate;
+    const auto item = new QListWidgetItem(label, this);
+    item->setForeground(clr);
+    item->setToolTip(label);
 }
 
-void FileListWidget::addItem(const QString &label, const QColor &clr)
+void FileListWidget::showContextMenu(const QPoint& pos)
 {
-   const auto item = new QListWidgetItem(label, this);
-   item->setForeground(clr);
-   item->setToolTip(label);
+    const auto item = itemAt(pos);
+
+    if (item)
+    {
+        const auto fileName = item->data(Qt::DisplayRole).toString();
+        const auto menu = new FileContextMenu(mGit->getWorkingDir(), fileName, mCurrentSha == ZERO_SHA, this);
+        connect(menu, &FileContextMenu::signalShowFileHistory, this, [this, fileName]() {
+            emit signalShowFileHistory(fileName);
+        });
+        connect(menu, &FileContextMenu::signalOpenFileDiff, this, [this, item] {
+            emit QListWidget::itemDoubleClicked(item);
+        });
+        connect(menu, &FileContextMenu::signalEditFile, this, [this, fileName]() {
+            emit signalEditFile(mGit->getWorkingDir() + "/" + fileName, 0, 0);
+        });
+        menu->exec(viewport()->mapToGlobal(pos));
+    }
 }
 
-void FileListWidget::showContextMenu(const QPoint &pos)
+void FileListWidget::insertFiles(const QString& currentSha, const QString& compareToSha)
 {
-   const auto item = itemAt(pos);
+    clear();
 
-   if (item)
-   {
-      const auto fileName = item->data(Qt::DisplayRole).toString();
-      const auto menu = new FileContextMenu(mGit->getWorkingDir(), fileName, mCurrentSha == ZERO_SHA, this);
-      connect(menu, &FileContextMenu::signalShowFileHistory, this,
-              [this, fileName]() { emit signalShowFileHistory(fileName); });
-      connect(menu, &FileContextMenu::signalOpenFileDiff, this,
-              [this, item] { emit QListWidget::itemDoubleClicked(item); });
-      connect(menu, &FileContextMenu::signalEditFile, this,
-              [this, fileName]() { emit signalEditFile(mGit->getWorkingDir() + "/" + fileName, 0, 0); });
-      menu->exec(viewport()->mapToGlobal(pos));
-   }
-}
+    mCurrentSha = currentSha;
 
-void FileListWidget::insertFiles(const QString &currentSha, const QString &compareToSha)
-{
-   clear();
+    auto files = mCache->revisionFile(mCurrentSha, compareToSha);
 
-   mCurrentSha = currentSha;
+    if (!files)
+    {
+        QScopedPointer<GitHistory> git(new GitHistory(mGit));
+        const auto ret = git->getDiffFiles(mCurrentSha, compareToSha);
 
-   auto files = mCache->revisionFile(mCurrentSha, compareToSha);
+        if (ret.success)
+        {
+            files = RevisionFiles(ret.output);
+            mCache->insertRevisionFiles(mCurrentSha, compareToSha, files.value());
+        }
+    }
 
-   if (!files)
-   {
-      QScopedPointer<GitHistory> git(new GitHistory(mGit));
-      const auto ret = git->getDiffFiles(mCurrentSha, compareToSha);
+    if (files->count() != 0)
+    {
+        setUpdatesEnabled(false);
 
-      if (ret.success)
-      {
-         files = RevisionFiles(ret.output);
-         mCache->insertRevisionFiles(mCurrentSha, compareToSha, files.value());
-      }
-   }
-
-   if (files->count() != 0)
-   {
-      setUpdatesEnabled(false);
-
-      for (auto i = 0; i < files->count(); ++i)
-      {
-         if (!files->statusCmp(i, RevisionFiles::UNKNOWN))
-         {
-            QColor clr;
-            QString fileName;
-
-            if (files->statusCmp(i, RevisionFiles::NEW))
+        for (auto i = 0; i < files->count(); ++i)
+        {
+            if (!files->statusCmp(i, RevisionFiles::UNKNOWN))
             {
-               const auto fileRename = files->extendedStatus(i);
+                QColor clr;
+                QString fileName;
 
-               clr = fileRename.isEmpty() ? GitQlientStyles::getGreen() : GitQlientStyles::getBlue();
-               fileName = fileRename.isEmpty() ? files->getFile(i) : fileRename;
+                if (files->statusCmp(i, RevisionFiles::NEW))
+                {
+                    const auto fileRename = files->extendedStatus(i);
+
+                    clr = fileRename.isEmpty() ? GitQlientStyles::getGreen() : GitQlientStyles::getBlue();
+                    fileName = fileRename.isEmpty() ? files->getFile(i) : fileRename;
+                }
+                else
+                {
+                    clr = files->statusCmp(i, RevisionFiles::DELETED)
+                        ? GitQlientStyles::getRed()
+                        : QPalette().color(QPalette::Text);
+                    fileName = files->getFile(i);
+                }
+
+                addItem(fileName, clr);
             }
-            else
-            {
-               clr = files->statusCmp(i, RevisionFiles::DELETED) ? GitQlientStyles::getRed()
-                                                                 : QPalette().color(QPalette::Text);
-               fileName = files->getFile(i);
-            }
+        }
 
-            addItem(fileName, clr);
-         }
-      }
-
-      setUpdatesEnabled(true);
-   }
+        setUpdatesEnabled(true);
+    }
 }

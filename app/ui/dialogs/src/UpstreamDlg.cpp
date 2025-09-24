@@ -8,45 +8,45 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-UpstreamDlg::UpstreamDlg(QSharedPointer<GitBase> git, const QString &text, QWidget *parent)
-   : QDialog(parent)
-   , ui(new Ui::PullDlg)
-   , mGit(git)
+UpstreamDlg::UpstreamDlg(QSharedPointer<GitBase> git, const QString& text, QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::PullDlg)
+    , mGit(git)
 {
-   ui->setupUi(this);
+    ui->setupUi(this);
 
-   ui->lText->setText(text);
-   ui->lQuestion->setText(tr("<strong>Would you like to reconfigure the upstream and push the branch?</strong>"));
+    ui->lText->setText(text);
+    ui->lQuestion->setText(tr("<strong>Would you like to reconfigure the upstream and push the branch?</strong>"));
 }
 
-UpstreamDlg::~UpstreamDlg()
-{
-   delete ui;
-}
+UpstreamDlg::~UpstreamDlg() { delete ui; }
 
 void UpstreamDlg::accept()
 {
-   QScopedPointer<GitBranches> git(new GitBranches(mGit));
+    QScopedPointer<GitBranches> git(new GitBranches(mGit));
 
-   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-   const auto ret = git->unsetUpstream();
-   QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    const auto ret = git->unsetUpstream();
+    QApplication::restoreOverrideCursor();
 
-   if (ret.success)
-   {
-      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-      const auto ret = git->pushUpstream(mGit->getCurrentBranch(), "origin", mGit->getCurrentBranch());
-      QApplication::restoreOverrideCursor();
+    if (ret.success)
+    {
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        const auto ret = git->pushUpstream(mGit->getCurrentBranch(), "origin", mGit->getCurrentBranch());
+        QApplication::restoreOverrideCursor();
 
-      QDialog::accept();
-   }
-   else
-   {
-      QMessageBox msgBox(QMessageBox::Critical, tr("Error while pulling"),
-                         QString(tr("There were problems during the pull operation. Please, see the detailed "
-                                    "description for more information.")),
-                         QMessageBox::Ok, this);
-      msgBox.setDetailedText(ret.output);
-      msgBox.exec();
-   }
+        QDialog::accept();
+    }
+    else
+    {
+        QMessageBox msgBox(
+            QMessageBox::Critical,
+            tr("Error while pulling"),
+            QString(tr("There were problems during the pull operation. Please, see the detailed "
+                       "description for more information.")),
+            QMessageBox::Ok,
+            this);
+        msgBox.setDetailedText(ret.output);
+        msgBox.exec();
+    }
 }

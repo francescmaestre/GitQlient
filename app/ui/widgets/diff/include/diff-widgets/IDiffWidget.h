@@ -7,39 +7,20 @@ class GitCache;
 
 class IDiffWidget : public QFrame
 {
-   Q_OBJECT
+    Q_OBJECT
 signals:
 
 public:
-   explicit IDiffWidget(const QSharedPointer<GitBase> &git, QSharedPointer<GitCache> cache, QWidget *parent = nullptr);
+    explicit IDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointer<GitCache> cache, QWidget* parent = nullptr);
 
-   /**
-    * @brief Reloads the current diff in case the user loaded the work in progress as base commit.
-    *
-    */
-   virtual bool reload() = 0;
-
-   /**
-    * @brief Changes the font size (in points) for the widgets used to show the diff.
-    */
-   virtual void updateFontSize() = 0;
-
-   /**
-    * @brief Gets the current SHA.
-    *
-    *  @return QString The current SHA.
-    */
-   QString getCurrentSha() const { return mCurrentSha; }
-   /**
-    * @brief Gets the SHA against the diff is comparing to.
-    *
-    * @return QString The SHA that the diff is compared to.
-    */
-   QString getPreviousSha() const { return mPreviousSha; }
+    virtual bool reload() = 0;
+    virtual void updateFontSize() = 0;
+    QString getCurrentSha() const { return mCurrentSha; }
+    QString getPreviousSha() const { return mPreviousSha; }
 
 protected:
-   QSharedPointer<GitBase> mGit;
-   QSharedPointer<GitCache> mCache;
-   QString mCurrentSha;
-   QString mPreviousSha;
+    QSharedPointer<GitBase> mGit;
+    QSharedPointer<GitCache> mCache;
+    QString mCurrentSha;
+    QString mPreviousSha;
 };

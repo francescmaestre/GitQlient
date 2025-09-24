@@ -2,6 +2,4 @@
 
 #include <QtTest>
 
-void TestsCore::testCase1()
-{
-}
+void TestsCore::testCase1() { }

@@ -3,8 +3,8 @@
 
 class TestsCore : public QObject
 {
-   Q_OBJECT
+    Q_OBJECT
 
 private slots:
-   void testCase1();
+    void testCase1();
 };
