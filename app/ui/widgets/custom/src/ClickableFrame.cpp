@@ -36,10 +36,10 @@ void ClickableFrame::setupLayout()
     mArrowLabel = new QLabel();
     mArrowLabel->setFixedSize(16, 16);
 
+    mHeaderLayout->addWidget(mArrowLabel);
     mHeaderLayout->addWidget(mTitleLabel);
     mHeaderLayout->addWidget(mCountLabel);
     mHeaderLayout->addStretch();
-    mHeaderLayout->addWidget(mArrowLabel);
 
     mMainLayout->addWidget(mHeaderWidget);
 
@@ -134,7 +134,8 @@ void ClickableFrame::updateArrowIcon()
 {
     if (mArrowLabel && mIsExpandable && mShowArrow)
     {
-        const auto icon = QIcon(mIsExpanded ? ":/icons/remove" : ":/icons/add");
+        const auto icon = QIcon(
+            mIsExpanded ? QIcon::fromTheme(QIcon::ThemeIcon::GoDown) : QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
         mArrowLabel->setPixmap(icon.pixmap(QSize(16, 16)));
     }
 }
