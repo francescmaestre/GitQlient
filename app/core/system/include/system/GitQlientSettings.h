@@ -11,7 +11,6 @@ public:
     ~GitQlientSettings() { }
     void setGlobalValue(const QString& key, const QVariant& value);
     QVariant globalValue(const QString& key, const QVariant& defaultValue = QVariant()) const;
-    void setLocalValue(const QString& key, const QVariant& value);
     QVariant localValue(const QString& key, const QVariant& defaultValue = QVariant()) const;
     void setProjectOpened(const QString& projectPath);
     QStringList getRecentProjects() const;

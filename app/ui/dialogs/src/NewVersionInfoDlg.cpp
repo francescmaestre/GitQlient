@@ -161,7 +161,4 @@ void NewVersionInfoDlg::createAddPage(const QString& title, const QStringList& i
     ui->stackedWidget->addWidget(scrollArea);
 }
 
-void NewVersionInfoDlg::saveConfig()
-{
-    GitQlientSettings().setGlobalValue("ShowFeaturesDlg", !ui->chNotAgain->isChecked());
-}
+void NewVersionInfoDlg::saveConfig() { QSettings().setValue("ShowFeaturesDlg", !ui->chNotAgain->isChecked()); }

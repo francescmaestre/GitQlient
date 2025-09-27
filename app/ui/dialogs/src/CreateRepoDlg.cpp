@@ -99,12 +99,12 @@ void CreateRepoDlg::showGitControls()
 
 void CreateRepoDlg::saveConfigAndAccept(const QString& fullPath)
 {
-    GitQlientSettings settings;
+    QSettings settings;
 
     if (ui->chbDefaultDir->isChecked()
-        && settings.globalValue("DefaultCloneLocation", QString()).toString() == ui->lePath->text())
+        && settings.value("DefaultCloneLocation", QString()).toString() == ui->lePath->text())
     {
-        settings.setGlobalValue("DefaultCloneLocation", ui->lePath->text());
+        settings.setValue("DefaultCloneLocation", ui->lePath->text());
     }
 
     if (ui->cbGitUser->isChecked())

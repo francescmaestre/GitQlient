@@ -8,17 +8,18 @@
 #include <system/GitQlientStyles.h>
 
 InitialRepoConfig::InitialRepoConfig(
-    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& settings, QWidget* parent)
+    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& _settings, QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::InitialRepoConfig)
     , mGit(git)
-    , mSettings(settings)
+    , mSettings(_settings)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
 
-    ui->sbMaxCommits->setValue(settings->localValue("MaxCommits", 0).toInt());
+    QSettings settings;
+    ui->sbMaxCommits->setValue(settings.value("MaxCommits", 0).toInt());
 
     QScopedPointer<GitConfig> gitConfig(new GitConfig(git));
 
@@ -34,7 +35,8 @@ InitialRepoConfig::InitialRepoConfig(
 
 InitialRepoConfig::~InitialRepoConfig()
 {
-    mSettings->setLocalValue("MaxCommits", ui->sbMaxCommits->value());
+    QSettings settings;
+    settings.setValue("MaxCommits", ui->sbMaxCommits->value());
 
     delete ui;
 }

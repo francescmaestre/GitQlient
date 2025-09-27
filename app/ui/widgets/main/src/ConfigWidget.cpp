@@ -88,38 +88,38 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent)
         QStandardPaths::writableLocation(QStandardPaths::HomeLocation), QString::fromUtf8(".gitconfig")));
     globalGitLayout->addWidget(mGlobalGit);
 
-    GitQlientSettings settings(mGit->getGitDir());
+    QSettings settings;
+    QSettings qSettings;
 
-    const auto logsFolder = settings.globalValue("logsFolder").toString();
+    const auto logsFolder = settings.value("logsFolder").toString();
     if (logsFolder.isEmpty())
-        settings.setGlobalValue("logsFolder", QString(QDir::currentPath()).append("/logs/"));
+        settings.setValue("logsFolder", QString(QDir::currentPath()).append("/logs/"));
 
-    ui->leLogsLocation->setText(settings.globalValue("logsFolder").toString());
+    ui->leLogsLocation->setText(settings.value("logsFolder").toString());
 
-    ui->chDevMode->setChecked(settings.localValue("DevMode", false).toBool());
+    ui->chDevMode->setChecked(qSettings.value("DevMode", false).toBool());
     enableWidgets();
 
-    ui->chDisableLogs->setChecked(settings.globalValue("logsDisabled", true).toBool());
-    ui->cbLogLevel->setCurrentIndex(settings.globalValue("logsLevel", static_cast<int>(LogLevel::Warning)).toInt());
-    ui->spCommitTitleLength->setValue(settings.globalValue("commitTitleMaxLength", 50).toInt());
+    ui->chDisableLogs->setChecked(settings.value("logsDisabled", true).toBool());
+    ui->cbLogLevel->setCurrentIndex(settings.value("logsLevel", static_cast<int>(LogLevel::Warning)).toInt());
+    ui->spCommitTitleLength->setValue(settings.value("commitTitleMaxLength", 50).toInt());
     ui->sbUiFontSize->setValue(
-        settings.globalValue("UiBaseFontSize", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
-            .toInt());
+        settings.value("UiBaseFontSize", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize()).toInt());
     ui->sbHistoryViewFontSize->setValue(
-        settings.globalValue("HistoryView/FontSize", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
+        settings.value("HistoryView/FontSize", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
             .toInt());
-    ui->rbShowCommit->setChecked(settings.globalValue("HistoryView/PreferCommit", true).toBool());
-    ui->sbEditorFontSize->setValue(settings.globalValue("FileDiffView/FontSize", 8).toInt());
+    ui->rbShowCommit->setChecked(settings.value("HistoryView/PreferCommit", true).toBool());
+    ui->sbEditorFontSize->setValue(settings.value("FileDiffView/FontSize", 8).toInt());
 
 #ifdef Q_OS_LINUX
-    ui->leEditor->setText(settings.globalValue("ExternalEditor", QString()).toString());
-    ui->leExtFileExplorer->setText(settings.globalValue("FileExplorer", "xdg-open").toString());
+    ui->leEditor->setText(settings.value("ExternalEditor", QString()).toString());
+    ui->leExtFileExplorer->setText(settings.value("FileExplorer", "xdg-open").toString());
 #else
     ui->leExtFileExplorer->setHidden(true);
     ui->labelExtFileExplorer->setHidden(true);
 #endif
 
-    const auto originalStyles = settings.globalValue("colorSchema", 0).toInt();
+    const auto originalStyles = settings.value("colorSchema", 0).toInt();
 
     ui->cbStyle->setCurrentIndex(originalStyles);
     connect(
@@ -131,17 +131,17 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent)
             saveConfig();
         });
 
-    ui->sbMaxCommits->setValue(settings.localValue("MaxCommits", 0).toInt());
+    ui->sbMaxCommits->setValue(qSettings.value("MaxCommits", 0).toInt());
 
     ui->tabWidget->setCurrentIndex(0);
     connect(ui->pbClearLogs, &ButtonLink::clicked, this, &ConfigWidget::clearLogs);
 
-    ui->cbLocal->setChecked(settings.localValue("LocalHeader", true).toBool());
-    ui->cbRemote->setChecked(settings.localValue("RemoteHeader", true).toBool());
-    ui->cbTags->setChecked(settings.localValue("TagsHeader", true).toBool());
-    ui->cbStash->setChecked(settings.localValue("StashesHeader", true).toBool());
-    ui->cbSubmodule->setChecked(settings.localValue("SubmodulesHeader", true).toBool());
-    ui->cbSubtree->setChecked(settings.localValue("SubtreeHeader", true).toBool());
+    ui->cbLocal->setChecked(qSettings.value("LocalHeader", true).toBool());
+    ui->cbRemote->setChecked(qSettings.value("RemoteHeader", true).toBool());
+    ui->cbTags->setChecked(qSettings.value("TagsHeader", true).toBool());
+    ui->cbStash->setChecked(qSettings.value("StashesHeader", true).toBool());
+    ui->cbSubmodule->setChecked(qSettings.value("SubmodulesHeader", true).toBool());
+    ui->cbSubtree->setChecked(qSettings.value("SubtreeHeader", true).toBool());
 
     QScopedPointer<GitConfig> gitConfig(new GitConfig(mGit));
 
@@ -182,8 +182,8 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent)
     connect(ui->leLogsLocation, &QLineEdit::editingFinished, this, &ConfigWidget::saveConfig);
     connect(ui->pbBack, &QPushButton::clicked, this, &ConfigWidget::goBack);
 
-    ui->cbDiffView->setCurrentIndex(settings.globalValue("DefaultDiffView").toInt());
-    ui->cbBranchSeparator->setCurrentText(settings.globalValue("BranchSeparator", "-").toString());
+    ui->cbDiffView->setCurrentIndex(settings.value("DefaultDiffView").toInt());
+    ui->cbBranchSeparator->setCurrentText(settings.value("BranchSeparator", "-").toString());
 
     auto size = calculateDirSize(ui->leLogsLocation->text());
     ui->lLogsSize->setText(QString("%1 KB").arg(size));
@@ -193,14 +193,14 @@ ConfigWidget::~ConfigWidget() { delete ui; }
 
 void ConfigWidget::onPanelsVisibilityChanged()
 {
-    GitQlientSettings settings(mGit->getGitDir());
+    QSettings settings;
 
-    ui->cbLocal->setChecked(settings.localValue("LocalHeader", true).toBool());
-    ui->cbRemote->setChecked(settings.localValue("RemoteHeader", true).toBool());
-    ui->cbTags->setChecked(settings.localValue("TagsHeader", true).toBool());
-    ui->cbStash->setChecked(settings.localValue("StashesHeader", true).toBool());
-    ui->cbSubmodule->setChecked(settings.localValue("SubmodulesHeader", true).toBool());
-    ui->cbSubtree->setChecked(settings.localValue("SubtreeHeader", true).toBool());
+    ui->cbLocal->setChecked(settings.value("LocalHeader", true).toBool());
+    ui->cbRemote->setChecked(settings.value("RemoteHeader", true).toBool());
+    ui->cbTags->setChecked(settings.value("TagsHeader", true).toBool());
+    ui->cbStash->setChecked(settings.value("StashesHeader", true).toBool());
+    ui->cbSubmodule->setChecked(settings.value("SubmodulesHeader", true).toBool());
+    ui->cbSubtree->setChecked(settings.value("SubtreeHeader", true).toBool());
 }
 
 void ConfigWidget::onCredentialsOptionChanged(QAbstractButton* button)
@@ -256,27 +256,27 @@ void ConfigWidget::saveConfig()
 
     ui->lFeedback->setText(tr("Changes saved"));
 
-    GitQlientSettings settings(mGit->getWorkingDir());
+    QSettings settings;
 
-    settings.setGlobalValue("logsDisabled", ui->chDisableLogs->isChecked());
-    settings.setGlobalValue("logsLevel", ui->cbLogLevel->currentIndex());
-    settings.setGlobalValue("logsFolder", ui->leLogsLocation->text());
-    settings.setGlobalValue("commitTitleMaxLength", ui->spCommitTitleLength->value());
-    settings.setGlobalValue("UiBaseFontSize", ui->sbUiFontSize->value());
-    settings.setGlobalValue("HistoryView/FontSize", ui->sbHistoryViewFontSize->value());
-    settings.setGlobalValue("HistoryView/PreferCommit", ui->rbShowCommit->isChecked());
-    settings.setGlobalValue("FileDiffView/FontSize", ui->sbEditorFontSize->value());
-    settings.setGlobalValue("colorSchema", ui->cbStyle->currentIndex());
-    settings.setGlobalValue("gitLocation", ui->leGitPath->text());
-    settings.setGlobalValue("DefaultDiffView", ui->cbDiffView->currentIndex());
-    settings.setGlobalValue("BranchSeparator", ui->cbBranchSeparator->currentText());
-    settings.setGlobalValue("UILanguage", ui->cbLanguage->currentData().toString());
+    settings.setValue("logsDisabled", ui->chDisableLogs->isChecked());
+    settings.setValue("logsLevel", ui->cbLogLevel->currentIndex());
+    settings.setValue("logsFolder", ui->leLogsLocation->text());
+    settings.setValue("commitTitleMaxLength", ui->spCommitTitleLength->value());
+    settings.setValue("UiBaseFontSize", ui->sbUiFontSize->value());
+    settings.setValue("HistoryView/FontSize", ui->sbHistoryViewFontSize->value());
+    settings.setValue("HistoryView/PreferCommit", ui->rbShowCommit->isChecked());
+    settings.setValue("FileDiffView/FontSize", ui->sbEditorFontSize->value());
+    settings.setValue("colorSchema", ui->cbStyle->currentIndex());
+    settings.setValue("gitLocation", ui->leGitPath->text());
+    settings.setValue("DefaultDiffView", ui->cbDiffView->currentIndex());
+    settings.setValue("BranchSeparator", ui->cbBranchSeparator->currentText());
+    settings.setValue("UILanguage", ui->cbLanguage->currentData().toString());
 
     if (!ui->leEditor->text().isEmpty())
-        settings.setGlobalValue("ExternalEditor", ui->leEditor->text());
+        settings.setValue("ExternalEditor", ui->leEditor->text());
 
 #ifdef Q_OS_LINUX
-    settings.setGlobalValue("FileExplorer", ui->leExtFileExplorer->text());
+    settings.setValue("FileExplorer", ui->leExtFileExplorer->text());
 #endif
 
     mLocalGit->changeFontSize();
@@ -299,18 +299,18 @@ void ConfigWidget::saveConfig()
     else
         logger->resume();
 
-    settings.setLocalValue("AutoRefresh", ui->autoRefresh->value());
+    settings.setValue("AutoRefresh", ui->autoRefresh->value());
 
     emit autoRefreshChanged(ui->autoRefresh->value());
 
-    settings.setLocalValue("MaxCommits", ui->sbMaxCommits->value());
+    settings.setValue("MaxCommits", ui->sbMaxCommits->value());
 
-    settings.setLocalValue("LocalHeader", ui->cbLocal->isChecked());
-    settings.setLocalValue("RemoteHeader", ui->cbRemote->isChecked());
-    settings.setLocalValue("TagsHeader", ui->cbTags->isChecked());
-    settings.setLocalValue("StashesHeader", ui->cbStash->isChecked());
-    settings.setLocalValue("SubmodulesHeader", ui->cbSubmodule->isChecked());
-    settings.setLocalValue("SubtreeHeader", ui->cbSubtree->isChecked());
+    settings.setValue("LocalHeader", ui->cbLocal->isChecked());
+    settings.setValue("RemoteHeader", ui->cbRemote->isChecked());
+    settings.setValue("TagsHeader", ui->cbTags->isChecked());
+    settings.setValue("StashesHeader", ui->cbStash->isChecked());
+    settings.setValue("SubmodulesHeader", ui->cbSubmodule->isChecked());
+    settings.setValue("SubtreeHeader", ui->cbSubtree->isChecked());
 
     mFeedbackTimer->singleShot(3000, ui->lFeedback, &QLabel::clear);
 }
@@ -319,8 +319,8 @@ void ConfigWidget::enableWidgets()
 {
     const auto enable = ui->chDevMode->isChecked();
 
-    GitQlientSettings settings(mGit->getGitDir());
-    settings.setLocalValue("DevMode", enable);
+    QSettings settings;
+    settings.setValue("DevMode", enable);
 
     ui->tabWidget->setEnabled(enable);
 }
@@ -432,7 +432,7 @@ void ConfigWidget::showFeaturesTour()
 
 void ConfigWidget::fillLanguageBox() const
 {
-    const auto currentLanguage = GitQlientSettings().globalValue("UILanguage", "gitqlient_en").toString();
+    const auto currentLanguage = QSettings().value("UILanguage", "gitqlient_en").toString();
 
     const auto list = QDir(":translations", "gitqlient_*.qm").entryList();
     QDirIterator trIter(":translations", QStringList() << "gitqlient_*.qm");

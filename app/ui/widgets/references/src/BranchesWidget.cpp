@@ -140,17 +140,17 @@ void BranchesWidget::setupConnections()
 
 void BranchesWidget::loadSettings()
 {
-    GitQlientSettings settings(mGit->getWorkingDir());
-    const auto isMinimalVisible = settings.localValue("MinimalBranchesView", false).toBool();
+    QSettings settings;
+    const auto isMinimalVisible = settings.value("MinimalBranchesView", false).toBool();
     mFullBranchFrame->setVisible(!isMinimalVisible);
     mMinimal->setVisible(isMinimalVisible);
 
-    mLocalBranches->setVisible(settings.localValue("LocalHeader", true).toBool());
-    mRemoteBranches->setVisible(settings.localValue("RemoteHeader", true).toBool());
-    mTags->setVisible(settings.localValue("TagsHeader", true).toBool());
-    mStashes->setVisible(settings.localValue("StashesHeader", true).toBool());
-    mSubmodules->setVisible(settings.localValue("SubmodulesHeader", true).toBool());
-    mSubtrees->setVisible(settings.localValue("SubtreeHeader", true).toBool());
+    mLocalBranches->setVisible(settings.value("LocalHeader", true).toBool());
+    mRemoteBranches->setVisible(settings.value("RemoteHeader", true).toBool());
+    mTags->setVisible(settings.value("TagsHeader", true).toBool());
+    mStashes->setVisible(settings.value("StashesHeader", true).toBool());
+    mSubmodules->setVisible(settings.value("SubmodulesHeader", true).toBool());
+    mSubtrees->setVisible(settings.value("SubtreeHeader", true).toBool());
 }
 
 void BranchesWidget::showBranches()
@@ -463,15 +463,15 @@ void BranchesWidget::fullView()
     mMinimize->setVisible(true);
     emit minimalViewStateChanged(false);
 
-    GitQlientSettings settings(mGit->getGitDir());
-    settings.setLocalValue("MinimalBranchesView", false);
+    QSettings settings;
+    settings.setValue("MinimalBranchesView", false);
 }
 
 void BranchesWidget::minimalView()
 {
     forceMinimalView();
-    GitQlientSettings settings(mGit->getGitDir());
-    settings.setLocalValue("MinimalBranchesView", true);
+    QSettings settings;
+    settings.setValue("MinimalBranchesView", true);
 }
 
 void BranchesWidget::forceMinimalView()
@@ -484,8 +484,8 @@ void BranchesWidget::forceMinimalView()
 
 void BranchesWidget::returnToSavedView()
 {
-    GitQlientSettings settings(mGit->getGitDir());
-    const auto savedState = settings.localValue("MinimalBranchesView", false).toBool();
+    QSettings settings;
+    const auto savedState = settings.value("MinimalBranchesView", false).toBool();
 
     if (savedState != mMinimal->isVisible())
     {
@@ -497,25 +497,25 @@ void BranchesWidget::returnToSavedView()
 
 bool BranchesWidget::isMinimalViewActive() const
 {
-    GitQlientSettings settings(mGit->getGitDir());
-    return settings.localValue("MinimalBranchesView", false).toBool();
+    QSettings settings;
+    return settings.value("MinimalBranchesView", false).toBool();
 }
 
 QPair<QString, QString> BranchesWidget::getSubtreeData(const QString& prefix)
 {
-    GitQlientSettings settings(mGit->getGitDir());
+    QSettings settings;
     bool end = false;
     QString url;
     QString ref;
 
     for (auto i = 0; !end; ++i)
     {
-        const auto repo = settings.localValue(QString("Subtrees/%1.prefix").arg(i), "");
+        const auto repo = settings.value(QString("Subtrees/%1.prefix").arg(i), "");
 
         if (repo.toString() == prefix)
         {
-            auto tmpUrl = settings.localValue(QString("Subtrees/%1.url").arg(i)).toString();
-            auto tmpRef = settings.localValue(QString("Subtrees/%1.ref").arg(i)).toString();
+            auto tmpUrl = settings.value(QString("Subtrees/%1.url").arg(i)).toString();
+            auto tmpRef = settings.value(QString("Subtrees/%1.ref").arg(i)).toString();
 
             if (tmpUrl.isEmpty() || tmpRef.isEmpty())
             {
@@ -533,8 +533,8 @@ QPair<QString, QString> BranchesWidget::getSubtreeData(const QString& prefix)
 
                     if (ret == QDialog::Accepted)
                     {
-                        tmpUrl = settings.localValue(QString("Subtrees/%1.url").arg(i)).toString();
-                        tmpRef = settings.localValue(QString("Subtrees/%1.ref").arg(i)).toString();
+                        tmpUrl = settings.value(QString("Subtrees/%1.url").arg(i)).toString();
+                        tmpRef = settings.value(QString("Subtrees/%1.ref").arg(i)).toString();
 
                         if (tmpUrl.isEmpty() || tmpRef.isEmpty())
                             QMessageBox::critical(
@@ -575,8 +575,8 @@ QPair<QString, QString> BranchesWidget::getSubtreeData(const QString& prefix)
 
                 if (ret == QDialog::Accepted)
                 {
-                    const auto tmpUrl = settings.localValue(QString("Subtrees/%1.url").arg(i)).toString();
-                    const auto tmpRef = settings.localValue(QString("Subtrees/%1.ref").arg(i)).toString();
+                    const auto tmpUrl = settings.value(QString("Subtrees/%1.url").arg(i)).toString();
+                    const auto tmpRef = settings.value(QString("Subtrees/%1.ref").arg(i)).toString();
 
                     if (tmpUrl.isEmpty() || tmpRef.isEmpty())
                         QMessageBox::critical(

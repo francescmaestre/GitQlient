@@ -75,4 +75,8 @@ void RefListWidget::reloadVisibility()
     mFrame->setExpanded(isExpanded);
 }
 
-void RefListWidget::saveExpansionState(bool expanded) { mSettings->setLocalValue(mSettingsKey, expanded); }
+void RefListWidget::saveExpansionState(bool expanded)
+{
+    QSettings settings;
+    settings.setValue(mSettingsKey, expanded);
+}

@@ -109,11 +109,16 @@ void GraphView::filterBySha(const QStringList& shaList)
     setupGeometry();
 }
 
-GraphView::~GraphView() { mSettings->setLocalValue(QString("%1").arg(objectName()), header()->saveState()); }
+GraphView::~GraphView()
+{
+    QSettings settings;
+    settings.setValue(QString("%1").arg(objectName()), header()->saveState());
+}
 
 void GraphView::setupGeometry()
 {
-    const auto previousState = mSettings->localValue(QString("%1").arg(objectName()), QByteArray()).toByteArray();
+    QSettings settings;
+    const auto previousState = settings.value(QString("%1").arg(objectName()), QByteArray()).toByteArray();
 
     if (previousState.isEmpty())
     {

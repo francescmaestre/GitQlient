@@ -21,17 +21,9 @@ QVariant GitQlientSettings::globalValue(const QString& key, const QVariant& defa
     return globalSettings.value(key, defaultValue);
 }
 
-void GitQlientSettings::setLocalValue(const QString& key, const QVariant& value)
-{
-    QSettings localSettings(mGitRepoPath + "/GitQlientConfig.ini", QSettings::IniFormat);
-    localSettings.setValue(key, value);
-    localSettings.sync();
-}
-
 QVariant GitQlientSettings::localValue(const QString& key, const QVariant& defaultValue) const
 {
-    QSettings localSettings(mGitRepoPath + "/GitQlientConfig.ini", QSettings::IniFormat);
-    return localSettings.value(key, defaultValue);
+    return globalSettings.value(key, defaultValue);
 }
 
 void GitQlientSettings::setProjectOpened(const QString& projectPath)

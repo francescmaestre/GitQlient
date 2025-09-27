@@ -208,7 +208,8 @@ void GitRepoLoader::requestRevisions()
 {
     QLog_Debug("Git", "Loading revisions...");
 
-    const auto maxCommits = mSettings->localValue("MaxCommits", 0).toInt();
+    QSettings settings;
+    const auto maxCommits = settings.value("MaxCommits", 0).toInt();
     const auto commitsToRetrieve = maxCommits != 0 ? QString::fromUtf8("-n %1").arg(maxCommits)
         : mShowAll
         ? QString("--all")

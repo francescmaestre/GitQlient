@@ -94,7 +94,11 @@ void RefTreeWidget::reloadVisibility()
     mFrame->setExpanded(isExpanded);
 }
 
-void RefTreeWidget::saveExpansionState(bool expanded) { mSettings->setLocalValue(mSettingsKey, expanded); }
+void RefTreeWidget::saveExpansionState(bool expanded)
+{
+    QSettings settings;
+    settings.setValue(mSettingsKey, expanded);
+}
 
 void RefTreeWidget::adjustBranchesTree() { mTreeWidget->resizeColumnToContents(0); }
 

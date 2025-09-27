@@ -8,7 +8,6 @@ class QComboBox;
 class QLabel;
 class QPushButton;
 class QLineEdit;
-class GitQlientSettings;
 
 class GeneralConfigDlg : public QDialog
 {
@@ -18,7 +17,6 @@ public:
     explicit GeneralConfigDlg(QWidget* parent = nullptr);
 
 private:
-    QSharedPointer<GitQlientSettings> mSettings;
     CheckBox* mDisableLogs = nullptr;
     QComboBox* mLevelCombo = nullptr;
     QComboBox* mStylesSchema = nullptr;
