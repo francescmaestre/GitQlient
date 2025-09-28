@@ -97,10 +97,10 @@ void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, cons
         }
         else if (newOpt.state & QStyle::State_MouseOver)
         {
-            color = GitQlientStyles::getBranchColorAt(
+            color = Colors::BranchColors.at(
                 mView->hasActiveFilter()
                     ? 0
-                    : mGraphCache->getSacredTimeline(commit.sha) % GitQlientStyles::getTotalBranchColors());
+                    : mGraphCache->getSacredTimeline(commit.sha) % Colors::kBranchColorsCount)();
 
             if (index.column() == static_cast<int>(GraphColumns::Graph))
                 color.setAlpha(90);
@@ -193,7 +193,7 @@ void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, cons
                 newOpt.state & QStyle::State_MouseOver && cursorColumn == index.column()
                 && cursorColumn == static_cast<int>(GraphColumns::Sha))
             {
-                p->setPen(gitQlientOrange);
+                p->setPen(Colors::gitQlientOrange);
             }
 
             p->drawText(newOpt.rect, fm.elidedText(text, Qt::ElideRight, newOpt.rect.width()), textalignment);
@@ -484,7 +484,7 @@ QColor GraphViewDelegate::getMergeColor(
         {
             if (mGraphCache->getTimelineAt(commit.sha, laneCount) == StateType::JoinLeft)
             {
-                mergeColor = GitQlientStyles::getBranchColorAt(laneCount % GitQlientStyles::getTotalBranchColors());
+                mergeColor = Colors::BranchColors.at(laneCount % Colors::kBranchColorsCount)();
                 isSet = true;
                 break;
             }
@@ -573,13 +573,13 @@ QColor GraphViewDelegate::getActiveColor(const Commit& commit) const
 {
     const auto colorIndex = mView->hasActiveFilter() ? 0
         : commit.sha != ZERO_SHA
-        ? mGraphCache->getSacredTimeline(commit.sha) % GitQlientStyles::getTotalBranchColors()
+        ? mGraphCache->getSacredTimeline(commit.sha) % Colors::kBranchColorsCount
         : -1;
 
     QColor activeColor;
 
     if (colorIndex != -1)
-        activeColor = GitQlientStyles::getBranchColorAt(colorIndex);
+        activeColor = Colors::BranchColors.at(colorIndex)();
 
     return activeColor;
 }
@@ -592,7 +592,7 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
 
     if (mView->hasActiveFilter())
     {
-        const auto activeColor = GitQlientStyles::getBranchColorAt(0);
+        const auto activeColor = Colors::BranchColors.at(0)();
         paintGraphLane(
             p,
             opt,
@@ -610,11 +610,11 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
     {
         if (commit.sha == ZERO_SHA)
         {
-            const auto activeColor = GitQlientStyles::getBranchColorAt(0);
+            const auto activeColor = Colors::BranchColors.at(0)();
             QColor color = activeColor;
 
             if (mCache->pendingLocalChanges())
-                color = gitQlientOrange;
+                color = Colors::gitQlientOrange;
 
             paintGraphLane(
                 p,
@@ -633,13 +633,11 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
         {
             const auto laneNum = mGraphCache->timelinesCount(commit.sha);
             const auto activeLane = mGraphCache->getSacredTimeline(commit.sha);
-            const auto activeColor = GitQlientStyles::getBranchColorAt(
-                activeLane % GitQlientStyles::getTotalBranchColors());
+            const auto activeColor = Colors::BranchColors.at(activeLane % Colors::kBranchColorsCount)();
             auto x1 = 0;
             auto isSet = false;
             auto laneHeadPresent = false;
-            auto mergeColor = GitQlientStyles::getBranchColorAt(
-                (laneNum - 1) % GitQlientStyles::getTotalBranchColors());
+            auto mergeColor = Colors::BranchColors.at((laneNum - 1) % Colors::kBranchColorsCount)();
 
             for (auto i = laneNum - 1, x2 = LANE_WIDTH * laneNum; i >= 0; --i, x2 -= LANE_WIDTH)
             {
@@ -659,7 +657,7 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
                     auto color = activeColor;
 
                     if (i != activeLane)
-                        color = GitQlientStyles::getBranchColorAt(i % GitQlientStyles::getTotalBranchColors());
+                        color = Colors::BranchColors.at(i % Colors::kBranchColorsCount)();
 
                     if (!isSet)
                         mergeColor = getMergeColor(currentLane, commit, i, color, isSet);
@@ -735,14 +733,14 @@ void GraphViewDelegate::paintTagBranch(
         {
             if (const auto ret = mGit->getLastCommit(); ret.success && commit.sha == ret.output.trimmed())
             {
-                refs.push_back({"detached", graphDetached});
+                refs.push_back({"detached", Colors::graphDetached});
             }
         }
 
         const auto tags = mCache->getReferences(commit.sha, References::Type::LocalTag);
         for (const auto& tag : tags)
         {
-            refs.push_back({tag, graphTag, true});
+            refs.push_back({tag, Colors::graphTag, true});
         }
 
         const auto remoteBranches = mCache->getReferences(commit.sha, References::Type::RemoteBranche);

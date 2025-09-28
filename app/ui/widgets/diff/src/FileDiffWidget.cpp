@@ -61,12 +61,12 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
     int c, m, y, k;
     QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
 
-    const auto additionColor = k <= 125 ? editorGreenShadowDark : editorGreenShadowBright;
-    const auto removalColor = k <= 125 ? editorRedShadowDark : editorRedShadowBright;
+    const auto additionColor = k <= 125 ? Colors::editorGreenShadowDark : Colors::editorGreenShadowBright;
+    const auto removalColor = k <= 125 ? Colors::editorRedShadowDark : Colors::editorRedShadowBright;
     const auto textColor = QPalette().color(QPalette::Text);
-    mUnifiedFile = new FileDiffView(additionColor, removalColor, graphOrange);
-    mNewFile = new FileDiffView(additionColor, removalColor, graphOrange);
-    mOldFile = new FileDiffView(additionColor, removalColor, graphOrange);
+    mUnifiedFile = new FileDiffView(additionColor, removalColor, Colors::graphOrange);
+    mNewFile = new FileDiffView(additionColor, removalColor, Colors::graphOrange);
+    mOldFile = new FileDiffView(additionColor, removalColor, Colors::graphOrange);
 
     mUnifiedFile->addNumberArea(new LineNumberArea(mUnifiedFile, textColor, false, QColor(), true));
 

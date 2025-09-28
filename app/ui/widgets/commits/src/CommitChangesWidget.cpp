@@ -15,7 +15,7 @@
 #include <cache/GraphCache.h>
 #include <custom-widgets/ClickableFrame.h>
 #include <graph/WipHelper.h>
-#include <system/GitQlientStyles.h>
+#include <system/Colors.h>
 #include <system/GitRepoLoader.h>
 #include <system/SettingsKeys.h>
 
@@ -28,9 +28,9 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QProcess>
-#include <QSettings>
 #include <QRegularExpression>
 #include <QScrollBar>
+#include <QSettings>
 #include <QTextStream>
 
 #include <QLogger>
@@ -494,13 +494,13 @@ QColor CommitChangesWidget::getColorForFile(const RevisionFiles& files, int inde
     const auto isDeleted = files.statusCmp(index, RevisionFiles::DELETED);
 
     if (isConflict)
-        myColor = GitQlientStyles::getBlue();
+        myColor = Colors::filesBlue;
     else if (isDeleted)
-        myColor = GitQlientStyles::getRed();
+        myColor = Colors::graphRed;
     else if (untrackedFile)
-        myColor = GitQlientStyles::getOrange();
+        myColor = Colors::graphOrange;
     else if (files.statusCmp(index, RevisionFiles::NEW) || isUnknown || isInIndex || isPartiallyCached)
-        myColor = GitQlientStyles::getGreen();
+        myColor = Colors::graphGreen;
     else
         myColor = QPalette().color(QPalette::Text);
 
@@ -570,7 +570,7 @@ void CommitChangesWidget::insertFiles(const RevisionFiles& files, QListWidget* f
             {
                 auto color = getColorForFile(files, i);
 
-                if (!files.statusCmp(i, RevisionFiles::NEW) && color == GitQlientStyles::getGreen())
+                if (!files.statusCmp(i, RevisionFiles::NEW) && color == Colors::graphGreen)
                     color = QPalette().color(QPalette::Text);
 
                 const auto itemPair = fillFileItemInfo(fileName, isConflict, QString(":/icons/add"), color, fileList);

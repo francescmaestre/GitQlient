@@ -25,6 +25,7 @@
 #include <QLogger>
 
 using namespace QLogger;
+using namespace System;
 
 InitScreen::InitScreen(QWidget* parent)
     : QFrame(parent)

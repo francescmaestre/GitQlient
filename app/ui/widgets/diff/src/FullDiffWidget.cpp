@@ -4,7 +4,7 @@
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
 #include <custom-widgets/DiffHelper.h>
-#include <system/GitQlientStyles.h>
+#include <system/Colors.h>
 #include <system/SettingsKeys.h>
 
 #include <QLineEdit>
@@ -33,14 +33,14 @@ void FullDiffWidget::DiffHighlighter::highlightBlock(const QString& text)
     switch (firstChar)
     {
     case '@':
-        myFormat.setForeground(GitQlientStyles::getOrange());
+        myFormat.setForeground(Colors::graphOrange);
         myFormat.setFontWeight(QFont::ExtraBold);
         break;
     case '+':
-        myFormat.setForeground(GitQlientStyles::getGreen());
+        myFormat.setForeground(Colors::graphGreen);
         break;
     case '-':
-        myFormat.setForeground(GitQlientStyles::getRed());
+        myFormat.setForeground(Colors::graphRed);
         break;
     case 'c':
     case 'd':
@@ -51,13 +51,13 @@ void FullDiffWidget::DiffHighlighter::highlightBlock(const QString& text)
     case 's':
         if (text.startsWith("diff --git a/"))
         {
-            myFormat.setForeground(GitQlientStyles::getBlue());
+            myFormat.setForeground(Colors::graphBlue);
             myFormat.setFontWeight(QFont::ExtraBold);
         }
         else if (
             text.startsWith("copy ") || text.startsWith("index ") || text.startsWith("new ") || text.startsWith("old ")
             || text.startsWith("rename ") || text.startsWith("similarity "))
-            myFormat.setForeground(GitQlientStyles::getBlue());
+            myFormat.setForeground(Colors::graphBlue);
         break;
     default:
         break;

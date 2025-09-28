@@ -40,9 +40,9 @@ HunkWidget::HunkWidget(
 
     int c, m, y, k;
     QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
-    auto additionColor = k <= 125 ? editorGreenShadowDark : editorGreenShadowBright;
-    auto removalColor = k <= 125 ? editorRedShadowDark : editorRedShadowBright;
-    mHunkView = new FileDiffView(additionColor, removalColor, graphOrange);
+    auto additionColor = k <= 125 ? Colors::editorGreenShadowDark : Colors::editorGreenShadowBright;
+    auto removalColor = k <= 125 ? Colors::editorRedShadowDark : Colors::editorRedShadowBright;
+    mHunkView = new FileDiffView(additionColor, removalColor, Colors::graphOrange);
 
     auto font = mHunkView->font();
     font.setPointSize(points);

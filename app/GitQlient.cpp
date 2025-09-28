@@ -51,7 +51,7 @@ GitQlient::GitQlient(QWidget* parent)
     auto font = QApplication::font();
     QApplication::setFont(font);
 
-    setStyleSheet(GitQlientStyles::getStyles());
+    setStyleSheet(getStyles());
     mInitWidget = new InitScreen(this);
     mRepos = new QPinnableTabWidget(this);
     mConfigWidget = new ConfigWidget(QSharedPointer<GitBase>::create(""), this);
@@ -131,7 +131,7 @@ bool GitQlient::eventFilter(QObject* obj, QEvent* event)
     }
     else if (event->type() == QEvent::ApplicationPaletteChange)
     {
-        setStyleSheet(GitQlientStyles::getStyles());
+        setStyleSheet(getStyles());
 
         QObject::eventFilter(obj, event);
     }

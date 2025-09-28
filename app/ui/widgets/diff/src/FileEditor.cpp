@@ -18,9 +18,9 @@ FileEditor::FileEditor(bool highlighter, QWidget* parent)
 {
     int c, m, y, k;
     QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
-    const auto additionColor = k <= 125 ? editorGreenShadowDark : editorGreenShadowBright;
-    const auto removalColor = k <= 125 ? editorRedShadowDark : editorRedShadowBright;
-    mFileEditor = new FileDiffEditor(additionColor, removalColor, graphOrange);
+    const auto additionColor = k <= 125 ? Colors::editorGreenShadowDark : Colors::editorGreenShadowBright;
+    const auto removalColor = k <= 125 ? Colors::editorRedShadowDark : Colors::editorRedShadowBright;
+    mFileEditor = new FileDiffEditor(additionColor, removalColor, Colors::graphOrange);
 
     if (highlighter)
         mHighlighter = new Highlighter(mFileEditor->document());
