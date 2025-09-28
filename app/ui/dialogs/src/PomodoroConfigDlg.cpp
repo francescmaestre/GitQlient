@@ -2,8 +2,12 @@
 #include "ui_PomodoroConfigDlg.h"
 
 #include <GitBase.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
+
+#include <QSettings>
+
+using namespace System;
 
 PomodoroConfigDlg::PomodoroConfigDlg(const QSharedPointer<GitBase>& git, QWidget* parent)
     : QDialog(parent)
@@ -23,12 +27,12 @@ PomodoroConfigDlg::PomodoroConfigDlg(const QSharedPointer<GitBase>& git, QWidget
     });
 
     QSettings settings;
-    ui->cbAlarmSound->setChecked(settings.value("Pomodoro/Alarm", false).toBool());
-    ui->cbStopResets->setChecked(settings.value("Pomodoro/StopResets", true).toBool());
-    ui->pomodoroDur->setValue(settings.value("Pomodoro/Duration", 25).toInt());
-    ui->breakDur->setValue(settings.value("Pomodoro/Break", 5).toInt());
-    ui->longBreakDur->setValue(settings.value("Pomodoro/LongBreak", 15).toInt());
-    ui->sbLongBreakCount->setValue(settings.value("Pomodoro/LongBreakTrigger", 4).toInt());
+    ui->cbAlarmSound->setChecked(settings.value(GlobalKey::Pomodoro::Alarm, false).toBool());
+    ui->cbStopResets->setChecked(settings.value(GlobalKey::Pomodoro::StopResets, true).toBool());
+    ui->pomodoroDur->setValue(settings.value(GlobalKey::Pomodoro::Duration, 25).toInt());
+    ui->breakDur->setValue(settings.value(GlobalKey::Pomodoro::Break, 5).toInt());
+    ui->longBreakDur->setValue(settings.value(GlobalKey::Pomodoro::LongBreak, 15).toInt());
+    ui->sbLongBreakCount->setValue(settings.value(GlobalKey::Pomodoro::LongBreakTrigger, 4).toInt());
 }
 
 PomodoroConfigDlg::~PomodoroConfigDlg() { delete ui; }
@@ -36,12 +40,12 @@ PomodoroConfigDlg::~PomodoroConfigDlg() { delete ui; }
 void PomodoroConfigDlg::accept()
 {
     QSettings settings;
-    settings.setValue("Pomodoro/Alarm", ui->cbAlarmSound->isChecked());
-    settings.setValue("Pomodoro/StopResets", ui->cbStopResets->isChecked());
-    settings.setValue("Pomodoro/Duration", ui->pomodoroDur->value());
-    settings.setValue("Pomodoro/Break", ui->breakDur->value());
-    settings.setValue("Pomodoro/LongBreak", ui->longBreakDur->value());
-    settings.setValue("Pomodoro/LongBreakTrigger", ui->sbLongBreakCount->value());
+    settings.setValue(GlobalKey::Pomodoro::Alarm, ui->cbAlarmSound->isChecked());
+    settings.setValue(GlobalKey::Pomodoro::StopResets, ui->cbStopResets->isChecked());
+    settings.setValue(GlobalKey::Pomodoro::Duration, ui->pomodoroDur->value());
+    settings.setValue(GlobalKey::Pomodoro::Break, ui->breakDur->value());
+    settings.setValue(GlobalKey::Pomodoro::LongBreak, ui->longBreakDur->value());
+    settings.setValue(GlobalKey::Pomodoro::LongBreakTrigger, ui->sbLongBreakCount->value());
 
     QDialog::accept();
 }

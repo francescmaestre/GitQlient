@@ -2,7 +2,6 @@
 
 #include <custom-widgets/LineNumberArea.h>
 #include <system/Colors.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
 FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor commentColor, QWidget* parent)
@@ -10,9 +9,7 @@ FileDiffEditor::FileDiffEditor(QColor additionColor, QColor removalColor, QColor
 {
     setReadOnly(false);
 
-    const auto textColor = QSettings().value("colorSchema", 0).toInt() == 1 ? textColorBright : textColorDark;
-
-    addNumberArea(new LineNumberArea(this, textColor));
+    addNumberArea(new LineNumberArea(this, QPalette().color(QPalette::Text)));
 
     connect(this, &FileDiffView::cursorPositionChanged, this, &FileDiffEditor::highlightCurrentLine);
 

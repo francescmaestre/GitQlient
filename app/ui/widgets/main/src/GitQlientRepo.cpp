@@ -22,29 +22,29 @@
 #include <main-widgets/Controls.h>
 #include <main-widgets/MergeWidget.h>
 #include <ref-widgets/BranchesWidget.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 #include <system/GitRepoLoader.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
 #include <QDirIterator>
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QMessageBox>
+#include <QSettings>
 #include <QStackedLayout>
 #include <QStackedWidget>
 #include <QTimer>
 
 using namespace QLogger;
+using namespace System;
 
-GitQlientRepo::GitQlientRepo(
-    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& settings, QWidget* parent)
+GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
     , mGitQlientCache(new GitCache())
     , mGraphCache(new Graph::Cache())
     , mGitBase(git)
-    , mSettings(settings)
-    , mGitLoader(new GitRepoLoader(mGitBase, mGitQlientCache, mGraphCache, mSettings))
+    , mGitLoader(new GitRepoLoader(mGitBase, mGitQlientCache, mGraphCache))
     , mAutoFilesUpdate(new QTimer())
 {
     setAttribute(Qt::WA_DeleteOnClose);
@@ -57,13 +57,13 @@ GitQlientRepo::GitQlientRepo(
 
     mStackedLayout = new QStackedLayout();
 
-    mHistoryWidget = new HistoryWidget(mGitQlientCache, mGraphCache, mGitBase, mSettings, this);
+    mHistoryWidget = new HistoryWidget(mGitQlientCache, mGraphCache, mGitBase, this);
     mHistoryWidget->setContentsMargins(QMargins(5, 5, 5, 5));
 
     mDiffWidget = new DiffWidget(mGitBase, mGitQlientCache, this);
     mDiffWidget->setContentsMargins(QMargins(5, 5, 5, 5));
 
-    mBlameWidget = new BlameWidget(mGitQlientCache, mGraphCache, mGitBase, mSettings, this);
+    mBlameWidget = new BlameWidget(mGitQlientCache, mGraphCache, mGitBase, this);
     mBlameWidget->setContentsMargins(QMargins(5, 5, 5, 5));
 
     mMergeWidget = new MergeWidget(mGitQlientCache, mGitBase, this);
@@ -86,7 +86,8 @@ GitQlientRepo::GitQlientRepo(
 
     showHistoryView();
 
-    mAutoFilesUpdate->setInterval(mSettings->localValue("AutoRefresh", 60).toInt() * 1000);
+    QSettings settings;
+    mAutoFilesUpdate->setInterval(settings.value(GlobalKey::AutoRefresh, 60).toInt() * 1000);
 
     connect(mAutoFilesUpdate, &QTimer::timeout, this, &GitQlientRepo::updateUiFromWatcher);
 
@@ -136,7 +137,7 @@ GitQlientRepo::GitQlientRepo(
     connect(this, &GitQlientRepo::logReload, mGitLoader.data(), &GitRepoLoader::loadLogHistory);
     m_loaderThread->start();
 
-    mGitLoader->setShowAll(mSettings->localValue("ShowAllBranches", true).toBool());
+    mGitLoader->setShowAll(settings.value(GlobalKey::ShowAllBranches, true).toBool());
 }
 
 GitQlientRepo::~GitQlientRepo()

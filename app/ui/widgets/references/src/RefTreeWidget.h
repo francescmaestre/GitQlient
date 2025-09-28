@@ -7,7 +7,6 @@ class ClickableFrame;
 class BranchTreeWidget;
 class GitCache;
 class GitBase;
-class GitQlientSettings;
 class BranchesViewDelegate;
 
 class RefTreeWidget : public QWidget
@@ -52,7 +51,6 @@ private:
     BranchTreeWidget* mTreeWidget = nullptr;
     RefType mRefType;
     QString mSettingsKey;
-    std::unique_ptr<GitQlientSettings> mSettings;
     BranchesViewDelegate* mDelegate = nullptr;
 
     void saveExpansionState(bool expanded);

@@ -9,7 +9,6 @@
 #include <GitRemote.h>
 #include <cache/GitCache.h>
 #include <dialogs/PullDlg.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
 #include <QApplication>
@@ -199,7 +198,6 @@ void BranchTreeWidget::showBranchesContextMenu(const QPoint& pos)
         }
         else
         {
-            GitQlientSettings settings(mGit->getGitDir());
             if (mIsLocal)
                 showDeleteFolderMenu(item, pos);
             else
@@ -449,7 +447,6 @@ void BranchTreeWidget::onDeleteBranch()
     }
     else
     {
-        GitQlientSettings settings(mGit->getGitDir());
         if (mIsLocal)
             deleteFolder();
         else

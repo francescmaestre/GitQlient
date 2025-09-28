@@ -16,7 +16,6 @@
 #include <dialogs/SquashDlg.h>
 #include <graph/WipHelper.h>
 #include <ref-widgets/TagDlg.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
 #include <QApplication>

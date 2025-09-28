@@ -4,6 +4,7 @@
 #include <custom-widgets/ButtonLink.h>
 #include <custom-widgets/CheckBox.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
 #include <QComboBox>
 #include <QFileDialog>
@@ -19,12 +20,12 @@
 #include <QVBoxLayout>
 
 using namespace QLogger;
+using namespace System;
 
 GeneralConfigDlg::GeneralConfigDlg(QWidget* parent)
     : QDialog(parent)
     , mDisableLogs(new CheckBox())
     , mLevelCombo(new QComboBox())
-    , mStylesSchema(new QComboBox())
     , mGitLocation(new QLineEdit())
     , mClose(new QPushButton(tr("Close")))
     , mReset(new QPushButton(tr("Reset")))
@@ -38,24 +39,10 @@ GeneralConfigDlg::GeneralConfigDlg(QWidget* parent)
     mApply->setMinimumWidth(75);
 
     QSettings settings;
-    mDisableLogs->setChecked(settings.value("logsDisabled", true).toBool());
+    mDisableLogs->setChecked(settings.value(GlobalKey::LogsDisabled, true).toBool());
 
     mLevelCombo->addItems({"Trace", "Debug", "Info", "Warning", "Error", "Fatal"});
-    mLevelCombo->setCurrentIndex(settings.value("logsLevel", static_cast<int>(LogLevel::Warning)).toInt());
-
-    mStylesSchema->addItem(tr("dark"), "dark");
-    mStylesSchema->addItem(tr("bright"), "bright");
-
-    const auto currentStyle = settings.value("colorSchema").toInt();
-    mStylesSchema->setCurrentIndex(currentStyle);
-    connect(
-        mStylesSchema,
-        static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-        this,
-        [this, currentStyle](int newIndex) {
-            if (newIndex != currentStyle)
-                mShowResetMsg = true;
-        });
+    mLevelCombo->setCurrentIndex(settings.value(GlobalKey::LogsLevel, static_cast<int>(LogLevel::Warning)).toInt());
 
     connect(mClose, &QPushButton::clicked, this, &GeneralConfigDlg::close);
     connect(mReset, &QPushButton::clicked, this, &GeneralConfigDlg::resetChanges);
@@ -78,8 +65,6 @@ GeneralConfigDlg::GeneralConfigDlg(QWidget* parent)
     layout->addWidget(mDisableLogs, row, 1);
     layout->addWidget(new QLabel(tr("Set log level")), ++row, 0);
     layout->addWidget(mLevelCombo, row, 1);
-    layout->addWidget(new QLabel(tr("Styles schema")), ++row, 0);
-    layout->addWidget(mStylesSchema, row, 1);
     layout->addWidget(new QLabel(tr("Git location (if not in PATH):")), ++row, 0);
     layout->addWidget(mGitLocation, row, 1);
 
@@ -102,19 +87,17 @@ GeneralConfigDlg::GeneralConfigDlg(QWidget* parent)
 void GeneralConfigDlg::resetChanges()
 {
     QSettings settings;
-    mDisableLogs->setChecked(settings.value("logsDisabled", false).toBool());
-    mLevelCombo->setCurrentIndex(settings.value("logsLevel", 2).toInt());
-    mStylesSchema->setCurrentIndex(settings.value("colorSchema", 0).toInt());
-    mGitLocation->setText(settings.value("gitLocation", "").toString());
+    mDisableLogs->setChecked(settings.value(GlobalKey::LogsDisabled, false).toBool());
+    mLevelCombo->setCurrentIndex(settings.value(GlobalKey::LogsLevel, 2).toInt());
+    mGitLocation->setText(settings.value(GlobalKey::GitLocation, "").toString());
 }
 
 void GeneralConfigDlg::accept()
 {
     QSettings settings;
-    settings.setValue("logsDisabled", mDisableLogs->isChecked());
-    settings.setValue("logsLevel", mLevelCombo->currentIndex());
-    settings.setValue("colorSchema", mStylesSchema->currentIndex());
-    settings.setValue("gitLocation", mGitLocation->text());
+    settings.setValue(GlobalKey::LogsDisabled, mDisableLogs->isChecked());
+    settings.setValue(GlobalKey::LogsLevel, mLevelCombo->currentIndex());
+    settings.setValue(GlobalKey::GitLocation, mGitLocation->text());
 
     if (mShowResetMsg)
         QMessageBox::information(
@@ -153,10 +136,9 @@ void GeneralConfigDlg::importConfig()
 
             const auto obj = doc.object();
 
-            mDisableLogs->setChecked(obj[QStringLiteral("logsDisabled")].toBool());
-            mLevelCombo->setCurrentIndex(obj[QStringLiteral("logsLevel")].toInt());
-            mStylesSchema->setCurrentIndex(obj[QStringLiteral("colorSchema")].toInt());
-            mGitLocation->setText(obj[QStringLiteral("gitLocation")].toString());
+            mDisableLogs->setChecked(obj[GlobalKey::LogsDisabled].toBool());
+            mLevelCombo->setCurrentIndex(obj[GlobalKey::LogsLevel].toInt());
+            mGitLocation->setText(obj[GlobalKey::GitLocation].toString());
 
             QMessageBox::information(
                 this,
@@ -181,10 +163,9 @@ void GeneralConfigDlg::exportConfig()
     if (fileDialog->exec())
     {
         QJsonObject obj;
-        obj.insert("logsDisabled", mDisableLogs->isChecked());
-        obj.insert("logsLevel", mLevelCombo->currentIndex());
-        obj.insert("colorSchema", mStylesSchema->currentIndex());
-        obj.insert("gitLocation", mGitLocation->text());
+        obj.insert(GlobalKey::LogsDisabled, mDisableLogs->isChecked());
+        obj.insert(GlobalKey::LogsLevel, mLevelCombo->currentIndex());
+        obj.insert(GlobalKey::GitLocation, mGitLocation->text());
 
         QJsonDocument doc(obj);
 

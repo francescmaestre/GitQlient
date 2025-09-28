@@ -4,22 +4,24 @@
 #include <GitConfig.h>
 #include <GitCredentials.h>
 #include <dialogs/CredentialsDlg.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
-InitialRepoConfig::InitialRepoConfig(
-    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& _settings, QWidget* parent)
+#include <QSettings>
+
+using namespace System;
+
+InitialRepoConfig::InitialRepoConfig(const QSharedPointer<GitBase>& git, QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::InitialRepoConfig)
     , mGit(git)
-    , mSettings(_settings)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
 
     QSettings settings;
-    ui->sbMaxCommits->setValue(settings.value("MaxCommits", 0).toInt());
+    ui->sbMaxCommits->setValue(settings.value(GlobalKey::MaxCommits, 0).toInt());
 
     QScopedPointer<GitConfig> gitConfig(new GitConfig(git));
 
@@ -36,7 +38,7 @@ InitialRepoConfig::InitialRepoConfig(
 InitialRepoConfig::~InitialRepoConfig()
 {
     QSettings settings;
-    settings.setValue("MaxCommits", ui->sbMaxCommits->value());
+    settings.setValue(GlobalKey::MaxCommits, ui->sbMaxCommits->value());
 
     delete ui;
 }

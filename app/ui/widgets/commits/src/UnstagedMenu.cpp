@@ -4,13 +4,15 @@
 #include <GitLocal.h>
 #include <GitSyncProcess.h>
 #include <QLogger>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
+#include <QSettings>
 
 using namespace QLogger;
+using namespace System;
 
 UnstagedMenu::UnstagedMenu(const QSharedPointer<GitBase>& git, const QString& fileName, QWidget* parent)
     : QMenu(parent)
@@ -27,7 +29,8 @@ UnstagedMenu::UnstagedMenu(const QSharedPointer<GitBase>& git, const QString& fi
     });
 
 #ifndef GitQlientPlugin
-    const auto externalEditor = GitQlientSettings().globalValue("ExternalEditor", QString()).toString();
+    QSettings settings;
+    const auto externalEditor = settings.value(GlobalKey::ExternalEditor, QString()).toString();
 
     if (!externalEditor.isEmpty())
         connect(
@@ -172,7 +175,8 @@ void UnstagedMenu::openFileExplorer()
     QString app;
     QStringList arguments;
 #ifdef Q_OS_LINUX
-    const auto fileExplorer = GitQlientSettings().globalValue("FileExplorer", "xdg-open").toString();
+    QSettings settings;
+    const auto fileExplorer = settings.value(GlobalKey::FileExplorer, "xdg-open").toString();
 
     if (fileExplorer.isEmpty())
     {
@@ -206,7 +210,8 @@ void UnstagedMenu::openFileExplorer()
 
 void UnstagedMenu::openExternalEditor()
 {
-    const auto fileExplorer = GitQlientSettings().globalValue("ExternalEditor", "").toString();
+    QSettings settings;
+    const auto fileExplorer = settings.value(GlobalKey::ExternalEditor, "").toString();
 
     if (!fileExplorer.isEmpty())
     {

@@ -32,7 +32,7 @@
    <item row="1" column="0" rowspan="2">
     <widget class="QTabWidget" name="tabWidget_2">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="gitQlientTab">
       <attribute name="title">
@@ -85,7 +85,7 @@
                   <string>Select folder</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../../../GitQlient.qrc">
                    <normaloff>:/icons/open_repo</normaloff>:/icons/open_repo</iconset>
                  </property>
                 </widget>
@@ -96,7 +96,7 @@
                   <string>Reset to default value</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../../../GitQlient.qrc">
                    <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
                  </property>
                 </widget>
@@ -221,20 +221,6 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="3">
-              <widget class="QComboBox" name="cbStyle">
-               <item>
-                <property name="text">
-                 <string>dark</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>bright</string>
-                </property>
-               </item>
-              </widget>
-             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_71">
                <property name="text">
@@ -253,13 +239,6 @@
               <widget class="QLabel" name="label_21">
                <property name="text">
                 <string>Editor font size</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Styles schema</string>
                </property>
               </widget>
              </item>
@@ -377,7 +356,7 @@
                <item>
                 <widget class="QPushButton" name="pbSelectEditor">
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../../../../GitQlient.qrc">
                    <normaloff>:/icons/go_to</normaloff>:/icons/go_to</iconset>
                  </property>
                 </widget>
@@ -533,8 +512,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>492</width>
-            <height>768</height>
+            <width>484</width>
+            <height>752</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1161,13 +1140,15 @@
   <tabstop>chDevMode</tabstop>
   <tabstop>tabWidget</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../../GitQlient.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <slot>saveConfig()</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="bgHistoryViewPreferredView"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="bgHistoryViewPreferredView"/>
  </buttongroups>
 </ui>

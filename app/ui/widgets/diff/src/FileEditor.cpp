@@ -3,19 +3,23 @@
 
 #include "Highlighter.h"
 #include <system/Colors.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
 #include <QFile>
 #include <QMessageBox>
+#include <QSettings>
 #include <QVBoxLayout>
+
+using namespace System;
 
 FileEditor::FileEditor(bool highlighter, QWidget* parent)
     : QFrame(parent)
 {
-    const auto colorScheme = QSettings().value("colorSchema", 0).toInt();
-    auto additionColor = colorScheme == 0 ? editorGreenShadowDark : editorGreenShadowBright;
-    auto removalColor = colorScheme == 0 ? editorRedShadowDark : editorRedShadowBright;
+    int c, m, y, k;
+    QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
+    const auto additionColor = k <= 125 ? editorGreenShadowDark : editorGreenShadowBright;
+    const auto removalColor = k <= 125 ? editorRedShadowDark : editorRedShadowBright;
     mFileEditor = new FileDiffEditor(additionColor, removalColor, graphOrange);
 
     if (highlighter)
@@ -92,8 +96,8 @@ void FileEditor::saveFile()
 
 void FileEditor::changeFontSize()
 {
-    GitQlientSettings settings;
-    const auto fontSize = settings.globalValue("FileDiffView/FontSize", 8).toInt();
+    QSettings settings;
+    const auto fontSize = settings.value(GlobalKey::FileDiffView::FontSize, 8).toInt();
 
     auto font = mFileEditor->font();
     font.setPointSize(fontSize);

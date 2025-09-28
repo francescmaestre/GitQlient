@@ -3,7 +3,10 @@
 
 #include <QLabel>
 #include <QScrollArea>
-#include <system/GitQlientSettings.h>
+#include <QSettings>
+#include <system/SettingsKeys.h>
+
+using namespace System;
 
 NewVersionInfoDlg::NewVersionInfoDlg(QWidget* parent)
     : QDialog(parent)
@@ -12,7 +15,8 @@ NewVersionInfoDlg::NewVersionInfoDlg(QWidget* parent)
     ui->setupUi(this);
     ui->pbClose->setVisible(false);
     ui->pbPrevious->setVisible(false);
-    ui->chNotAgain->setChecked(!GitQlientSettings().globalValue("ShowFeaturesDlg", false).toBool());
+    QSettings settings;
+    ui->chNotAgain->setChecked(!settings.value(GlobalKey::ShowFeaturesDlg, false).toBool());
 
     createAddPage(
         tr("1. Plugins support"),
@@ -161,4 +165,4 @@ void NewVersionInfoDlg::createAddPage(const QString& title, const QStringList& i
     ui->stackedWidget->addWidget(scrollArea);
 }
 
-void NewVersionInfoDlg::saveConfig() { QSettings().setValue("ShowFeaturesDlg", !ui->chNotAgain->isChecked()); }
+void NewVersionInfoDlg::saveConfig() { QSettings().setValue(GlobalKey::ShowFeaturesDlg, !ui->chNotAgain->isChecked()); }

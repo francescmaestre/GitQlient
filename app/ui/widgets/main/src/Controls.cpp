@@ -8,7 +8,6 @@
 #include <cache/GitCache.h>
 #include <dialogs/BranchDlg.h>
 #include <main-widgets/ConfigWidget.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientUpdater.h>
 
 #include <QApplication>
@@ -40,8 +39,6 @@ Controls::Controls(const QSharedPointer<GitCache>& cache, const QSharedPointer<G
     , mUpdater(new GitQlientUpdater(this))
     , mLastSeparator(new QFrame(this))
 {
-    GitQlientSettings settings(mGit->getGitDir());
-
     setAttribute(Qt::WA_DeleteOnClose);
 
     connect(mUpdater, &GitQlientUpdater::newVersionAvailable, this, [this]() {
@@ -250,7 +247,6 @@ void Controls::pullCurrentBranch()
 void Controls::fetchAll()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    GitQlientSettings settings(mGit->getGitDir());
     QScopedPointer<GitRemote> git(new GitRemote(mGit));
     const auto ret = git->fetch();
     QApplication::restoreOverrideCursor();

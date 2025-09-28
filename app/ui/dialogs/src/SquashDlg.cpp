@@ -9,12 +9,15 @@
 #include <cache/GitCache.h>
 #include <custom-widgets/CheckBox.h>
 #include <graph/WipHelper.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QLabel>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QSettings>
 #include <QUuid>
+
+using namespace System;
 
 SquashDlg::SquashDlg(
     const QSharedPointer<GitBase> git, const QSharedPointer<GitCache>& cache, const QStringList& shas, QWidget* parent)
@@ -28,7 +31,8 @@ SquashDlg::SquashDlg(
 
     setAttribute(Qt::WA_DeleteOnClose);
 
-    mTitleMaxLength = GitQlientSettings().globalValue("commitTitleMaxLength", mTitleMaxLength).toInt();
+    QSettings settings;
+    mTitleMaxLength = settings.value(GlobalKey::CommitTitleMaxLength, mTitleMaxLength).toInt();
 
     ui->lCounter->setText(QString::number(mTitleMaxLength));
     ui->leCommitTitle->setMaxLength(mTitleMaxLength);

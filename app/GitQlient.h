@@ -55,7 +55,7 @@ private:
     void closeTab(int tabIndex);
     void onSuccessOpen(const QString& fullPath);
     void conditionallyOpenPreConfigDlg(
-        const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& settings);
+        const QSharedPointer<GitBase>& git);
     void updateTabName();
     void moveLogsBeforeClose();
     void closeRepoIfNotPinned();

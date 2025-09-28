@@ -10,11 +10,13 @@
 #include <QLogger>
 #include <cache/GitCache.h>
 #include <cache/GraphCache.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QDir>
+#include <QSettings>
 
 using namespace QLogger;
+using namespace System;
 
 static const char* GIT_LOG_FORMAT("%m%HX%P%n%cn<%ce>%n%an<%ae>%n%at%n%s%n%b ");
 
@@ -22,13 +24,11 @@ GitRepoLoader::GitRepoLoader(
     QSharedPointer<GitBase> gitBase,
     QSharedPointer<GitCache> cache,
     const QSharedPointer<Graph::Cache>& graphCache,
-    const QSharedPointer<GitQlientSettings>& settings,
     QObject* parent)
     : QObject(parent)
     , mGitBase(gitBase)
     , mRevCache(std::move(cache))
     , mGraphCache(graphCache)
-    , mSettings(settings)
     , mGitTags(new GitTags(mGitBase))
 {
     connect(mGitTags.get(), &GitTags::remoteTagsReceived, mRevCache.get(), &GitCache::updateTags);
@@ -209,7 +209,7 @@ void GitRepoLoader::requestRevisions()
     QLog_Debug("Git", "Loading revisions...");
 
     QSettings settings;
-    const auto maxCommits = settings.value("MaxCommits", 0).toInt();
+    const auto maxCommits = settings.value(GlobalKey::MaxCommits, 0).toInt();
     const auto commitsToRetrieve = maxCommits != 0 ? QString::fromUtf8("-n %1").arg(maxCommits)
         : mShowAll
         ? QString("--all")

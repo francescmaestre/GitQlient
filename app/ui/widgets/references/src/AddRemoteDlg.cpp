@@ -3,7 +3,6 @@
 
 #include <GitBase.h>
 #include <GitRemote.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
 #include <QMessageBox>

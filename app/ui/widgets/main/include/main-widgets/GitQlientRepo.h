@@ -6,7 +6,6 @@
 #include <QThread>
 
 class GitBase;
-class GitQlientSettings;
 class GitCache;
 class GitRepoLoader;
 class QCloseEvent;
@@ -55,7 +54,6 @@ signals:
 public:
     explicit GitQlientRepo(
         const QSharedPointer<GitBase>& git,
-        const QSharedPointer<GitQlientSettings>& settings,
         QWidget* parent = nullptr);
     ~GitQlientRepo() override;
 
@@ -71,7 +69,6 @@ private:
     QSharedPointer<GitCache> mGitQlientCache;
     QSharedPointer<Graph::Cache> mGraphCache;
     QSharedPointer<GitBase> mGitBase;
-    QSharedPointer<GitQlientSettings> mSettings;
     QSharedPointer<GitRepoLoader> mGitLoader;
     HistoryWidget* mHistoryWidget = nullptr;
     QStackedLayout* mStackedLayout = nullptr;

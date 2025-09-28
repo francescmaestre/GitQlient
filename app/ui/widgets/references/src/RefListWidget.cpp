@@ -3,9 +3,9 @@
 
 #include "RefListDelegate.h"
 #include <custom-widgets/ClickableFrame.h>
-#include <system/GitQlientSettings.h>
 
 #include <QListWidget>
+#include <QSettings>
 #include <QVBoxLayout>
 
 RefListWidget::RefListWidget(
@@ -16,7 +16,6 @@ RefListWidget::RefListWidget(
     QWidget* parent)
     : QWidget(parent)
     , mSettingsKey(settingsKey)
-    , mSettings(std::make_unique<GitQlientSettings>(git->getGitDir()))
 {
     mFrame = new ClickableFrame(title);
     mFrame->setExpandable(true);
@@ -29,7 +28,8 @@ RefListWidget::RefListWidget(
 
     mFrame->setContentWidget(mList);
 
-    const bool isExpanded = mSettings->localValue(settingsKey, true).toBool();
+    QSettings settings;
+    const auto isExpanded = settings.value(settingsKey, true).toBool();
     mFrame->setExpanded(isExpanded);
 
     auto layout = new QVBoxLayout(this);
@@ -71,7 +71,8 @@ void RefListWidget::clear()
 
 void RefListWidget::reloadVisibility()
 {
-    const bool isExpanded = mSettings->localValue(mSettingsKey, true).toBool();
+    QSettings settings;
+    const auto isExpanded = settings.value(mSettingsKey, true).toBool();
     mFrame->setExpanded(isExpanded);
 }
 

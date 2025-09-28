@@ -5,15 +5,18 @@
 #include <custom-widgets/FileDiffView.h>
 #include <custom-widgets/LineNumberArea.h>
 #include <system/Colors.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QAction>
 #include <QGridLayout>
 #include <QLabel>
 #include <QMenu>
 #include <QPushButton>
+#include <QSettings>
 #include <QTemporaryFile>
 #include <QTextBlock>
+
+using namespace System;
 
 HunkWidget::HunkWidget(
     QSharedPointer<GitBase> git,
@@ -32,12 +35,13 @@ HunkWidget::HunkWidget(
     , mHunk(hunk)
     , mIsCached(isCached)
 {
-    GitQlientSettings settings;
-    const auto points = settings.globalValue("FileDiffView/FontSize", 8).toInt();
+    QSettings settings;
+    const auto points = settings.value(GlobalKey::FileDiffView::FontSize, 8).toInt();
 
-    const auto colorScheme = QSettings().value("colorSchema", 0).toInt();
-    auto additionColor = colorScheme == 0 ? editorGreenShadowDark : editorGreenShadowBright;
-    auto removalColor = colorScheme == 0 ? editorRedShadowDark : editorRedShadowBright;
+    int c, m, y, k;
+    QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
+    auto additionColor = k <= 125 ? editorGreenShadowDark : editorGreenShadowBright;
+    auto removalColor = k <= 125 ? editorRedShadowDark : editorRedShadowBright;
     mHunkView = new FileDiffView(additionColor, removalColor, graphOrange);
 
     auto font = mHunkView->font();

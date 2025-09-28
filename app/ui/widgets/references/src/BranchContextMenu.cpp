@@ -8,7 +8,6 @@
 #include <dialogs/BranchDlg.h>
 #include <dialogs/InputShaDlg.h>
 #include <dialogs/UpstreamDlg.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
 #include <QApplication>

@@ -5,11 +5,14 @@
 #include <QTranslator>
 
 #include "GitQlient.h"
+#include <system/SettingsKeys.h>
 
 #include <QLogger>
-#include <system/GitQlientSettings.h>
+
+#include <QSettings>
 
 using namespace QLogger;
+using namespace System;
 
 int main(int argc, char* argv[])
 {
@@ -26,7 +29,7 @@ int main(int argc, char* argv[])
     QFontDatabase::addApplicationFont(":/DejaVuSans");
     QFontDatabase::addApplicationFont(":/DejaVuSansMono");
 
-    const auto languageFile = GitQlientSettings().globalValue("UILanguage", "gitqlient_en").toString();
+    const auto languageFile = QSettings().value(GlobalKey::UiLanguage, "gitqlient_en").toString();
     QTranslator qtTranslator;
 
     if (qtTranslator.load(languageFile, QString::fromUtf8(":/translations/")))

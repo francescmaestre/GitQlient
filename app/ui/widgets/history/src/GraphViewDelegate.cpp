@@ -12,8 +12,8 @@
 #include <graph/State.h>
 #include <graph/StateType.h>
 #include <system/Colors.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
 #include <QBuffer>
@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmap>
+#include <QSettings>
 #include <QSortFilterProxyModel>
 #include <QSvgRenderer>
 #include <QToolTip>
@@ -37,6 +38,7 @@
 #include <algorithm>
 
 using namespace Graph;
+using namespace System;
 
 GraphViewDelegate::GraphViewDelegate(
     const QSharedPointer<GitCache>& cache,
@@ -72,9 +74,10 @@ void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, cons
 
     p->setRenderHints(QPainter::Antialiasing);
 
+    QSettings settings;
     const auto defaultFontSize
-        = GitQlientSettings()
-              .globalValue("HistoryView/FontSize", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
+        = settings
+              .value(GlobalKey::History::FontSize, QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
               .toInt();
     QStyleOptionViewItem newOpt(opt);
     newOpt.font.setPointSize(defaultFontSize - 1);
@@ -783,10 +786,13 @@ void GraphViewDelegate::paintTagBranch(
         }
 
         QString nameToDisplay;
+        const auto prefersCommit = QSettings().value(GlobalKey::History::PreferCommit, true).toBool();
 
-        if (auto textWidth = fm.boundingRect(finalText).width(); textWidth + tmpBuffer >= o.rect.width()
-            && GitQlientSettings().globalValue("HistoryView/PreferCommit", true).toBool())
+        if (auto textWidth = fm.boundingRect(finalText).width();
+            textWidth + tmpBuffer >= o.rect.width() && prefersCommit)
+        {
             nameToDisplay = QString("...");
+        }
 
         for (auto& iter : refs)
         {

@@ -9,10 +9,10 @@
 #include <GitConfig.h>
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
-#include <system/GitQlientSettings.h>
 
 #include <QDateTime>
 #include <QHeaderView>
+#include <QSettings>
 
 #include <QLogger>
 using namespace QLogger;
@@ -21,13 +21,11 @@ GraphView::GraphView(
     const QSharedPointer<GitCache>& cache,
     const QSharedPointer<Graph::Cache>& graphCache,
     const QSharedPointer<GitBase>& git,
-    const QSharedPointer<GitQlientSettings>& settings,
     QWidget* parent)
     : QTreeView(parent)
     , mCache(cache)
     , mGraphCache(graphCache)
     , mGit(git)
-    , mSettings(settings)
 {
     setEnabled(false);
     setContextMenuPolicy(Qt::CustomContextMenu);

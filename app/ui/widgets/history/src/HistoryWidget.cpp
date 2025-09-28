@@ -23,9 +23,9 @@
 #include <diff-widgets/FullDiffWidget.h>
 #include <graph/WipHelper.h>
 #include <ref-widgets/BranchesWidget.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 #include <system/GitRepoLoader.h>
+#include <system/SettingsKeys.h>
 
 #include <QLogger>
 
@@ -38,23 +38,23 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QScreen>
+#include <QSettings>
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTimer>
 
 using namespace QLogger;
+using namespace System;
 
 HistoryWidget::HistoryWidget(
     const QSharedPointer<GitCache>& cache,
     const QSharedPointer<Graph::Cache>& graphCache,
     const QSharedPointer<GitBase> git,
-    const QSharedPointer<GitQlientSettings>& _settings,
     QWidget* parent)
     : QFrame(parent)
     , mGit(git)
     , mCache(cache)
     , mGraphCache(graphCache)
-    , mSettings(_settings)
     , mCommitInfoFrame(new QFrame(this))
     , mReturnFromFull(new QPushButton(QIcon(":/icons/back"), "", this))
 {
@@ -110,7 +110,7 @@ HistoryWidget::HistoryWidget(
     connect(mSearchInput, &QLineEdit::returnPressed, this, &HistoryWidget::search);
 
     mRepositoryModel = new GraphModel(mCache, mGit);
-    mRepositoryView = new GraphView(mCache, mGraphCache, mGit, mSettings, this);
+    mRepositoryView = new GraphView(mCache, mGraphCache, mGit, this);
 
     connect(mRepositoryView, &GraphView::fullReload, this, &HistoryWidget::fullReload);
     connect(mRepositoryView, &GraphView::referencesReload, this, &HistoryWidget::referencesReload);
@@ -157,7 +157,7 @@ HistoryWidget::HistoryWidget(
 
     mChShowAllBranches = new CheckBox(tr("Show all branches"), this);
     QSettings settings;
-    mChShowAllBranches->setChecked(settings.value("ShowAllBranches", true).toBool());
+    mChShowAllBranches->setChecked(settings.value(GlobalKey::ShowAllBranches, true).toBool());
     connect(mChShowAllBranches, &CheckBox::toggled, this, &HistoryWidget::onShowAllUpdated);
 
     const auto graphOptionsLayout = new QHBoxLayout();

@@ -15,7 +15,7 @@
 #include <custom-widgets/LineNumberArea.h>
 #include <diff-widgets/FileEditor.h>
 #include <system/Colors.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -28,9 +28,12 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QSettings>
 #include <QStackedWidget>
 #include <QTemporaryFile>
 #include <QToolTip>
+
+using namespace System;
 
 FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointer<GitCache> cache, QWidget* parent)
     : IDiffWidget(git, cache, parent)
@@ -55,10 +58,12 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
 {
     mCurrentSha = ZERO_SHA;
 
-    const auto colorScheme = QSettings().value("colorSchema", 0).toInt();
-    const auto additionColor = colorScheme == 0 ? editorGreenShadowDark : editorGreenShadowBright;
-    const auto removalColor = colorScheme == 0 ? editorRedShadowDark : editorRedShadowBright;
-    const auto textColor = QSettings().value("colorSchema", 0).toInt() == 1 ? textColorBright : textColorDark;
+    int c, m, y, k;
+    QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
+
+    const auto additionColor = k <= 125 ? editorGreenShadowDark : editorGreenShadowBright;
+    const auto removalColor = k <= 125 ? editorRedShadowDark : editorRedShadowBright;
+    const auto textColor = QPalette().color(QPalette::Text);
     mUnifiedFile = new FileDiffView(additionColor, removalColor, graphOrange);
     mNewFile = new FileDiffView(additionColor, removalColor, graphOrange);
     mOldFile = new FileDiffView(additionColor, removalColor, graphOrange);
@@ -71,9 +76,9 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
     mNewFile->setObjectName("newFile");
     mOldFile->setObjectName("oldFile");
 
-    GitQlientSettings settings(mGit->getGitDir());
+    QSettings settings;
     QFont font = mNewFile->font();
-    const auto points = settings.globalValue("FileDiffView/FontSize", 8).toInt();
+    const auto points = settings.value(GlobalKey::FileDiffView::FontSize, 8).toInt();
     font.setPointSize(points);
     mUnifiedFile->setFont(font);
     mNewFile->setFont(font);
@@ -221,7 +226,7 @@ FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
     mRevert->setToolTip(tr("Revert changes"));
     connect(mRevert, &QPushButton::clicked, this, &FileDiffWidget::revertFile);
 
-    mViewStackedWidget->setCurrentIndex(settings.globalValue("DefaultDiffView", false).toInt());
+    mViewStackedWidget->setCurrentIndex(settings.value(GlobalKey::DefaultDiffView, false).toInt());
 
     connect(mFileNameLabel, &ButtonLink::clicked, this, [this]() {
         QApplication::clipboard()->setText(mFileNameLabel->text());
@@ -254,8 +259,8 @@ bool FileDiffWidget::reload()
 
 void FileDiffWidget::updateFontSize()
 {
-    GitQlientSettings settings;
-    const auto fontSize = settings.globalValue("FileDiffView/FontSize", 8).toInt();
+    QSettings settings;
+    const auto fontSize = settings.value(GlobalKey::FileDiffView::FontSize, 8).toInt();
 
     auto font = mNewFile->font();
     font.setPointSize(fontSize);

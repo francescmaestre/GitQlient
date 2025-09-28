@@ -1,12 +1,15 @@
 #include <system/GitQlientStyles.h>
 
 #include <system/Colors.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
 #include <QFile>
 #include <QFontDatabase>
 #include <QPalette>
+#include <QSettings>
+
+using namespace System;
 
 GitQlientStyles* GitQlientStyles::INSTANCE = nullptr;
 
@@ -34,9 +37,11 @@ QString GitQlientStyles::getStyles()
             auto baseSize = css.takeFirst().trimmed();
 
             const auto end = baseSize.indexOf("pt;");
+            QSettings settings;
             const auto fontSize
-                = GitQlientSettings()
-                      .globalValue("UiBaseFontSize", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
+                = settings
+                      .value(
+                          GlobalKey::UiBaseFontSize, QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize())
                       .toInt();
             auto increment = fontSize - baseSize.mid(11, end - 11).toInt();
             for (auto& line : css)
@@ -66,9 +71,10 @@ QString GitQlientStyles::getStyles()
 
 QColor GitQlientStyles::getBlue()
 {
-    const auto colorSchema = GitQlientSettings().globalValue("colorSchema", 1).toInt();
+    int c, m, y, k;
+    QPalette().color(QPalette::Text).getCmyk(&c, &m, &y, &k);
 
-    return colorSchema == 0 ? graphBlueDark : graphBlueBright;
+    return k <= 125 ? graphBlueDark : graphBlueBright;
 }
 
 QColor GitQlientStyles::getRed() { return graphRed; }

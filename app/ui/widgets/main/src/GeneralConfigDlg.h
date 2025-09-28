@@ -19,7 +19,6 @@ public:
 private:
     CheckBox* mDisableLogs = nullptr;
     QComboBox* mLevelCombo = nullptr;
-    QComboBox* mStylesSchema = nullptr;
     QLineEdit* mGitLocation = nullptr;
     bool mShowResetMsg = false;
     QPushButton* mClose = nullptr;

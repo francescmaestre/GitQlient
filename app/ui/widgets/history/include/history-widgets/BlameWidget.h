@@ -17,7 +17,6 @@ class GraphView;
 class QTabWidget;
 class QModelIndex;
 class GraphViewDelegate;
-class GitQlientSettings;
 
 class BlameWidget : public QFrame
 {
@@ -31,7 +30,6 @@ public:
         const QSharedPointer<GitCache>& cache,
         const QSharedPointer<Graph::Cache>& graphCache,
         const QSharedPointer<GitBase>& git,
-        const QSharedPointer<GitQlientSettings>& settings,
         QWidget* parent = nullptr);
     ~BlameWidget();
 
@@ -43,7 +41,6 @@ private:
     QSharedPointer<GitCache> mCache;
     QSharedPointer<Graph::Cache> mGraphCache;
     QSharedPointer<GitBase> mGit;
-    QSharedPointer<GitQlientSettings> mSettings;
     QFileSystemModel* mFileSystemModel = nullptr;
     GraphModel* mRepoModel = nullptr;
     GraphView* mRepoView = nullptr;

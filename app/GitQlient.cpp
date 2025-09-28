@@ -10,8 +10,9 @@
 #include <main-widgets/ConfigWidget.h>
 #include <main-widgets/GitQlientRepo.h>
 #include <main-widgets/InitScreen.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/ProjectListManager.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -24,6 +25,7 @@
 #include <QPluginLoader>
 #include <QProcess>
 #include <QPushButton>
+#include <QSettings>
 #include <QStackedLayout>
 #include <QTabBar>
 #include <QTextStream>
@@ -32,6 +34,7 @@
 #include <QLogger>
 
 using namespace QLogger;
+using namespace System;
 
 GitQlient::GitQlient(QWidget* parent)
     : QWidget(parent)
@@ -71,7 +74,8 @@ GitQlient::GitQlient(QWidget* parent)
         mStackedLayout->setCurrentIndex(1);
     });
 
-    if (const auto geometry = GitQlientSettings().globalValue("GitQlientGeometry", saveGeometry()).toByteArray();
+    QSettings settings;
+    if (const auto geometry = settings.value(GlobalKey::GitQlientGeometry, saveGeometry()).toByteArray();
         !geometry.isNull())
     {
         restoreGeometry(geometry);
@@ -103,14 +107,14 @@ GitQlient::~GitQlient()
         }
     }
 
-    GitQlientSettings settings;
-    settings.setGlobalValue(GitQlientSettings::PinnedRepos, pinnedRepos);
-    settings.setGlobalValue("GitQlientGeometry", saveGeometry());
+    QSettings settings;
+    settings.setValue(GlobalKey::PinnedRepos, pinnedRepos);
+    settings.setValue(GlobalKey::GitQlientGeometry, saveGeometry());
 
     QLog_Info("UI", "*            Closing GitQlient            *\n\n");
 
     if (mMoveLogs)
-        QLoggerManager::getInstance()->moveLogsWhenClose(settings.globalValue("logsFolder").toString());
+        QLoggerManager::getInstance()->moveLogsWhenClose(settings.value(GlobalKey::LogsFolder).toString());
 }
 
 bool GitQlient::eventFilter(QObject* obj, QEvent* event)
@@ -166,9 +170,8 @@ void GitQlient::createRepoManagementMenu()
 
     menu->addSeparator();
 
-    GitQlientSettings settings;
     const auto recent = new QMenu("Recent repos", menu);
-    const auto projects = settings.getRecentProjects();
+    const auto projects = ProjectListManager::getRecentProjects();
 
     for (const auto& project : projects)
     {
@@ -182,9 +185,7 @@ void GitQlient::createRepoManagementMenu()
 
     menu->addMenu(recent);
 
-    const auto recentProjects = settings.getMostUsedProjects();
-
-    if (!recentProjects.empty())
+    if (const auto recentProjects = ProjectListManager::getMostUsedProjects(); !recentProjects.empty())
     {
         const auto mostUsed = new QMenu("Most used repos", menu);
 
@@ -315,10 +316,10 @@ bool GitQlient::setArgumentsPostInit(const QStringList& arguments)
 bool GitQlient::parseArguments(const QStringList& arguments, QStringList* repos)
 {
     bool ret = true;
-    GitQlientSettings settings;
+    QSettings settings;
     auto logLevel = static_cast<LogLevel>(
-        settings.globalValue("logsLevel", static_cast<int>(LogLevel::Warning)).toInt());
-    bool areLogsDisabled = settings.globalValue("logsDisabled", true).toBool();
+        settings.value(GlobalKey::LogsLevel, static_cast<int>(LogLevel::Warning)).toInt());
+    bool areLogsDisabled = settings.value(GlobalKey::LogsDisabled, true).toBool();
 
     QCommandLineParser parser;
     parser.setApplicationDescription(tr("Multi-platform Git client written with Qt"));
@@ -353,7 +354,7 @@ bool GitQlient::parseArguments(const QStringList& arguments, QStringList* repos)
             if (level >= QLogger::LogLevel::Trace && level <= QLogger::LogLevel::Fatal)
             {
                 logLevel = level;
-                settings.setGlobalValue("logsLevel", static_cast<int>(level));
+                settings.setValue(GlobalKey::LogsLevel, static_cast<int>(level));
             }
         }
 
@@ -362,7 +363,7 @@ bool GitQlient::parseArguments(const QStringList& arguments, QStringList* repos)
     else
         QLoggerManager::getInstance()->pause();
 
-    const auto logsFolder = settings.globalValue("logsFolder").toString();
+    const auto logsFolder = settings.value(GlobalKey::LogsFolder).toString();
     QLoggerManager::getInstance()->setDefaultFileDestinationFolder(logsFolder);
 
     if (parser.isSet(versionOption))
@@ -421,11 +422,9 @@ void GitQlient::addNewRepoTab(const QString& repoPathArg, bool pinned)
                 return;
             }
 
-            QSharedPointer<GitQlientSettings> settings(new GitQlientSettings(git->getGitDir()));
+            conditionallyOpenPreConfigDlg(git);
 
-            conditionallyOpenPreConfigDlg(git, settings);
-
-            const auto repo = new GitQlientRepo(git, settings, this);
+            const auto repo = new GitQlientRepo(git, this);
             const auto index = pinned ? mRepos->addPinnedTab(repo, repoName) : mRepos->addTab(repo, repoName);
             mTabsMap.insert(repo, repoName);
 
@@ -496,16 +495,15 @@ void GitQlient::closeTab(int tabIndex)
 
 void GitQlient::restorePinnedRepos()
 {
-    GitQlientSettings settings;
+    QSettings settings;
 
-    if (settings.globalValue("ShowFeaturesDlg", false).toBool())
+    if (settings.value(GlobalKey::ShowFeaturesDlg, false).toBool())
     {
         NewVersionInfoDlg dlg(this);
         dlg.exec();
     }
 
-    if (const auto pinnedRepos = settings.globalValue(GitQlientSettings::PinnedRepos).toStringList();
-        !pinnedRepos.isEmpty())
+    if (const auto pinnedRepos = settings.value(GlobalKey::PinnedRepos).toStringList(); !pinnedRepos.isEmpty())
     {
         for (auto& repo : pinnedRepos)
             addNewRepoTab(repo, true);
@@ -517,22 +515,22 @@ void GitQlient::restorePinnedRepos()
 
 void GitQlient::onSuccessOpen(const QString& fullPath)
 {
-    GitQlientSettings().setProjectOpened(fullPath);
+    ProjectListManager::setProjectOpened(fullPath);
 
     mInitWidget->onRepoOpened();
 }
 
-void GitQlient::conditionallyOpenPreConfigDlg(
-    const QSharedPointer<GitBase>& git, const QSharedPointer<GitQlientSettings>& settings)
+void GitQlient::conditionallyOpenPreConfigDlg(const QSharedPointer<GitBase>& git)
 {
     QScopedPointer<GitConfig> config(new GitConfig(git));
 
-    const auto showDlg = settings->localValue("ShowInitConfigDialog", true).toBool();
-    const auto maxCommits = settings->localValue("MaxCommits", -1).toInt();
+    QSettings settings;
+    const auto showDlg = settings.value(GlobalKey::ShowInitConfigDialog, true).toBool();
+    const auto maxCommits = settings.value(GlobalKey::MaxCommits, -1).toInt();
 
     if (maxCommits == -1 || (config->getServerHost().contains("https") && showDlg))
     {
-        const auto preConfig = new InitialRepoConfig(git, settings, this);
+        const auto preConfig = new InitialRepoConfig(git, this);
         preConfig->exec();
     }
 }

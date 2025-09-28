@@ -5,7 +5,10 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QProcess>
-#include <system/GitQlientSettings.h>
+#include <QSettings>
+#include <system/SettingsKeys.h>
+
+using namespace System;
 
 FileContextMenu::FileContextMenu(const QString gitProject, const QString& file, bool editionAllowed, QWidget* parent)
     : QMenu(parent)
@@ -44,8 +47,8 @@ void FileContextMenu::openFileExplorer()
     QString app;
     QStringList arguments;
 #ifdef Q_OS_LINUX
-    GitQlientSettings settings;
-    const auto fileExplorer = settings.globalValue("FileBrowser", "xdg-open").toString();
+    QSettings settings;
+    const auto fileExplorer = settings.value(GlobalKey::FileBrowser, "xdg-open").toString();
 
     if (fileExplorer.isEmpty())
     {

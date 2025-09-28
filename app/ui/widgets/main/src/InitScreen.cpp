@@ -7,7 +7,8 @@
 #include <custom-widgets/ButtonLink.h>
 #include <dialogs/CreateRepoDlg.h>
 #include <dialogs/ProgressDlg.h>
-#include <system/GitQlientSettings.h>
+#include <system/GitQlientStyles.h>
+#include <system/ProjectListManager.h>
 
 #include <QApplication>
 #include <QButtonGroup>
@@ -20,7 +21,6 @@
 #include <QStackedWidget>
 #include <QStyle>
 #include <QtGlobal>
-#include <system/GitQlientStyles.h>
 
 #include <QLogger>
 
@@ -155,7 +155,7 @@ QWidget* InitScreen::createRecentProjectsPage()
     innerLayout->setSpacing(10);
     innerLayout->addWidget(title);
 
-    const auto projects = GitQlientSettings().getRecentProjects();
+    const auto projects = ProjectListManager::getRecentProjects();
 
     for (auto project : projects)
     {
@@ -173,7 +173,7 @@ QWidget* InitScreen::createRecentProjectsPage()
     const auto clear = new ButtonLink(tr("Clear list"), this);
     clear->setVisible(!projects.isEmpty());
     connect(clear, &ButtonLink::clicked, this, [this]() {
-        GitQlientSettings().clearRecentProjects();
+        ProjectListManager::clearRecentProjects();
 
         mRecentProjectsLayout->addWidget(createRecentProjectsPage());
     });
@@ -200,7 +200,7 @@ QWidget* InitScreen::createUsedProjectsPage()
     innerLayout->setSpacing(10);
     innerLayout->addWidget(title);
 
-    const auto projects = GitQlientSettings().getMostUsedProjects();
+    const auto projects = ProjectListManager::getMostUsedProjects();
 
     for (auto project : projects)
     {
@@ -218,7 +218,7 @@ QWidget* InitScreen::createUsedProjectsPage()
     const auto clear = new ButtonLink(tr("Clear list"), this);
     clear->setVisible(!projects.isEmpty());
     connect(clear, &ButtonLink::clicked, this, [this]() {
-        GitQlientSettings().clearMostUsedProjects();
+        ProjectListManager::clearMostUsedProjects();
 
         mUsedProjectsLayout->addWidget(createUsedProjectsPage());
     });

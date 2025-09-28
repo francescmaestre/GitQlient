@@ -7,13 +7,16 @@
 #include <GitRemote.h>
 #include <GitStashes.h>
 #include <cache/GitCache.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
 #include <QFile>
 #include <QMessageBox>
+#include <QSettings>
 
 #include <utility>
+
+using namespace System;
 
 BranchDlg::BranchDlg(BranchDlgConfig config, QWidget* parent)
     : QDialog(parent)
@@ -98,7 +101,8 @@ void BranchDlg::checkNewBranchName()
 void BranchDlg::replaceWhiteSpaces(const QString& newName)
 {
     auto whiteSpacesFreeName = newName;
-    whiteSpacesFreeName.replace(' ', GitQlientSettings().globalValue("BranchSeparator").toString());
+    QSettings settings;
+    whiteSpacesFreeName.replace(' ', settings.value(GlobalKey::BranchSeparator).toString());
     ui->leNewName->setText(whiteSpacesFreeName);
 }
 

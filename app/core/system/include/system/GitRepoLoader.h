@@ -13,7 +13,6 @@ namespace Graph
 {
     class Cache;
 }
-class GitQlientSettings;
 class GitTags;
 class GitRequestorProcess;
 
@@ -35,7 +34,6 @@ public:
         QSharedPointer<GitBase> gitBase,
         QSharedPointer<GitCache> cache,
         const QSharedPointer<Graph::Cache>& graphCache,
-        const QSharedPointer<GitQlientSettings>& settings,
         QObject* parent = nullptr);
     void cancelAll();
     void setShowAll(bool showAll = true) { mShowAll = showAll; }
@@ -48,7 +46,6 @@ private:
     QSharedPointer<GitBase> mGitBase;
     QSharedPointer<GitCache> mRevCache;
     QSharedPointer<Graph::Cache> mGraphCache;
-    QSharedPointer<GitQlientSettings> mSettings;
     QSharedPointer<GitTags> mGitTags;
     GitRequestorProcess* mRevRequestor = nullptr;
     GitRequestorProcess* mRefRequestor = nullptr;

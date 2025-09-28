@@ -22,7 +22,6 @@ namespace Graph
     class Cache;
 }
 class QLabel;
-class GitQlientSettings;
 struct GitExecResult;
 
 class HistoryWidget : public QFrame
@@ -49,7 +48,6 @@ public:
         const QSharedPointer<GitCache>& cache,
         const QSharedPointer<Graph::Cache>& graphCache,
         const QSharedPointer<GitBase> git,
-        const QSharedPointer<GitQlientSettings>& settings,
         QWidget* parent = nullptr);
     ~HistoryWidget();
 
@@ -75,7 +73,6 @@ private:
     QSharedPointer<GitBase> mGit;
     QSharedPointer<GitCache> mCache;
     QSharedPointer<Graph::Cache> mGraphCache;
-    QSharedPointer<GitQlientSettings> mSettings;
     QFrame* mCommitInfoFrame = nullptr;
     GraphModel* mRepositoryModel = nullptr;
     GraphView* mRepositoryView = nullptr;

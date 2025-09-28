@@ -4,10 +4,10 @@
 #include <GitBase.h>
 #include <GitSubtree.h>
 #include <QLogger>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 
 #include <QMessageBox>
+#include <QSettings>
 
 using namespace QLogger;
 

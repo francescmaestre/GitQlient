@@ -14,18 +14,20 @@
 #include <GitSubtree.h>
 #include <GitTags.h>
 #include <cache/GitCache.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
+#include <QListWidget>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSettings>
 #include <QVBoxLayout>
 
 #include <QLogger>
-#include <qlistwidget.h>
 
 using namespace QLogger;
+using namespace System;
 
 BranchesWidget::BranchesWidget(
     const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
@@ -141,16 +143,16 @@ void BranchesWidget::setupConnections()
 void BranchesWidget::loadSettings()
 {
     QSettings settings;
-    const auto isMinimalVisible = settings.value("MinimalBranchesView", false).toBool();
+    const auto isMinimalVisible = settings.value(GlobalKey::References::MinimalBranchesView, false).toBool();
     mFullBranchFrame->setVisible(!isMinimalVisible);
     mMinimal->setVisible(isMinimalVisible);
 
-    mLocalBranches->setVisible(settings.value("LocalHeader", true).toBool());
-    mRemoteBranches->setVisible(settings.value("RemoteHeader", true).toBool());
-    mTags->setVisible(settings.value("TagsHeader", true).toBool());
-    mStashes->setVisible(settings.value("StashesHeader", true).toBool());
-    mSubmodules->setVisible(settings.value("SubmodulesHeader", true).toBool());
-    mSubtrees->setVisible(settings.value("SubtreeHeader", true).toBool());
+    mLocalBranches->setVisible(settings.value(GlobalKey::References::LocalHeader, true).toBool());
+    mRemoteBranches->setVisible(settings.value(GlobalKey::References::RemoteHeader, true).toBool());
+    mTags->setVisible(settings.value(GlobalKey::References::TagsHeader, true).toBool());
+    mStashes->setVisible(settings.value(GlobalKey::References::StashesHeader, true).toBool());
+    mSubmodules->setVisible(settings.value(GlobalKey::References::SubmodulesHeader, true).toBool());
+    mSubtrees->setVisible(settings.value(GlobalKey::References::SubtreeHeader, true).toBool());
 }
 
 void BranchesWidget::showBranches()
@@ -464,14 +466,14 @@ void BranchesWidget::fullView()
     emit minimalViewStateChanged(false);
 
     QSettings settings;
-    settings.setValue("MinimalBranchesView", false);
+    settings.setValue(GlobalKey::References::MinimalBranchesView, false);
 }
 
 void BranchesWidget::minimalView()
 {
     forceMinimalView();
     QSettings settings;
-    settings.setValue("MinimalBranchesView", true);
+    settings.setValue(GlobalKey::References::MinimalBranchesView, true);
 }
 
 void BranchesWidget::forceMinimalView()
@@ -485,7 +487,7 @@ void BranchesWidget::forceMinimalView()
 void BranchesWidget::returnToSavedView()
 {
     QSettings settings;
-    const auto savedState = settings.value("MinimalBranchesView", false).toBool();
+    const auto savedState = settings.value(GlobalKey::References::MinimalBranchesView, false).toBool();
 
     if (savedState != mMinimal->isVisible())
     {
@@ -498,7 +500,7 @@ void BranchesWidget::returnToSavedView()
 bool BranchesWidget::isMinimalViewActive() const
 {
     QSettings settings;
-    return settings.value("MinimalBranchesView", false).toBool();
+    return settings.value(GlobalKey::References::MinimalBranchesView, false).toBool();
 }
 
 QPair<QString, QString> BranchesWidget::getSubtreeData(const QString& prefix)

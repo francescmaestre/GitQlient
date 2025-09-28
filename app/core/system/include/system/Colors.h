@@ -2,15 +2,7 @@
 
 #include <QColor>
 
-static const QColor textColorDark(255, 255, 255);
-static const QColor textColorBright(0, 0, 0);
 static const QColor gitQlientOrange(216, 144, 0); //#D89000
-static const QColor graphSelectionColorDark(80, 81, 82); //#505152
-static const QColor graphSelectionColorBright(198, 198, 199); //#C6C6C7
-static const QColor graphHoverColorDark(64, 65, 66); //#404142
-static const QColor graphHoverColorBright(239, 239, 239); //#EFEFEF
-static const QColor graphBackgroundColorDark(46, 47, 48); //#2E2F30
-static const QColor graphBackgroundColorBright(255, 255, 255); //#FFFFFF
 static const QColor graphBlueDark(87, 155, 213); //#579BD5
 static const QColor graphBlueBright(50, 92, 199); //#325CC7
 static const QColor graphRed(255, 34, 34); //#FF2222
@@ -22,9 +14,6 @@ static const QColor graphTurquoise(64, 224, 208); //#40E0D0
 static const QColor graphAubergine(71, 1, 115); //#470173
 static const QColor graphPink(255, 121, 198); //#FF79C6
 static const QColor graphCoral(230, 94, 108); //#E65E6C
-static const QColor graphCurrentBranch(0, 91, 150); //#005B96
-static const QColor graphLocalBranch(100, 151, 177); //#6497B1
-static const QColor graphRemoteBranch(1, 31, 75); //#011F4B
 static const QColor graphDetached(133, 30, 62); //#851E3E
 static const QColor graphTag(222, 195, 195); //#DEC3C3
 static const QColor highlightCommentStart(64, 65, 66); //#404142

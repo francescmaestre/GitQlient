@@ -6,7 +6,6 @@ class QPushButton;
 class QButtonGroup;
 class GitConfig;
 class ProgressDlg;
-class GitQlientSettings;
 class QVBoxLayout;
 
 class InitScreen : public QFrame

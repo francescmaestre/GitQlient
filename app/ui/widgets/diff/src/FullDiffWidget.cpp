@@ -4,14 +4,17 @@
 #include <cache/Commit.h>
 #include <cache/GitCache.h>
 #include <custom-widgets/DiffHelper.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
 #include <QLineEdit>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QSettings>
 #include <QTextCharFormat>
 #include <QVBoxLayout>
+
+using namespace System;
 
 FullDiffWidget::DiffHighlighter::DiffHighlighter(QTextDocument* document)
     : QSyntaxHighlighter(document)
@@ -73,11 +76,11 @@ FullDiffWidget::FullDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointe
 
     diffHighlighter = new DiffHighlighter(mDiffWidget->document());
 
-    GitQlientSettings settings;
+    QSettings settings;
 
     QFont font;
     font.setFamily(QString::fromUtf8("DejaVu Sans Mono"));
-    font.setPointSize(settings.globalValue("FileDiffView/FontSize", 8).toInt());
+    font.setPointSize(settings.value(GlobalKey::FileDiffView::FontSize, 8).toInt());
     mDiffWidget->setFont(font);
     mDiffWidget->setObjectName("textEditDiff");
     mDiffWidget->setUndoRedoEnabled(false);
@@ -202,8 +205,8 @@ void FullDiffWidget::loadDiff(const QString& sha, const QString& diffToSha, cons
 
 void FullDiffWidget::updateFontSize()
 {
-    GitQlientSettings settings;
-    const auto fontSize = settings.globalValue("FileDiffView/FontSize", 8).toInt();
+    QSettings settings;
+    const auto fontSize = settings.value(GlobalKey::FileDiffView::FontSize, 8).toInt();
 
     auto font = mDiffWidget->font();
     font.setPointSize(fontSize);

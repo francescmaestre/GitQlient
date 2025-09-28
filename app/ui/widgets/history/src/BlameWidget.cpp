@@ -8,7 +8,7 @@
 
 #include <GitHistory.h>
 #include <cache/Commit.h>
-#include <system/GitQlientSettings.h>
+#include <system/SettingsKeys.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -18,23 +18,24 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
+#include <QSettings>
 #include <QTabWidget>
 #include <QTreeView>
+
+using namespace System;
 
 BlameWidget::BlameWidget(
     const QSharedPointer<GitCache>& cache,
     const QSharedPointer<Graph::Cache>& graphCache,
     const QSharedPointer<GitBase>& git,
-    const QSharedPointer<GitQlientSettings>& settings,
     QWidget* parent)
     : QFrame(parent)
     , mCache(cache)
     , mGraphCache(graphCache)
     , mGit(git)
-    , mSettings(settings)
     , mFileSystemModel(new QFileSystemModel())
     , mRepoModel(new GraphModel(mCache, mGit, this))
-    , mRepoView(new GraphView(mCache, mGraphCache, mGit, mSettings, this))
+    , mRepoView(new GraphView(mCache, mGraphCache, mGit, this))
     , mFileSystemView(new QTreeView(this))
     , mTabWidget(new QTabWidget(this))
 {
@@ -228,7 +229,8 @@ void BlameWidget::reloadHistory(int tabIndex)
 
 void BlameWidget::showFileSystemMenu(const QPoint& pos)
 {
-    const auto externalEditor = GitQlientSettings().globalValue("ExternalEditor", QString()).toString();
+    QSettings settings;
+    const auto externalEditor = settings.value(GlobalKey::ExternalEditor, QString()).toString();
 
     if (!externalEditor.isEmpty())
     {
@@ -278,7 +280,8 @@ void BlameWidget::showRepoViewMenu(const QPoint& pos)
 
 void BlameWidget::openExternalEditor()
 {
-    const auto externalEditor = GitQlientSettings().globalValue("ExternalEditor", QString()).toString();
+    QSettings settings;
+    const auto externalEditor = settings.value(GlobalKey::ExternalEditor, QString()).toString();
     const auto item = mFileSystemView->selectionModel()->currentIndex();
 
     auto absoluteFilePath = mFileSystemModel->filePath(item);

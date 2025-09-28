@@ -7,9 +7,9 @@
 #include <GitBase.h>
 #include <cache/GitCache.h>
 #include <custom-widgets/ClickableFrame.h>
-#include <system/GitQlientSettings.h>
 
 #include <QHeaderView>
+#include <QSettings>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 
@@ -42,7 +42,6 @@ RefTreeWidget::RefTreeWidget(
     : QWidget(parent)
     , mRefType(type)
     , mSettingsKey(settingsKey)
-    , mSettings(std::make_unique<GitQlientSettings>(git->getGitDir()))
 {
     mFrame = new ClickableFrame(title);
     mFrame->setExpandable(true);
@@ -55,7 +54,8 @@ RefTreeWidget::RefTreeWidget(
 
     mFrame->setContentWidget(mTreeWidget);
 
-    const bool isExpanded = mSettings->localValue(settingsKey, true).toBool();
+    QSettings settings;
+    const auto isExpanded = settings.value(settingsKey, true).toBool();
     mFrame->setExpanded(isExpanded);
 
     auto layout = new QVBoxLayout(this);
@@ -90,7 +90,8 @@ void RefTreeWidget::clear()
 
 void RefTreeWidget::reloadVisibility()
 {
-    const bool isExpanded = mSettings->localValue(mSettingsKey, true).toBool();
+    QSettings settings;
+    const auto isExpanded = settings.value(mSettingsKey, true).toBool();
     mFrame->setExpanded(isExpanded);
 }
 

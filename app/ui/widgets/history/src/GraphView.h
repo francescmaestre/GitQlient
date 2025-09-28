@@ -13,7 +13,6 @@ namespace Graph
 }
 class GraphModel;
 class ShaFilterProxyModel;
-class GitQlientSettings;
 
 class GraphView : public QTreeView
 {
@@ -37,7 +36,6 @@ public:
         const QSharedPointer<GitCache>& cache,
         const QSharedPointer<Graph::Cache>& graphCache,
         const QSharedPointer<GitBase>& git,
-        const QSharedPointer<GitQlientSettings>& settings,
         QWidget* parent = nullptr);
     ~GraphView() override;
 
@@ -55,7 +53,6 @@ private:
     QSharedPointer<GitCache> mCache;
     QSharedPointer<Graph::Cache> mGraphCache;
     QSharedPointer<GitBase> mGit;
-    QSharedPointer<GitQlientSettings> mSettings;
     GraphModel* mCommitHistoryModel = nullptr;
     ShaFilterProxyModel* mProxyModel = nullptr;
     bool mIsFiltering = false;

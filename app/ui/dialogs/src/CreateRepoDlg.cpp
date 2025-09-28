@@ -3,14 +3,16 @@
 
 #include <GitBase.h>
 #include <GitConfig.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
+#include <system/SettingsKeys.h>
 
 #include <QFileDialog>
 #include <QLogger>
 #include <QMessageBox>
+#include <QSettings>
 
 using namespace QLogger;
+using namespace System;
 
 CreateRepoDlg::CreateRepoDlg(CreateRepoDlgType type, QSharedPointer<GitConfig> git, QWidget* parent)
     : QDialog(parent)
@@ -28,8 +30,8 @@ CreateRepoDlg::CreateRepoDlg(CreateRepoDlgType type, QSharedPointer<GitConfig> g
     const auto checkText = ui->chbOpen->text().arg(operation);
     ui->chbOpen->setText(checkText);
 
-    GitQlientSettings settings;
-    const auto defaultLocation = settings.globalValue("DefaultCloneLocation", QString()).toString();
+    QSettings settings;
+    const auto defaultLocation = settings.value(GlobalKey::DefaultCloneLocation, QString()).toString();
 
     if (!defaultLocation.isEmpty())
     {
@@ -58,8 +60,8 @@ CreateRepoDlg::~CreateRepoDlg() { delete ui; }
 
 void CreateRepoDlg::verifyDefaultFolder()
 {
-    GitQlientSettings settings;
-    const auto isSameDir = settings.globalValue("DefaultCloneLocation", QString()).toString() == ui->lePath->text();
+    QSettings settings;
+    const auto isSameDir = settings.value(GlobalKey::DefaultCloneLocation, QString()).toString() == ui->lePath->text();
 
     if (ui->chbDefaultDir->isChecked() && !isSameDir)
         ui->chbDefaultDir->setChecked(false);
@@ -102,9 +104,9 @@ void CreateRepoDlg::saveConfigAndAccept(const QString& fullPath)
     QSettings settings;
 
     if (ui->chbDefaultDir->isChecked()
-        && settings.value("DefaultCloneLocation", QString()).toString() == ui->lePath->text())
+        && settings.value(GlobalKey::DefaultCloneLocation, QString()).toString() == ui->lePath->text())
     {
-        settings.setValue("DefaultCloneLocation", ui->lePath->text());
+        settings.setValue(GlobalKey::DefaultCloneLocation, ui->lePath->text());
     }
 
     if (ui->cbGitUser->isChecked())

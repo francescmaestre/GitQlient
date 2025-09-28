@@ -15,9 +15,9 @@
 #include <cache/GraphCache.h>
 #include <custom-widgets/ClickableFrame.h>
 #include <graph/WipHelper.h>
-#include <system/GitQlientSettings.h>
 #include <system/GitQlientStyles.h>
 #include <system/GitRepoLoader.h>
+#include <system/SettingsKeys.h>
 
 #include <QCheckBox>
 #include <QDir>
@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QProcess>
+#include <QSettings>
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QTextStream>
@@ -35,6 +36,7 @@
 #include <QLogger>
 
 using namespace QLogger;
+using namespace System;
 
 enum GitQlientRole
 {
@@ -58,7 +60,8 @@ CommitChangesWidget::CommitChangesWidget(
 
     ui->amendFrame->setVisible(false);
 
-    mTitleMaxLength = GitQlientSettings().globalValue("commitTitleMaxLength", mTitleMaxLength).toInt();
+    QSettings settings;
+    mTitleMaxLength = settings.value(GlobalKey::CommitTitleMaxLength, mTitleMaxLength).toInt();
     ui->lCounter->setText(QString::number(mTitleMaxLength));
     ui->leCommitTitle->setMaxLength(mTitleMaxLength);
     ui->teDescription->setMaximumHeight(100);
@@ -863,7 +866,8 @@ void CommitChangesWidget::clearStaged()
 
 void CommitChangesWidget::setCommitTitleMaxLength()
 {
-    mTitleMaxLength = GitQlientSettings().globalValue("commitTitleMaxLength", mTitleMaxLength).toInt();
+    QSettings settings;
+    mTitleMaxLength = settings.value(GlobalKey::CommitTitleMaxLength, mTitleMaxLength).toInt();
 
     ui->lCounter->setText(QString::number(mTitleMaxLength));
     ui->leCommitTitle->setMaxLength(mTitleMaxLength);

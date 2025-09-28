@@ -7,7 +7,6 @@
 #include <commit-widgets/CommitInfoPanel.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FullDiffWidget.h>
-#include <system/GitQlientSettings.h>
 
 #include <QLogger>
 #include <QPinnableTabWidget.h>
