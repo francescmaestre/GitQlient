@@ -29,7 +29,7 @@ BranchesWidgetMinimal::BranchesWidgetMinimal(
     , mSubmodules(new QToolButton())
     , mSubmodulesMenu(new QMenu(mSubmodules))
 {
-    mBack->setIcon(QIcon(":/icons/back"));
+    mBack->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoNext, QIcon(":/icons/back")));
     mBack->setToolTip(tr("Full view"));
     mBack->setShortcut(Qt::CTRL | Qt::Key_B);
     connect(mBack, &QPushButton::clicked, this, &BranchesWidgetMinimal::showFullBranchesView);
@@ -99,7 +99,7 @@ bool BranchesWidgetMinimal::eventFilter(QObject* obj, QEvent* event)
         localPos.setX(localPos.x());
         auto pos = mapToGlobal(localPos);
         menu->show();
-        pos.setX(pos.x() - menu->width());
+        pos.setX(geometry().width());
         menu->move(pos);
         return true;
     }

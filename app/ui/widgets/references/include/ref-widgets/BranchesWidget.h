@@ -24,7 +24,6 @@ signals:
     void signalOpenSubmodule(const QString& submoduleName);
     void signalMergeRequired(const QString& currentBranch, const QString& fromBranch);
     void signalPullConflict();
-    void minimalViewStateChanged(bool isActive);
     void mergeSqushRequested(const QString& origin, const QString& destination);
 
 public:
@@ -32,7 +31,6 @@ public:
         const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent = nullptr);
     ~BranchesWidget() = default;
 
-    bool isMinimalViewActive() const;
     void showBranches();
     void refreshCurrentBranchLink();
     void clear();
@@ -61,9 +59,6 @@ private:
     void processBranches();
     void processTags();
     void processListItems();
-
-    template <typename Processor>
-    void processGenericList(RefListWidget* widget, Processor processor);
     void fullView();
     void minimalView();
     void handleTagsContextMenu(const QPoint& pos, const QString& data);
@@ -71,4 +66,8 @@ private:
     void handleSubmodulesContextMenu(const QPoint& pos, const QString& data);
     void handleSubtreesContextMenu(const QPoint& pos, const QString& data);
     QPair<QString, QString> getSubtreeData(const QString& prefix);
+    void resizeWidget();
+
+    template <typename Processor>
+    void processGenericList(RefListWidget* widget, Processor processor);
 };

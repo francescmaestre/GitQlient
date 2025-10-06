@@ -53,7 +53,7 @@ BranchesWidget::BranchesWidget(
 
 void BranchesWidget::setupUI()
 {
-    mMinimize->setIcon(QIcon(":/icons/ahead"));
+    mMinimize->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoDown, QIcon(":/icons/ahead")));
     mMinimize->setToolTip(tr("Show minimalist view"));
     mMinimize->setObjectName("BranchesWidgetOptionsButton");
     mMinimize->setShortcut(Qt::CTRL | Qt::Key_B);
@@ -144,8 +144,9 @@ void BranchesWidget::loadSettings()
 {
     QSettings settings;
     const auto isMinimalVisible = settings.value(GlobalKey::References::MinimalBranchesView, false).toBool();
-    mFullBranchFrame->setVisible(!isMinimalVisible);
-    mMinimal->setVisible(isMinimalVisible);
+
+    mMinimize->setVisible(!isMinimalVisible);
+    isMinimalVisible ? minimalView() : fullView();
 
     mLocalBranches->setVisible(settings.value(GlobalKey::References::LocalHeader, true).toBool());
     mRemoteBranches->setVisible(settings.value(GlobalKey::References::RemoteHeader, true).toBool());
@@ -181,7 +182,7 @@ void BranchesWidget::processBranches()
     auto branches = mCache->getBranches(References::Type::LocalBranch);
     int localCount = 0;
 
-    for (const auto& [sha, branchList] : qAsConst(branches))
+    for (const auto& [sha, branchList] : std::as_const(branches))
     {
         for (const auto& branch : branchList)
         {
@@ -200,7 +201,7 @@ void BranchesWidget::processBranches()
     branches = mCache->getBranches(References::Type::RemoteBranche);
     int remoteCount = 0;
 
-    for (const auto& [sha, branchList] : qAsConst(branches))
+    for (const auto& [sha, branchList] : std::as_const(branches))
     {
         for (const auto& branch : branchList)
         {
@@ -460,20 +461,22 @@ void BranchesWidget::handleSubtreesContextMenu(const QPoint& pos, const QString&
 
 void BranchesWidget::fullView()
 {
+    QSettings settings;
+    settings.setValue(GlobalKey::References::MinimalBranchesView, false);
+
     mFullBranchFrame->setVisible(true);
     mMinimal->setVisible(false);
     mMinimize->setVisible(true);
-    emit minimalViewStateChanged(false);
 
-    QSettings settings;
-    settings.setValue(GlobalKey::References::MinimalBranchesView, false);
+    resizeWidget();
 }
 
 void BranchesWidget::minimalView()
 {
-    forceMinimalView();
     QSettings settings;
     settings.setValue(GlobalKey::References::MinimalBranchesView, true);
+
+    forceMinimalView();
 }
 
 void BranchesWidget::forceMinimalView()
@@ -481,7 +484,8 @@ void BranchesWidget::forceMinimalView()
     mMinimize->setVisible(false);
     mFullBranchFrame->setVisible(false);
     mMinimal->setVisible(true);
-    emit minimalViewStateChanged(true);
+
+    resizeWidget();
 }
 
 void BranchesWidget::returnToSavedView()
@@ -493,14 +497,8 @@ void BranchesWidget::returnToSavedView()
     {
         mFullBranchFrame->setVisible(!savedState);
         mMinimal->setVisible(savedState);
-        emit minimalViewStateChanged(savedState);
+        resizeWidget();
     }
-}
-
-bool BranchesWidget::isMinimalViewActive() const
-{
-    QSettings settings;
-    return settings.value(GlobalKey::References::MinimalBranchesView, false).toBool();
 }
 
 QPair<QString, QString> BranchesWidget::getSubtreeData(const QString& prefix)
@@ -599,4 +597,12 @@ QPair<QString, QString> BranchesWidget::getSubtreeData(const QString& prefix)
     }
 
     return qMakePair(url, ref);
+}
+
+void BranchesWidget::resizeWidget()
+{
+    QSettings settings;
+    auto isMinimalActive = settings.value(GlobalKey::References::MinimalBranchesView, false).toBool();
+
+    setFixedWidth(isMinimalActive ? 72 : 250);
 }

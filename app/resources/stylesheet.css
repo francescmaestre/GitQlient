@@ -839,6 +839,14 @@ BranchesWidget RefTreeWidget QHeaderView:section
 /*         BranchesWidgetMinimal START       */
 /*********************************************/
 
+BranchesWidgetMinimal
+{
+    border-width: 1px;
+    border-style: solid;
+    max-width: 70px;
+    min-width: 70px;
+}
+
 BranchesWidgetMinimal > QToolButton:menu-indicator
 {
     image: none;

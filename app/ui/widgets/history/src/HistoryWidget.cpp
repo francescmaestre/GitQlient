@@ -201,11 +201,6 @@ HistoryWidget::HistoryWidget(
     connect(mWipFileDiff, &FileDiffWidget::fileReverted, this, &HistoryWidget::signalUpdateWip);
     connect(mWipFileDiff, &FileDiffWidget::exitRequested, this, &HistoryWidget::signalUpdateWip);
 
-    const auto minimalActive = mBranchesWidget->isMinimalViewActive();
-    rearrangeSplittrer(minimalActive);
-
-    connect(mBranchesWidget, &BranchesWidget::minimalViewStateChanged, this, &HistoryWidget::rearrangeSplittrer);
-
     const auto layout = new QHBoxLayout(this);
     layout->setContentsMargins(QMargins());
     layout->addWidget(mBranchesWidget);
@@ -295,19 +290,6 @@ void HistoryWidget::onOpenFullDiff(const QString& sha)
     }
     else
         QMessageBox::warning(this, tr("No diff available!"), tr("There is no diff to show."));
-}
-
-void HistoryWidget::rearrangeSplittrer(bool minimalActive)
-{
-    if (minimalActive)
-    {
-        mBranchesWidget->setFixedWidth(50);
-    }
-    else
-    {
-        mBranchesWidget->setMinimumWidth(250);
-        mBranchesWidget->setMaximumWidth(500);
-    }
 }
 
 void HistoryWidget::onRevertedChanges()

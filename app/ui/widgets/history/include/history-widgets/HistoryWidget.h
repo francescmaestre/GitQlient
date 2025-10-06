@@ -116,7 +116,5 @@ private:
 
     void onOpenFullDiff(const QString& sha);
 
-    void rearrangeSplittrer(bool minimalActive);
-
     void onRevertedChanges();
 };
