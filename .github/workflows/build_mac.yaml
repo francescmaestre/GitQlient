@@ -25,7 +25,7 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         timeout-minutes: 10
         with:
-          version: 6.6.*
+          version: 6.9.*
           target: desktop
           host: mac
           install-deps: true
