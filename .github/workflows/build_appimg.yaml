@@ -33,7 +33,7 @@ jobs:
             ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
           timeout-minutes: 10
           with:
-            version: 6.9.*
+            version: 6.7.*
             target: desktop
             host: linux
             install-deps: true
