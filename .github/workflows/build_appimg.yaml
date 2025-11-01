@@ -33,11 +33,10 @@ jobs:
             ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
           timeout-minutes: 10
           with:
-            version: 6.7.*
+            version: 6.7.3
             target: desktop
             host: linux
             install-deps: true
-            aqtversion: '==3.1.*'
 
         - name: Generate project
           run: |
