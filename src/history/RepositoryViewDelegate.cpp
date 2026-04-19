@@ -98,6 +98,9 @@ void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt,
       }
       else
       {
+         if (commit.getFirstChildSha() == ZERO_SHA)
+            newOpt.font.setBold(true);
+
          p->setPen(GitQlientStyles::getTextColor());
          newOpt.rect.setX(newOpt.rect.x() + 10);
 
@@ -495,6 +498,9 @@ void RepositoryViewDelegate::paintLog(QPainter *p, const QStyleOptionViewItem &o
    newOpt.rect.setY(newOpt.rect.y() + TEXT_HEIGHT_OFFSET);
 
    QFontMetrics fm(newOpt.font);
+
+   if (commit.getFirstChildSha() == ZERO_SHA)
+      newOpt.font.setBold(true);
 
    p->setFont(newOpt.font);
    p->setPen(GitQlientStyles::getTextColor());
