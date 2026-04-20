@@ -36,7 +36,7 @@ I've set up a small (and ugly) webpage for those developers that want to get som
 
 The web shows the current UI design with links to the code of the widgets when you click on the areas of the image. The code is shown in a frame near to the image, so a 1920px screen might be needed. Since I'm not a web developer and I don't intend to dedicate too much time to that, I'll update the guide only with major releases. If anybody wants to make it pritier and knows how to do it, please contact me to see if we can collaborate.
 
-[Check the Interactive UI guide of GitQlient.](https://francescmaestre.github.io/gitqlient/)
+[Check the Interactive UI guide of GitQlient.](https://francescmaestre.github.io/GitQlient/)
 
 ## How to install GitQlient
 
