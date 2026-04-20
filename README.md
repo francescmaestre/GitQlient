@@ -1,8 +1,8 @@
-![GitQlient logo](https://github.com/francescmm/GitQlient/blob/master/src/resources/icons/GitQlientLogo96.png "GitQlient")
+![GitQlient logo](https://github.com/francescmaestre/GitQlient/blob/master/src/resources/icons/GitQlientLogo96.png "GitQlient")
 
 # GitQlient: Multi-platform Git client written with Qt
 
-[![Master](https://github.com/francescmm/GitQlient/actions/workflows/master.yaml/badge.svg?branch=master)](https://github.com/francescmm/GitQlient/actions/workflows/master.yaml)
+[![Master](https://github.com/francescmaestre/GitQlient/actions/workflows/master.yaml/badge.svg?branch=master)](https://github.com/francescmaestre/GitQlient/actions/workflows/master.yaml)
 
 GitQlient, pronounced as git+client (/gɪtˈklaɪənt/) is a multi-platform Git client originally forked from QGit. Nowadays it goes beyond of just a fork and adds a lot of new functionality.
 
@@ -22,11 +22,11 @@ Some of the major feature you can find are:
 8. GitHub/GitLab integration
 9. Embedded text editor with syntax highlight for C++
 
-For all the features take a look to the [Release Notes in the Wiki](https://github.com/francescmm/GitQlient/wiki).
+For all the features take a look to the [Release Notes in the Wiki](https://github.com/francescmaestre/GitQlient/wiki).
 
 ## User Manual
 
-Please, if you have any doubts about how to use it or you just want to know all you can do with GitQlient, take a look to [the user manual in here](https://francescmm.github.io/GitQlient).
+Please, if you have any doubts about how to use it or you just want to know all you can do with GitQlient, take a look to [the user manual in here](https://francescmaestre.github.io/GitQlient).
 
 It is planned to release for Linux, MacOs and Windows. However, take into account that the development environment is based on Linux and it will be the first platform released.
 
@@ -36,7 +36,7 @@ I've set up a small (and ugly) webpage for those developers that want to get som
 
 The web shows the current UI design with links to the code of the widgets when you click on the areas of the image. The code is shown in a frame near to the image, so a 1920px screen might be needed. Since I'm not a web developer and I don't intend to dedicate too much time to that, I'll update the guide only with major releases. If anybody wants to make it pritier and knows how to do it, please contact me to see if we can collaborate.
 
-[Check the Interactive UI guide of GitQlient.](https://francescmm.github.io/gitqlient/)
+[Check the Interactive UI guide of GitQlient.](https://francescmaestre.github.io/gitqlient/)
 
 ## How to install GitQlient
 
@@ -48,7 +48,7 @@ The web shows the current UI design with links to the code of the widgets when y
 
 #### AppImage
 
-GitQlient is offered in the form of AppImage. Although a big binary, it includes all the libraries needed to run. It is a portable multi-OS version so just download the version you want from the [releases page](https://github.com/francescmm/GitQlient/releases) and execute it (make sure it has execution rights).
+GitQlient is offered in the form of AppImage. Although a big binary, it includes all the libraries needed to run. It is a portable multi-OS version so just download the version you want from the [releases page](https://github.com/francescmaestre/GitQlient/releases) and execute it (make sure it has execution rights).
 
 #### RPM package for Fedora
 
@@ -60,17 +60,17 @@ sudo dnf install gitqlient
 
 #### DEB package for Ubuntu
 
-For now there is no GitQlient in the official repos of Ubuntu or Debian ([Ubuntu bug](https://bugs.launchpad.net/ubuntu/+bug/1982772)). However, to install it via .deb package, go to the [releases page](https://github.com/francescmm/GitQlient/releases) and download the package from the version you want. Once you download it, you can install it using apt-get command as root.
+For now there is no GitQlient in the official repos of Ubuntu or Debian ([Ubuntu bug](https://bugs.launchpad.net/ubuntu/+bug/1982772)). However, to install it via .deb package, go to the [releases page](https://github.com/francescmaestre/GitQlient/releases) and download the package from the version you want. Once you download it, you can install it using apt-get command as root.
 
 ### Windows
 
-For Windows 10 there is a package provided on every release. It installs all the dependencies and creates an shortcut in the Desktop. From the [releases page](https://github.com/francescmm/GitQlient/releases), download the GitQlientInstaller-<version>.exe binary from the release you want to use.
+For Windows 10 there is a package provided on every release. It installs all the dependencies and creates an shortcut in the Desktop. From the [releases page](https://github.com/francescmaestre/GitQlient/releases), download the GitQlientInstaller-<version>.exe binary from the release you want to use.
 
 ### MacOS
 
 For MacOS there is also a DMG package you can install as usual. Take into account that because of lack of resources this version is not tested.
     
-If the app appears damaged and can't be opened, run the following (see [#234](https://github.com/francescmm/GitQlient/issues/234)):
+If the app appears damaged and can't be opened, run the following (see [#234](https://github.com/francescmaestre/GitQlient/issues/234)):
 
 ```
 sudo xattr -rd com.apple.quarantine /Applications/gitqlient.app
@@ -94,7 +94,7 @@ For more information on [Qt translation system](https://doc.qt.io/qt-5/linguist-
 
 ### Building GitQlient
 
-In the [User Manual](https://francescmm.github.io/GitQlient/#appendix-b-build) you can find a whole section about building GitQlient and what dependencies you need.
+In the [User Manual](https://francescmaestre.github.io/GitQlient/#appendix-b-build) you can find a whole section about building GitQlient and what dependencies you need.
   
 ## Licenses
 
