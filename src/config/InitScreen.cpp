@@ -101,12 +101,12 @@ InitScreen::InitScreen(QWidget *parent)
 
    const auto goToRepo = new ButtonLink(tr("Source code"));
    connect(goToRepo, &ButtonLink::clicked, this,
-           []() { QDesktopServices::openUrl(QUrl("https://www.github.com/francescmm/GitQlient")); });
+           []() { QDesktopServices::openUrl(QUrl("https://www.github.com/francescmaestre/GitQlient")); });
    goToRepo->setToolTip(tr("Get the source code in GitHub"));
 
    const auto goToBlog = new ButtonLink(tr("Report an issue"));
    connect(goToBlog, &ButtonLink::clicked, this,
-           []() { QDesktopServices::openUrl(QUrl("https://github.com/francescmm/GitQlient/issues/new/choose")); });
+           []() { QDesktopServices::openUrl(QUrl("https://github.com/francescmaestre/GitQlient/issues/new/choose")); });
    goToBlog->setToolTip(tr("Report an issue in GitHub"));
 
    const auto promoLayout = new QHBoxLayout();
@@ -234,12 +234,12 @@ void InitScreen::showAbout()
             "With GitQlient you will be able to add commits, branches and manage all the options Git provides. <br><br>"
             "Once a fork of QGit, GitQlient has followed is own path. "
             "You can download the code from <a style='color: #D89000' "
-            "href='https://github.com/francescmm/GitQlient'>GitHub</a>. If you find any "
+            "href='https://github.com/francescmaestre/GitQlient'>GitHub</a>. If you find any "
             "bug or problem, please report it in <a style='color: #D89000' "
-            "href='https://github.com/francescmm/GitQlient/issues'>the issues "
+            "href='https://github.com/francescmaestre/GitQlient/issues'>the issues "
             "page</a> so I can fix it as soon as possible.<br><br>"
             "If you want to integrate GitQlient into QtCreator, I also provide a plugin that you can download from "
-            "<a style='color: #D89000' href='https://github.com/francescmm/GitQlient/releases'>here</a>. Just make "
+            "<a style='color: #D89000' href='https://github.com/francescmaestre/GitQlient/releases'>here</a>. Just make "
             "sure you pick the right version and follow the instructions in the main page of the repo.<br><br>"
             "GitQlient can be compiled from Qt 5.15 on.<br><br>"
             "Copyright &copy; 2019 - 2023 GitQlient (Francesc Martínez)");

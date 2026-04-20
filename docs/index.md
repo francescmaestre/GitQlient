@@ -446,7 +446,7 @@ In case you want to refresh the diff view, you can click the update button (blue
 Finally, when all the conflicts are solved, you can press the **Merge &amp; Commit" green button. That will commit the changes. By the other hand, if you want to abort the merge you can bress "Abort merge" and it will undo any changes you have done.
 
 # <a name="appendix-a-releases"></a>Appendix A: Releases
-GitQlient is always under development, but you can find the releases in the [Releases page](https://github.com/francescmm/GitQlient/releases).
+GitQlient is always under development, but you can find the releases in the [Releases page](https://github.com/francescmaestre/GitQlient/releases).
 
 It is planned to release for Linux, MacOs and Windows. However, take into account that the development environment is based on Linux and it will be the first platform released.
 
@@ -462,7 +462,7 @@ If you just want to play with it a bit with GitQlient or just build it for your 
 
 1. Clone the repository:
 
-    ```git clone https://github.com/francescmm/GitQlient.git ```
+    ```git clone https://github.com/francescmaestre/GitQlient.git ```
 
 2. Or use QtCreator or run *qmake* in the main repository folder (where GitQlient.pro is located):
 
@@ -489,7 +489,7 @@ It doesn't matter what yo know or not, there is always a way to help or contribu
 4. [Code guidelines](#code-guidelines)
 
 ## <a name="reporting-errors">Reporting errors
-My intention is to use the features that GitHub provides. So the [Issues page](https://github.com/francescmm/GitQlient/issues) and the [Projects page](https://github.com/francescmm/GitQlient/projects) are two options to start with. I you prefer to report bugs or requests features, you can use the Issues tab and add a new issue with a label. [Every label](https://github.com/francescmm/GitQlient/labels) has a description but if you're not sure, don't worry, you can leave it empty.
+My intention is to use the features that GitHub provides. So the [Issues page](https://github.com/francescmaestre/GitQlient/issues) and the [Projects page](https://github.com/francescmaestre/GitQlient/projects) are two options to start with. I you prefer to report bugs or requests features, you can use the Issues tab and add a new issue with a label. [Every label](https://github.com/francescmaestre/GitQlient/labels) has a description but if you're not sure, don't worry, you can leave it empty.
 
 Labels you can use when opening an issue:
 
@@ -515,11 +515,11 @@ If you want to report a bug, please make sure to verify that it exists in the la
 ## <a name="code-contributions">Implementing features or fixing bugs
 If you want to implement a new feature or solve bugs in the Issues page, you can pick it up there and start coding!
 
-If you're familiar with Qt and/or C++, you can go directly to the [features](https://github.com/francescmm/GitQlient/labels/Feature) or the [bugs](https://github.com/francescmm/GitQlient/labels/Bug). Otherwise, the [rookie tasks](https://github.com/francescmm/GitQlient/labels/Rookie%20task) are a nice way to start.
+If you're familiar with Qt and/or C++, you can go directly to the [features](https://github.com/francescmaestre/GitQlient/labels/Feature) or the [bugs](https://github.com/francescmaestre/GitQlient/labels/Bug). Otherwise, the [rookie tasks](https://github.com/francescmaestre/GitQlient/labels/Rookie%20task) are a nice way to start.
 
 First of all, you must [fork GitQlient](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) and clone into your computer. In addition, you must have configured the original GitQlient repository to upstream:
 
-```git remote add upstream https://github.com/francescmm/GitQlient.git```
+```git remote add upstream https://github.com/francescmaestre/GitQlient.git```
 
 When you start with an issue, make sure you create a branch from master:
 
@@ -537,7 +537,7 @@ Ideally, your branch name should have the following schema:
 
 Following these formats makes it a lot easier to know what you want to achieve and who is the responsible and aid us in getting contributions integrated as quickly as possible. Remember to follow the Code styles and the Code guidelines.
 
-Once you are done with your changes and you have pushed them to your branch, you can create a [Pull Request](https://github.com/francescmm/GitQlient/pulls). Remember to add a good title and description. And don't forget to add the label!
+Once you are done with your changes and you have pushed them to your branch, you can create a [Pull Request](https://github.com/francescmaestre/GitQlient/pulls). Remember to add a good title and description. And don't forget to add the label!
 
 ## <a name="code-style">Code style
 
@@ -568,4 +568,4 @@ The app icon is custom made, but the other in-app icons are made by [Dave Gandy]
 
 *You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA*
 
-This is an extract of the license. To read the full text, please check it [here](https://github.com/francescmm/GitQlient/blob/master/LICENSE).
+This is an extract of the license. To read the full text, please check it [here](https://github.com/francescmaestre/GitQlient/blob/master/LICENSE).

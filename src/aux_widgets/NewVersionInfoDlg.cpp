@@ -83,7 +83,7 @@ NewVersionInfoDlg::NewVersionInfoDlg(QWidget *parent)
           "prone to verify what binary is being used, the icon will notify that a new version have been "
           "released but it the download will have to happen manually.<br><br>"
           "You can of course download the latest version <a style='color: #D89000' "
-          "href='https://github.com/francescmm/GitQlient/releases'>from the official GitHub repo</a>."));
+          "href='https://github.com/francescmaestre/GitQlient/releases'>from the official GitHub repo</a>."));
 
    connect(ui->pbPrevious, &QPushButton::clicked, this, &NewVersionInfoDlg::goPreviousPage);
    connect(ui->pbNext, &QPushButton::clicked, this, &NewVersionInfoDlg::goNextPage);
