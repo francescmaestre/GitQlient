@@ -55,7 +55,7 @@ void GitQlientUpdater::showInfoMessage()
 
    if (msgBox.exec() == QMessageBox::Ok)
    {
-      QString url = QString::fromUtf8("https://github.com/francescmm/GitQlient/releases/tag/v%1").arg(mLatestGitQlient);
+      QString url = QString::fromUtf8("https://github.com/francescmaestre/GitQlient/releases/tag/v%1").arg(mLatestGitQlient);
       QDesktopServices::openUrl(QUrl(url));
    }
 }
