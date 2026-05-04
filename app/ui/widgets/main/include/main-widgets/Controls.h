@@ -1,13 +1,35 @@
 #pragma once
 
+/****************************************************************************************
+ ** GitQlient is an application to manage and operate one or several Git repositories. With
+ ** GitQlient you will be able to add commits, branches and manage all the options Git provides.
+ ** Copyright (C) 2021  Francesc Maestre
+ **
+ ** LinkedIn: https://www.linkedin.com/in/francescmaestre/
+ **
+ ** This program is free software; you can redistribute it and/or
+ ** modify it under the terms of the GNU Lesser General Public
+ ** License as published by the Free Software Foundation; either
+ ** version 2 of the License, or (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ ** Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public
+ ** License along with this library; if not, write to the Free Software
+ ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***************************************************************************************/
+
 #include <QFrame>
 #include <QPointer>
 
 class QToolButton;
 class QPushButton;
 class GitBase;
-class GitCache;
-class GitCache;
+class SacredTimeline;
+class SacredTimeline;
 class GitQlientUpdater;
 class QButtonGroup;
 class QHBoxLayout;
@@ -33,7 +55,7 @@ signals:
 
 public:
     explicit Controls(
-        const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent = nullptr);
+        const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QWidget* parent = nullptr);
     ~Controls() = default;
 
     void setCurrentSha(const QString& sha) { mCurrentSha = sha; }
@@ -45,7 +67,7 @@ public:
 
 private:
     QString mCurrentSha;
-    QSharedPointer<GitCache> mCache;
+    QSharedPointer<SacredTimeline> mCache;
     QSharedPointer<GitBase> mGit;
     QToolButton* mStashPop = nullptr;
     QToolButton* mStashPush = nullptr;

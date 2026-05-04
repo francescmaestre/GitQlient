@@ -2,19 +2,42 @@
 
 #include <system/GitQlientStyles.h>
 
-#include <QHBoxLayout>
+#include <QCoreApplication>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QProgressBar>
+#include <QVBoxLayout>
 
 WaitingDlg::WaitingDlg(const QString& labelText)
     : QDialog()
 {
-    const auto layout = new QHBoxLayout(this);
-    layout->addWidget(new QLabel(labelText));
+    mLabel = new QLabel(labelText);
+    mProgressBar = new QProgressBar();
+    mProgressBar->setRange(0, 0);
+    mProgressBar->setTextVisible(false);
+
+    const auto layout = new QVBoxLayout(this);
+    layout->addWidget(mLabel);
+    layout->addWidget(mProgressBar);
 
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowModality(Qt::ApplicationModal);
     setWindowFlags(Qt::FramelessWindowHint);
+    setMinimumWidth(300);
+}
+
+void WaitingDlg::updateMessage(const QString& message)
+{
+    mLabel->setText(message);
+    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+}
+
+void WaitingDlg::updateProgress(int done, int total)
+{
+    if (mProgressBar->maximum() != total)
+        mProgressBar->setRange(0, total);
+    mProgressBar->setValue(done);
+    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 void WaitingDlg::keyPressEvent(QKeyEvent* e)

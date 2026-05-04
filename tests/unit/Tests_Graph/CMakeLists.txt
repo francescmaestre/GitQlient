@@ -1,0 +1,5 @@
+add_gtest_target(Tests_Weaver        TestsGraphCache.cpp     unit)
+add_gtest_target(Tests_Strand        TestsStrand.cpp         unit)
+add_gtest_target(Tests_Timeline      TestsTimeline.cpp       unit)
+add_gtest_target(Tests_NexusRegister TestsNexusRegister.cpp  unit)
+add_gtest_target(Tests_TemporalLoom  TestsTemporalLoom.cpp   unit)

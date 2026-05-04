@@ -2,7 +2,7 @@
 
 #include <GitHistory.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/DiffHelper.h>
 #include <system/Colors.h>
 #include <system/SettingsKeys.h>
@@ -66,7 +66,8 @@ void FullDiffWidget::DiffHighlighter::highlightBlock(const QString& text)
         setFormat(0, text.length(), myFormat);
 }
 
-FullDiffWidget::FullDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointer<GitCache> cache, QWidget* parent)
+FullDiffWidget::FullDiffWidget(
+    const QSharedPointer<GitBase>& git, QSharedPointer<SacredTimeline> cache, QWidget* parent)
     : IDiffWidget(git, cache, parent)
     , mGoPrevious(new QPushButton())
     , mGoNext(new QPushButton())

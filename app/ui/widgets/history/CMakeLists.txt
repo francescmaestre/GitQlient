@@ -9,6 +9,5 @@ create_gitqlient_library(history-widgets
         core
         dialogs
         diff-widgets
-        main-widgets
         ref-widgets
 )

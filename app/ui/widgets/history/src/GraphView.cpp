@@ -8,7 +8,7 @@
 #include <GitBase.h>
 #include <GitConfig.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 
 #include <QDateTime>
 #include <QHeaderView>
@@ -18,8 +18,8 @@
 using namespace QLogger;
 
 GraphView::GraphView(
-    const QSharedPointer<GitCache>& cache,
-    const QSharedPointer<Graph::Cache>& graphCache,
+    const QSharedPointer<SacredTimeline>& cache,
+    const QSharedPointer<Graph::TemporalLoom>& graphCache,
     const QSharedPointer<GitBase>& git,
     QWidget* parent)
     : QTreeView(parent)
@@ -38,7 +38,7 @@ GraphView::GraphView(
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header(), &QHeaderView::customContextMenuRequested, this, &GraphView::onHeaderContextMenu);
 
-    connect(mCache.get(), &GitCache::signalCacheUpdated, this, &GraphView::refreshView);
+    connect(mCache.get(), &SacredTimeline::cacheUpdated, this, &GraphView::refreshView);
     connect(this, &GraphView::clicked, this, &GraphView::handleItemClick);
     connect(this, &GraphView::doubleClicked, this, [this](const QModelIndex& index) {
         if (mCommitHistoryModel)

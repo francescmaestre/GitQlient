@@ -3,7 +3,7 @@
 #include <GitBase.h>
 #include <GitStashes.h>
 #include <GitSubmodules.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 
 #include <QEvent>
 #include <QLabel>
@@ -13,7 +13,7 @@
 #include <QVBoxLayout>
 
 BranchesWidgetMinimal::BranchesWidgetMinimal(
-    const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase> git, QWidget* parent)
+    const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase> git, QWidget* parent)
     : QFrame(parent)
     , mGit(git)
     , mCache(cache)

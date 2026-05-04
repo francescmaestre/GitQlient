@@ -5,7 +5,7 @@
 #include "GitQlientBranchItemRole.h"
 
 #include <GitBase.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/ClickableFrame.h>
 
 #include <QHeaderView>
@@ -36,7 +36,7 @@ RefTreeWidget::RefTreeWidget(
     const QString& title,
     const QString& settingsKey,
     RefType type,
-    const QSharedPointer<GitCache>& cache,
+    const QSharedPointer<SacredTimeline>& cache,
     const QSharedPointer<GitBase>& git,
     QWidget* parent)
     : QWidget(parent)

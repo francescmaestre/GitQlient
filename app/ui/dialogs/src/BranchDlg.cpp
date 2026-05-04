@@ -6,7 +6,7 @@
 #include <GitConfig.h>
 #include <GitRemote.h>
 #include <GitStashes.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <system/GitQlientStyles.h>
 #include <system/SettingsKeys.h>
 
@@ -135,7 +135,7 @@ void BranchDlg::accept()
                 if (!sha.isEmpty())
                 {
                     mConfig.mCache->insertReference(sha, type, ui->leNewName->text());
-                    emit mConfig.mCache->signalCacheUpdated();
+                    emit mConfig.mCache->cacheUpdated();
                 }
             }
         }
@@ -149,7 +149,7 @@ void BranchDlg::accept()
                     mConfig.mGit->getLastCommit().output.trimmed(),
                     References::Type::LocalBranch,
                     ui->leNewName->text());
-                emit mConfig.mCache->signalCacheUpdated();
+                emit mConfig.mCache->cacheUpdated();
             }
         }
         else if (mConfig.mDialogMode == BranchDlgMode::RENAME)
@@ -163,7 +163,7 @@ void BranchDlg::accept()
 
                 mConfig.mCache->deleteReference(sha, type, ui->leOldName->text());
                 mConfig.mCache->insertReference(sha, type, ui->leNewName->text());
-                emit mConfig.mCache->signalCacheUpdated();
+                emit mConfig.mCache->cacheUpdated();
             }
         }
         else if (mConfig.mDialogMode == BranchDlgMode::CREATE_FROM_COMMIT)
@@ -174,7 +174,7 @@ void BranchDlg::accept()
             {
                 mConfig.mCache->insertReference(
                     ui->leOldName->text(), References::Type::LocalBranch, ui->leNewName->text());
-                emit mConfig.mCache->signalCacheUpdated();
+                emit mConfig.mCache->cacheUpdated();
             }
         }
         else if (mConfig.mDialogMode == BranchDlgMode::CREATE_CHECKOUT_FROM_COMMIT)
@@ -185,7 +185,7 @@ void BranchDlg::accept()
             {
                 mConfig.mCache->insertReference(
                     ui->leOldName->text(), References::Type::LocalBranch, ui->leNewName->text());
-                emit mConfig.mCache->signalCacheUpdated();
+                emit mConfig.mCache->cacheUpdated();
             }
         }
         else if (mConfig.mDialogMode == BranchDlgMode::STASH_BRANCH)
@@ -211,7 +211,7 @@ void BranchDlg::accept()
                         sha,
                         References::Type::RemoteBranche,
                         QString("%1/%2").arg(remote.output, ui->leNewName->text()));
-                    emit mConfig.mCache->signalCacheUpdated();
+                    emit mConfig.mCache->cacheUpdated();
                 }
             }
         }
@@ -225,8 +225,9 @@ void BranchDlg::accept()
             QMessageBox msgBox(
                 QMessageBox::Critical,
                 tr("Error on branch action!"),
-                QString(tr("There were problems during the branch operation. Please, see the detailed description "
-                           "for more information.")),
+                QString(tr(
+                    "There were problems during the branch operation. Please, see the detailed description "
+                    "for more information.")),
                 QMessageBox::Ok,
                 this);
             msgBox.setDetailedText(ret.output);

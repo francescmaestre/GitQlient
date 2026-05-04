@@ -13,7 +13,7 @@
 #include <GitSubmodules.h>
 #include <GitSubtree.h>
 #include <GitTags.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <system/SettingsKeys.h>
 
 #include <QApplication>
@@ -30,7 +30,7 @@ using namespace QLogger;
 using namespace System;
 
 BranchesWidget::BranchesWidget(
-    const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
+    const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
     , mCache(cache)
     , mGit(git)
@@ -96,7 +96,7 @@ void BranchesWidget::setupUI()
 
 void BranchesWidget::setupConnections()
 {
-    connect(mCache.get(), &GitCache::signalCacheUpdated, this, &BranchesWidget::showBranches);
+    connect(mCache.get(), &SacredTimeline::cacheUpdated, this, &BranchesWidget::showBranches);
 
     connect(mMinimize, &QPushButton::clicked, this, &BranchesWidget::minimalView);
     connect(mMinimal, &BranchesWidgetMinimal::showFullBranchesView, this, &BranchesWidget::fullView);

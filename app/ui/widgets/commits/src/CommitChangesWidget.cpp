@@ -11,10 +11,9 @@
 #include <GitWip.h>
 #include <RevisionFiles.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
-#include <cache/GraphCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/ClickableFrame.h>
-#include <graph/WipHelper.h>
+#include <graph/TemporalLoom.h>
 #include <system/Colors.h>
 #include <system/GitRepoLoader.h>
 #include <system/SettingsKeys.h>
@@ -45,8 +44,8 @@ enum GitQlientRole
 };
 
 CommitChangesWidget::CommitChangesWidget(
-    const QSharedPointer<GitCache>& cache,
-    const QSharedPointer<Graph::Cache>& graphCache,
+    const QSharedPointer<SacredTimeline>& cache,
+    const QSharedPointer<Graph::TemporalLoom>& graphCache,
     const QSharedPointer<GitBase>& git,
     QWidget* parent)
     : QWidget(parent)
@@ -159,7 +158,7 @@ void CommitChangesWidget::configureWipMode(const QString& sha)
     mCurrentSha = ZERO_SHA;
     const auto commit = mCache->commitInfo(sha);
 
-    WipHelper::update(mGit, mCache);
+    mCache->refreshWip(mGit);
 
     const auto files = mCache->revisionFile(ZERO_SHA, commit.firstParent());
 
@@ -183,7 +182,7 @@ void CommitChangesWidget::configureAmendMode(const QString& sha)
     if (commit.parentsCount() <= 0)
         return;
 
-    WipHelper::update(mGit, mCache);
+    mCache->refreshWip(mGit);
 
     const auto files = mCache->revisionFile(ZERO_SHA, commitSha);
     auto amendFiles = mCache->revisionFile(commitSha, commit.firstParent());
@@ -279,7 +278,7 @@ void CommitChangesWidget::commitWipChanges()
         {
             const auto revInfo = mCache->commitInfo(ZERO_SHA);
 
-            WipHelper::update(mGit, mCache);
+            mCache->refreshWip(mGit);
 
             if (const auto files = mCache->revisionFile(ZERO_SHA, revInfo.firstParent()); files)
             {
@@ -311,7 +310,8 @@ void CommitChangesWidget::commitWipChanges()
                     newCommit.longLog = ui->teDescription->toPlainText();
 
                     mCache->insertCommit(newCommit);
-                    mGraphCache->createMultiverse(mCache->getCommits());
+                    const auto top = mCache->getCommitBatch(0, 2);
+                    mGraphCache->insertTopCommit(top[0], top[1]);
                     mCache->deleteReference(
                         lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
                     mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
@@ -330,11 +330,11 @@ void CommitChangesWidget::commitWipChanges()
                     ui->leCommitTitle->clear();
                     ui->teDescription->clear();
 
-                    WipHelper::update(mGit, mCache);
+                    mCache->refreshWip(mGit);
 
                     clearStaged();
 
-                    emit mCache->signalCacheUpdated();
+                    emit mCache->cacheUpdated();
                     emit changesCommitted();
                 }
                 else
@@ -372,7 +372,7 @@ void CommitChangesWidget::commitAmendChanges()
         }
         else if (checkMsg(msg))
         {
-            WipHelper::update(mGit, mCache);
+            mCache->refreshWip(mGit);
 
             const auto files = mCache->revisionFile(ZERO_SHA, mCurrentSha);
 
@@ -628,7 +628,7 @@ void CommitChangesWidget::addAllFilesToCommitList()
     const auto git = QScopedPointer<GitLocal>(new GitLocal(mGit));
 
     if (const auto ret = git->markFilesAsResolved(files); ret.success)
-        WipHelper::update(mGit, mCache);
+        mCache->refreshWip(mGit);
 
     ui->applyActionBtn->setEnabled(mStagedFilesList->count() > 0);
 }
@@ -690,7 +690,7 @@ QString CommitChangesWidget::addFileToCommitList(QListWidgetItem* item, bool upd
         const auto git = QScopedPointer<GitLocal>(new GitLocal(mGit));
 
         if (const auto ret = git->stageFile(fileName); ret.success)
-            WipHelper::update(mGit, mCache);
+            mCache->refreshWip(mGit);
     }
 
     ui->unstagedFrame->setCount(mUnstagedFilesList->count());

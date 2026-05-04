@@ -8,10 +8,9 @@
 #include <QPinnableTabWidget.h>
 #include <RevisionFiles.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FileEditor.h>
-#include <graph/WipHelper.h>
 #include <system/GitQlientStyles.h>
 
 #include <QFile>
@@ -26,7 +25,7 @@
 #include <QVBoxLayout>
 
 MergeWidget::MergeWidget(
-    const QSharedPointer<GitCache>& gitQlientCache, const QSharedPointer<GitBase>& git, QWidget* parent)
+    const QSharedPointer<SacredTimeline>& gitQlientCache, const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
     , mGitQlientCache(gitQlientCache)
     , mGit(git)
@@ -414,7 +413,7 @@ void MergeWidget::cherryPickCommit()
             {
                 const auto wipCommit = mGitQlientCache->commitInfo(ZERO_SHA);
 
-                WipHelper::update(mGit, mGitQlientCache);
+                mGitQlientCache->refreshWip(mGit);
 
                 const auto files = mGitQlientCache->revisionFile(ZERO_SHA, wipCommit.firstParent());
 

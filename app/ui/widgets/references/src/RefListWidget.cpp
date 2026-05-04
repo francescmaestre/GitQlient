@@ -11,7 +11,7 @@
 RefListWidget::RefListWidget(
     const QString& title,
     const QString& settingsKey,
-    const QSharedPointer<GitCache>& cache,
+    const QSharedPointer<SacredTimeline>& cache,
     const QSharedPointer<GitBase>& git,
     QWidget* parent)
     : QWidget(parent)

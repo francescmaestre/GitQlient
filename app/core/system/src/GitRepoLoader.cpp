@@ -8,37 +8,47 @@
 #include <GitTags.h>
 #include <GitWip.h>
 #include <QLogger>
-#include <cache/GitCache.h>
-#include <cache/GraphCache.h>
+#include <cache/SacredTimeline.h>
+#include <graph/TemporalLoom.h>
 #include <system/SettingsKeys.h>
 
 #include <QDir>
+#include <QFutureWatcher>
+#include <QLocale>
 #include <QSettings>
+#include <QThread>
+#include <QtConcurrent>
+
+#include <algorithm>
+#include <atomic>
+#include <cstring>
 
 using namespace QLogger;
 using namespace System;
 
-static const char* GIT_LOG_FORMAT("%m%HX%P%n%cn<%ce>%n%an<%ae>%n%at%n%s%n%b ");
+static const char* GIT_LOG_FORMAT("%m%HX%P%n%cn<%ce>%n%an<%ae>%n%at%n%s ");
 
 GitRepoLoader::GitRepoLoader(
     QSharedPointer<GitBase> gitBase,
-    QSharedPointer<GitCache> cache,
-    const QSharedPointer<Graph::Cache>& graphCache,
+    QSharedPointer<SacredTimeline> cache,
+    const QSharedPointer<Graph::TemporalLoom>& loom,
     QObject* parent)
     : QObject(parent)
     , mGitBase(gitBase)
-    , mRevCache(std::move(cache))
-    , mGraphCache(graphCache)
+    , mCommitCache(std::move(cache))
+    , mLoom(loom)
     , mGitTags(new GitTags(mGitBase))
 {
-    connect(mGitTags.get(), &GitTags::remoteTagsReceived, mRevCache.get(), &GitCache::updateTags);
+    connect(mGitTags.get(), &GitTags::remoteTagsReceived, mCommitCache.get(), &SacredTimeline::updateTags);
 }
 
-void GitRepoLoader::cancelAll() { emit cancelAllProcesses(QPrivateSignal()); }
+void GitRepoLoader::cancelAll() { emit cancelPending(QPrivateSignal()); }
+
+AGitProcess* GitRepoLoader::createLogRequestor() { return new GitRequestorProcess(mGitBase->config()); }
 
 void GitRepoLoader::loadLogHistory()
 {
-    if (mLocked)
+    if (mIsLoading)
         QLog_Warning("Git", "Git is currently loading data.");
     else
     {
@@ -47,17 +57,17 @@ void GitRepoLoader::loadLogHistory()
         else
         {
             mRefreshReferences = false;
-            mLocked = true;
+            mIsLoading = true;
 
-            if (configureRepoDirectory())
+            if (resolveWorkingDirectory())
             {
                 mGitBase->updateCurrentBranch();
 
                 QLog_Info("Git", "Requesting references...");
 
-                mSteps = 1;
+                mPendingSteps = 1;
 
-                requestRevisions();
+                fetchCommitLog();
             }
             else
                 QLog_Error("Git", "The working directory is not a Git repository.");
@@ -67,7 +77,7 @@ void GitRepoLoader::loadLogHistory()
 
 void GitRepoLoader::loadReferences()
 {
-    if (mLocked)
+    if (mIsLoading)
         QLog_Warning("Git", "Git is currently loading data.");
     else
     {
@@ -76,17 +86,17 @@ void GitRepoLoader::loadReferences()
         else
         {
             mRefreshReferences = true;
-            mLocked = true;
+            mIsLoading = true;
 
-            if (configureRepoDirectory())
+            if (resolveWorkingDirectory())
             {
                 mGitBase->updateCurrentBranch();
 
                 QLog_Info("Git", "Requesting references...");
 
-                mSteps = 1;
+                mPendingSteps = 1;
 
-                requestReferences();
+                fetchReferences();
             }
             else
                 QLog_Error("Git", "The working directory is not a Git repository.");
@@ -96,7 +106,7 @@ void GitRepoLoader::loadReferences()
 
 void GitRepoLoader::loadAll()
 {
-    if (mLocked)
+    if (mIsLoading)
         QLog_Warning("Git", "Git is currently loading data.");
     else
     {
@@ -105,18 +115,18 @@ void GitRepoLoader::loadAll()
         else
         {
             mRefreshReferences = true;
-            mLocked = true;
+            mIsLoading = true;
 
-            if (configureRepoDirectory())
+            if (resolveWorkingDirectory())
             {
                 mGitBase->updateCurrentBranch();
 
-                QLog_Info("Git", "Requesting revisions and referencecs...");
+                QLog_Info("Git", "Requesting revisions and references...");
 
-                mSteps = 2;
+                mPendingSteps = 2;
 
-                requestRevisions();
-                requestReferences();
+                fetchCommitLog();
+                fetchReferences();
             }
             else
                 QLog_Error("Git", "The working directory is not a Git repository.");
@@ -124,7 +134,7 @@ void GitRepoLoader::loadAll()
     }
 }
 
-bool GitRepoLoader::configureRepoDirectory()
+bool GitRepoLoader::resolveWorkingDirectory()
 {
     QLog_Debug("Git", "Configuring repository directory.");
 
@@ -141,33 +151,41 @@ bool GitRepoLoader::configureRepoDirectory()
     return false;
 }
 
-void GitRepoLoader::requestReferences()
+void GitRepoLoader::fetchReferences()
 {
     QLog_Debug("Git", "Loading references...");
 
-    mRefRequestor = new GitRequestorProcess(mGitBase->getWorkingDir());
-    connect(mRefRequestor, &GitRequestorProcess::procDataReady, this, &GitRepoLoader::processReferences);
-    connect(this, &GitRepoLoader::cancelAllProcesses, mRefRequestor, &AGitProcess::onCancel);
+    mRefsRequestor = new GitRequestorProcess(mGitBase->config());
+    connect(mRefsRequestor, &GitRequestorProcess::procDataReady, this, &GitRepoLoader::onReferencesReceived);
+    connect(this, &GitRepoLoader::cancelPending, mRefsRequestor, &AGitProcess::onCancel);
 
-    mRefRequestor->run("git show-ref -d");
+    mRefsRequestor->run("git show-ref -d");
 
     mGitTags->getRemoteTags();
 }
 
-void GitRepoLoader::processReferences(QByteArray ba)
+void GitRepoLoader::onReferencesReceived(QByteArray rawData)
 {
     if (mRefreshReferences)
-        mRevCache->clearReferences();
+        mCommitCache->clearReferences();
 
     QString prevRefSha;
-    const auto referencesList = ba.split('\n');
 
-    for (const auto& reference : referencesList)
+    // Stream line-by-line with indexOf('\n') — avoids materialising all 8,434 reference
+    // lines as separate QByteArray objects, same as the parseUnsignedLog optimisation.
+    int start = 0;
+    int end;
+
+    while ((end = rawData.indexOf('\n', start)) != -1)
     {
-        if (!reference.isEmpty())
+        const auto lineLen = end - start;
+
+        if (lineLen > 0)
         {
-            auto revSha = QString::fromUtf8(reference.left(40));
-            const auto refName = reference.mid(41);
+            // SHA is always the first 40 bytes — pure ASCII, fromLatin1 avoids UTF-8 overhead.
+            auto revSha = QString::fromLatin1(rawData.constData() + start, 40);
+            // refName starts at byte 41 (after the space separator).
+            const auto refName = rawData.mid(start + 41, lineLen - 41);
 
             if (!refName.startsWith("refs/tags/") || (refName.startsWith("refs/tags/") && refName.endsWith("^{}")))
             {
@@ -177,7 +195,9 @@ void GitRepoLoader::processReferences(QByteArray ba)
                 if (refName.startsWith("refs/tags/"))
                 {
                     type = References::Type::LocalTag;
-                    name = QString::fromUtf8(refName.mid(10, reference.length()));
+                    // mid(10) without a length — the old code passed reference.length() which
+                    // over-counted by 41 (the sha + space prefix that is no longer in refName).
+                    name = QString::fromUtf8(refName.mid(10));
                     name.remove("^{}");
                 }
                 else if (refName.startsWith("refs/heads/"))
@@ -191,20 +211,24 @@ void GitRepoLoader::processReferences(QByteArray ba)
                     name = QString::fromUtf8(refName.mid(13));
                 }
                 else
+                {
+                    start = end + 1;
                     continue;
+                }
 
-                mRevCache->insertReference(revSha, type, name);
+                mCommitCache->insertReference(revSha, type, name);
             }
             prevRefSha = revSha;
         }
+        start = end + 1;
     }
 
-    mRevCache->reloadCurrentBranchInfo(mGitBase->getCurrentBranch(), mGitBase->getLastCommit().output.trimmed());
+    mCommitCache->reloadCurrentBranchInfo(mGitBase->getCurrentBranch(), mGitBase->getLastCommit().output.trimmed());
 
-    notifyLoadingFinished();
+    onLoadStepComplete();
 }
 
-void GitRepoLoader::requestRevisions()
+void GitRepoLoader::fetchCommitLog()
 {
     QLog_Debug("Git", "Loading revisions...");
 
@@ -215,25 +239,24 @@ void GitRepoLoader::requestRevisions()
         ? QString("--all")
         : mGitBase->getCurrentBranch();
 
-    QString order;
-
     const auto baseCmd
         = QString("git log --author-date-order --no-color --log-size --parents --boundary -z --pretty=format:%1 %2")
               .arg(QString::fromUtf8(GIT_LOG_FORMAT), commitsToRetrieve);
 
-    if (!mRevCache->isInitialized())
-        emit signalLoadingStarted();
+    if (!mCommitCache->isInitialized())
+        emit loadingStarted();
 
-    mRevRequestor = new GitRequestorProcess(mGitBase->getWorkingDir());
-    connect(mRevRequestor, &GitRequestorProcess::procDataReady, this, &GitRepoLoader::processRevisions);
-    connect(this, &GitRepoLoader::cancelAllProcesses, mRevRequestor, &AGitProcess::onCancel);
+    mLogRequestor = createLogRequestor();
+    connect(mLogRequestor, &AGitProcess::procDataReady, this, &GitRepoLoader::onCommitLogReceived);
+    connect(this, &GitRepoLoader::cancelPending, mLogRequestor, &AGitProcess::onCancel);
 
-    mRevRequestor->run(baseCmd);
+    qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::fetchCommitLog";
+    mLogRequestor->run(baseCmd);
 }
 
-void GitRepoLoader::processRevisions(QByteArray ba)
+GitRepoLoader::WipData GitRepoLoader::fetchWipData() const
 {
-    QLog_Info("Git", "Revisions received!");
+    WipData data;
 
     QScopedPointer<GitConfig> gitConfig(new GitConfig(mGitBase));
     const auto serverUrl = gitConfig->getServerHost();
@@ -241,68 +264,298 @@ void GitRepoLoader::processRevisions(QByteArray ba)
     if (serverUrl.contains("github"))
         QLog_Info("Git", "Requesting PR status!");
 
-    QLog_Debug("Git", "Processing revisions...");
-
-    const auto initialized = mRevCache->isInitialized();
-
-    if (!initialized)
-        emit signalLoadingStarted();
-
     const auto ret = gitConfig->getGitValue("log.showSignature");
-    const auto showSignature = ret.success ? ret.output.contains("true") : false;
+    data.showSignature = ret.success && ret.output.contains("true");
 
-    if (!ba.isEmpty())
+    QScopedPointer<GitWip> git(new GitWip(mGitBase));
+    data.untrackedFiles = git->getUntrackedFiles();
+
+    if (const auto wipOpt = git->getWipInfo())
     {
-        auto commits = showSignature ? processSignedLog(ba) : processUnsignedLog(ba);
-        QScopedPointer<GitWip> git(new GitWip(mGitBase));
-        const auto files = git->getUntrackedFiles();
-
-        mRevCache->setUntrackedFilesList(std::move(files));
-        const auto info = git->getWipInfo().value();
-
-        auto processedCommits = mRevCache->processCommits(info.first, info.second, std::move(commits));
-
-        mGraphCache->init();
-        mGraphCache->createMultiverse(processedCommits);
+        data.wipParentSha = wipOpt->first;
+        data.wipFiles = wipOpt->second;
     }
 
-    notifyLoadingFinished();
+    return data;
 }
 
-QVector<Commit> GitRepoLoader::processUnsignedLog(QByteArray& log) const
+void GitRepoLoader::onCommitLogReceived(QByteArray rawLog)
 {
-    auto lines = log.split('\000');
-    QVector<Commit> commits;
-    commits.reserve(lines.count());
+    qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::onCommitLogReceived";
 
-    auto pos = 0;
-    while (!lines.isEmpty())
-    {
-        std::string lineStr = lines.takeFirst().toStdString();
-        if (auto commit = Commit{lineStr.c_str()}; commit.isValid())
+    QLog_Info("Git", "Revisions received!");
+
+    const auto initialized = mCommitCache->isInitialized();
+
+    if (!initialized)
+        emit loadingStarted();
+
+    // Parse log and build the commit index on a worker thread for large repos so the
+    // UI stays responsive. Small repos (< 8 MB) run synchronously to avoid the
+    // thread-pool and cross-thread signal overhead that dominates at that scale.
+    auto parseAndIndex = [this](QByteArray rawLog) mutable {
+        QLog_Debug("Git", "Processing revisions...");
+
+        const auto wipData = fetchWipData();
+
+        if (!rawLog.isEmpty())
         {
-            commit.pos = ++pos;
-            commits.append(std::move(commit));
+            emit loadingMessage(tr("Parsing commit log..."));
+            emit loadingProgress(0, 100);
+            const auto onParseProgress = [this](int pct) {
+                emit loadingProgress(pct, 100);
+            };
+            auto commits = wipData.showSignature
+                ? parseSignedLog(rawLog, onParseProgress)
+                : parseUnsignedLog(rawLog, onParseProgress);
+
+            qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::parseAndIndex";
+
+            qDebug() << tr("Building commit index (%1 commits)...").arg(QLocale().toString(commits.count()));
+            emit loadingMessage(tr("Building commit index (%1 commits)...").arg(QLocale().toString(commits.count())));
+
+            mCommitCache->setUntrackedFilesList(wipData.untrackedFiles);
+            auto indexedCommits = mCommitCache->processCommits(
+                wipData.wipParentSha, wipData.wipFiles, std::move(commits));
+
+            // Reserve hash space up-front so Phase 2 avoids rehashing. Graph lanes
+            // are built entirely in Phase 2 so the UI can appear without waiting.
+            mLoom->init(static_cast<int>(indexedCommits.size()));
+        }
+    };
+
+    constexpr qsizetype kAsyncThreshold = 8 * 1024 * 1024; // 8 MB ≈ 40k commits
+
+    if (rawLog.size() < kAsyncThreshold)
+    {
+        parseAndIndex(std::move(rawLog));
+        onCommitsParsed();
+    }
+    else
+    {
+        auto* parsingWatcher = new QFutureWatcher<void>(this);
+        connect(parsingWatcher, &QFutureWatcher<void>::finished, this, [this, parsingWatcher]() {
+            parsingWatcher->deleteLater();
+            onCommitsParsed();
+        });
+        parsingWatcher->setFuture(QtConcurrent::run(std::move(parseAndIndex), std::move(rawLog)));
+    }
+}
+
+void GitRepoLoader::onCommitsParsed()
+{
+    qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::onCommitsParsed";
+    onLoadStepComplete(); // emits loadingFinished when all steps done, clears mIsLoading
+
+    // Build graph lanes in background so the HistoryView can paint immediately.
+    // addTimelineBatch checks the generation counter and exits early if a new
+    // load has started (init() bumps it), so this is safe across repo switches.
+    const auto totalCommits = mCommitCache->commitCount();
+
+    if (totalCommits > 0)
+    {
+        const auto generation = mLoom->generation();
+        // Capture shared-pointer copies, not `this`, so the graph builder keeps
+        // objects alive independently of this GitRepoLoader's lifetime.
+        const auto commitCache = mCommitCache;
+        const auto loom = mLoom;
+
+        auto graphBuildWatcher = new QFutureWatcher<void>(this);
+        connect(graphBuildWatcher, &QFutureWatcher<void>::finished, this, [graphBuildWatcher]() {
+            graphBuildWatcher->deleteLater();
+        });
+
+        graphBuildWatcher->setFuture(QtConcurrent::run([commitCache, loom, totalCommits, generation]() {
+            qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::graphBuildWatcher start";
+            constexpr int kBatchSize = 100;
+            // Trigger a repaint every kLaneUpdateInterval commits so lanes fill
+            // in progressively from the top while the user browses.
+            constexpr int kLaneUpdateInterval = 500;
+            int nextUpdate = kLaneUpdateInterval;
+
+            for (int i = 0; i < totalCommits; i += kBatchSize)
+            {
+                const auto batch = commitCache->getCommitBatch(i, kBatchSize);
+                if (batch.isEmpty())
+                    break;
+
+                if (!loom->addTimelineBatch(batch, generation))
+                {
+                    qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::graphBuildWatcher finish";
+                    return;
+                }
+
+                if (i >= nextUpdate)
+                {
+                    qDebug()
+                        << QDateTime::currentDateTime().toString()
+                        << QString("GitRepoLoader::graphBuildWatcher {%1}").arg(i);
+                    loom->notifyExtended(generation);
+                    nextUpdate += kLaneUpdateInterval;
+                }
+            }
+
+            qDebug() << QDateTime::currentDateTime().toString() << "GitRepoLoader::graphBuildWatcher finish";
+
+            loom->notifyExtended(generation);
+        }));
+    }
+}
+
+// Splits the \0-delimited log buffer into numChunks ranges, each ending right after a '\0'.
+static QVector<QPair<qsizetype, qsizetype>> computeChunkBoundaries(const QByteArray& log, int numChunks)
+{
+    QVector<QPair<qsizetype, qsizetype>> ranges;
+    const qsizetype total = log.size();
+    const qsizetype targetSize = total / numChunks;
+    qsizetype start = 0;
+
+    for (int i = 0; i < numChunks - 1 && start < total; ++i)
+    {
+        const qsizetype hint = start + targetSize;
+        if (hint >= total)
+            break;
+        const auto nullPos = log.indexOf('\000', hint);
+        if (nullPos == -1)
+            break;
+        ranges.append({start, nullPos + 1});
+        start = nullPos + 1;
+    }
+
+    if (start < total)
+        ranges.append({start, total});
+
+    return ranges;
+}
+
+QVector<Commit> GitRepoLoader::parseUnsignedLog(QByteArray& log, const std::function<void(int)>& onProgress) const
+{
+    QVector<Commit> commits;
+    commits.reserve(log.size() / 200 + 1);
+    commits.append(Commit{}); // slot 0 reserved for WIP — avoids O(n) prepend in insertWipRevision
+
+    const qsizetype totalBytes = log.size();
+    const int numThreads = QThread::idealThreadCount();
+
+    if (numThreads > 1)
+    {
+        const auto ranges = computeChunkBoundaries(log, numThreads);
+
+        std::atomic<qsizetype> processedBytes{0};
+        const auto reportEvery = std::max(qsizetype(1), totalBytes / 50);
+        const char* rawData = log.constData();
+
+        QVector<QFuture<QVector<Commit>>> futures;
+        futures.reserve(ranges.size());
+
+        for (const auto& [chunkStart, chunkEnd] : ranges)
+        {
+            futures.append(
+                QtConcurrent::run(
+                    [rawData, chunkStart, chunkEnd, totalBytes, reportEvery, &processedBytes, &onProgress]()
+                        -> QVector<Commit> {
+                        QVector<Commit> result;
+                        result.reserve((chunkEnd - chunkStart) / 200);
+
+                        const char* pos = rawData + chunkStart;
+                        const char* const end = rawData + chunkEnd;
+
+                        while (pos < end)
+                        {
+                            const char* null_ptr = static_cast<const char*>(
+                                std::memchr(pos, '\0', static_cast<size_t>(end - pos)));
+                            const char* recEnd = null_ptr ? null_ptr : end;
+                            const qsizetype recLen = recEnd - pos;
+
+                            if (auto commit = Commit(QByteArray::fromRawData(pos, recLen)); commit.isValid())
+                                result.append(std::move(commit));
+
+                            if (onProgress)
+                            {
+                                const qsizetype delta = recLen + (null_ptr ? 1 : 0);
+                                const auto prev = processedBytes.fetch_add(delta);
+                                if ((prev + delta) / reportEvery > prev / reportEvery)
+                                    onProgress(static_cast<int>((prev + delta) * 100 / totalBytes));
+                            }
+
+                            pos = null_ptr ? null_ptr + 1 : end;
+                        }
+
+                        return result;
+                    }));
+        }
+
+        // Merge results in log order and assign sequential positions (1-based; slot 0 is WIP).
+        int pos = 0;
+        for (auto& future : futures)
+        {
+            for (auto& commit : future.result())
+            {
+                commit.pos = ++pos;
+                commits.append(std::move(commit));
+            }
         }
     }
+    else
+    {
+        // Single-core fallback — sequential scan.
+        int pos = 0;
+        qsizetype start = 0;
+        qsizetype end;
+        const auto reportEvery = std::max(qsizetype(1), totalBytes / 50);
+        auto nextReport = reportEvery;
+
+        while ((end = log.indexOf('\000', start)) != -1)
+        {
+            if (auto commit = Commit(log.mid(start, end - start)); commit.isValid())
+            {
+                commit.pos = ++pos;
+                commits.append(std::move(commit));
+            }
+            start = end + 1;
+
+            if (onProgress && start >= nextReport)
+            {
+                onProgress(totalBytes > 0 ? start * 100 / totalBytes : 0);
+                nextReport += reportEvery;
+            }
+        }
+
+        // git log -z may omit the trailing '\0' on the last record.
+        if (start < totalBytes)
+        {
+            if (auto commit = Commit(log.mid(start)); commit.isValid())
+            {
+                commit.pos = ++pos;
+                commits.append(std::move(commit));
+            }
+        }
+    }
+
+    if (onProgress)
+        onProgress(100);
 
     return commits;
 }
 
-QVector<Commit> GitRepoLoader::processSignedLog(QByteArray& log) const
+QVector<Commit> GitRepoLoader::parseSignedLog(QByteArray& log, const std::function<void(int)>& onProgress) const
 {
     log.replace('\000', '\n');
 
     QVector<Commit> commits;
+    commits.append(Commit{}); // slot 0 reserved for WIP — avoids O(n) prepend in insertWipRevision
 
     QByteArray commit;
     QByteArray gpg;
     QString gpgKey;
     auto processingCommit = false;
     auto pos = 1;
-    auto start = 0;
-    int end;
+    qsizetype start = 0;
+    qsizetype end;
     bool goodSignature = false;
+    const auto totalBytes = log.size();
+    const auto reportEvery = std::max(qsizetype(1), totalBytes / 50);
+    auto nextReport = reportEvery;
 
     while ((end = log.indexOf('\n', start)) != -1)
     {
@@ -346,22 +599,31 @@ QVector<Commit> GitRepoLoader::processSignedLog(QByteArray& log) const
         }
         else if (processingCommit)
             commit.append(line + '\n');
+
+        if (onProgress && start >= nextReport)
+        {
+            onProgress(totalBytes > 0 ? start * 100 / totalBytes : 0);
+            nextReport += reportEvery;
+        }
     }
+
+    if (onProgress)
+        onProgress(100);
 
     return commits;
 }
 
-void GitRepoLoader::notifyLoadingFinished()
+void GitRepoLoader::onLoadStepComplete()
 {
-    --mSteps;
+    --mPendingSteps;
 
-    if (mSteps.load() == 0)
+    if (mPendingSteps.load() == 0)
     {
-        mRevCache->setConfigurationDone();
+        mCommitCache->setConfigurationDone();
 
-        emit signalLoadingFinished(mRefreshReferences);
+        emit loadingFinished(mRefreshReferences);
 
-        mLocked = false;
+        mIsLoading = false;
         mRefreshReferences = false;
     }
 }

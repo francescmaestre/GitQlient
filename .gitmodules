@@ -7,6 +7,6 @@
 [submodule "app/git"]
 	path = app/dependencies/git
 	url = ../git.git
-[submodule "tests/catch2"]
-	path = tests/deps/catch2
-	url = https://github.com/catchorg/Catch2.git
+[submodule "tests/deps/googletest"]
+	path = tests/deps/googletest
+	url = https://github.com/google/googletest.git

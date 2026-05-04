@@ -1,7 +1,28 @@
 #pragma once
 
-#include <graph/State.h>
-#include <graph/StateType.h>
+/****************************************************************************************
+ ** GitQlient is an application to manage and operate one or several Git repositories. With
+ ** GitQlient you will be able to add commits, branches and manage all the options Git provides.
+ ** Copyright (C) 2021  Francesc Maestre
+ **
+ ** LinkedIn: https://www.linkedin.com/in/francescmaestre/
+ **
+ ** This program is free software; you can redistribute it and/or
+ ** modify it under the terms of the GNU Lesser General Public
+ ** License as published by the Free Software Foundation; either
+ ** version 2 of the License, or (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ ** Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public
+ ** License along with this library; if not, write to the Free Software
+ ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***************************************************************************************/
+
+#include <graph/Strand.h>
 
 #include <QVector>
 
@@ -11,15 +32,21 @@ namespace Graph
     {
     public:
         Timeline() = default;
-        int findType(StateType type, int pos) const;
-        void setType(int lane, StateType type);
-        void append(StateType type);
+        int findEmpty(int pos) const;
+        int findType(StrandGlyph glyph, int pos) const;
+        void setType(int lane, StrandGlyph glyph);
+        void setSide(int lane, GlyphSide side);
+        void append(StrandGlyph glyph);
         void removeLast();
         int count() const { return mStates.count(); }
-        const State& at(int index) const { return mStates.at(index); }
-        const State& last() const { return mStates.last(); }
+        const Strand& at(int index) const { return mStates.at(index); }
+        const Strand& last() const { return mStates.last(); }
+
+        auto begin() const { return mStates.cbegin(); }
+        auto end() const { return mStates.cend(); }
 
     private:
-        QVector<State> mStates;
+        QVector<Strand> mStates;
+        QVector<int> mEmptySlots;
     };
 } // namespace Graph

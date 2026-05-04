@@ -38,7 +38,7 @@ using namespace System;
 
 GitQlient::GitQlient(QWidget* parent)
     : QWidget(parent)
-    , mGitConfig(QSharedPointer<GitConfig>::create(QSharedPointer<GitBase>::create("")))
+    , mGitConfig(QSharedPointer<GitConfig>::create(QSharedPointer<GitBase>::create(GitRepoConfig { {}, QSettings().value(GlobalKey::GitLocation, "").toString() })))
 
 {
     setAttribute(Qt::WA_WindowPropagation);
@@ -54,7 +54,7 @@ GitQlient::GitQlient(QWidget* parent)
     setStyleSheet(getStyles());
     mInitWidget = new InitScreen(this);
     mRepos = new QPinnableTabWidget(this);
-    mConfigWidget = new ConfigWidget(QSharedPointer<GitBase>::create(""), this);
+    mConfigWidget = new ConfigWidget(QSharedPointer<GitBase>::create(GitRepoConfig { {}, QSettings().value(GlobalKey::GitLocation, "").toString() }), this);
 
     mStackedLayout = new QStackedLayout(this);
     mStackedLayout->setContentsMargins(QMargins());
@@ -401,7 +401,7 @@ void GitQlient::addNewRepoTab(const QString& repoPathArg, bool pinned)
 {
     auto repoPath = QFileInfo(repoPathArg).canonicalFilePath();
 
-    QSharedPointer<GitBase> git(new GitBase(repoPath));
+    QSharedPointer<GitBase> git(new GitBase(GitRepoConfig { repoPath, QSettings().value(GlobalKey::GitLocation, "").toString() }));
     repoPath = git->getTopLevelRepo(repoPath);
 
     if (!mCurrentRepos.contains(repoPath))
@@ -532,6 +532,7 @@ void GitQlient::conditionallyOpenPreConfigDlg(const QSharedPointer<GitBase>& git
     {
         const auto preConfig = new InitialRepoConfig(git, this);
         preConfig->exec();
+        settings.setValue(GlobalKey::ShowInitConfigDialog, false);
     }
 }
 

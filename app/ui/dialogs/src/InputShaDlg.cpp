@@ -5,7 +5,7 @@
 #include <GitBranches.h>
 #include <GitConfig.h>
 #include <GitStashes.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <system/GitQlientStyles.h>
 
 #include <QFile>

@@ -7,7 +7,7 @@
 #include <GitBase.h>
 #include <GitBranches.h>
 #include <GitRemote.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <dialogs/PullDlg.h>
 #include <system/GitQlientStyles.h>
 
@@ -44,13 +44,13 @@ BranchTreeWidget::BranchTreeWidget(QWidget* parent)
 }
 
 BranchTreeWidget::BranchTreeWidget(
-    const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
+    const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
     : BranchTreeWidget(parent)
 {
     init(cache, git);
 }
 
-void BranchTreeWidget::init(const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git)
+void BranchTreeWidget::init(const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git)
 {
     mCache = cache;
     mGit = git;
@@ -369,7 +369,7 @@ void BranchTreeWidget::deleteFolder()
 
         if (deleted)
         {
-            emit mCache->signalCacheUpdated();
+            emit mCache->cacheUpdated();
             emit logReload();
         }
     }
@@ -435,7 +435,7 @@ void BranchTreeWidget::onDeleteBranch()
                 if (ret2.success)
                 {
                     mCache->deleteReference(sha, type, selectedBranch);
-                    emit mCache->signalCacheUpdated();
+                    emit mCache->cacheUpdated();
                 }
                 else
                     QMessageBox::critical(

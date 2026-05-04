@@ -6,11 +6,12 @@
 
 #include <GitBase.h>
 #include <GitLocal.h>
+#include <QLogger>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
-#include <cache/GraphCache.h>
-#include <graph/State.h>
-#include <graph/StateType.h>
+#include <cache/SacredTimeline.h>
+#include <graph/Strand.h>
+#include <graph/StrandGlyph.h>
+#include <graph/TemporalLoom.h>
 #include <system/Colors.h>
 #include <system/GitQlientStyles.h>
 #include <system/SettingsKeys.h>
@@ -38,11 +39,12 @@
 #include <algorithm>
 
 using namespace Graph;
+using namespace QLogger;
 using namespace System;
 
 GraphViewDelegate::GraphViewDelegate(
-    const QSharedPointer<GitCache>& cache,
-    const QSharedPointer<Graph::Cache>& graphCache,
+    const QSharedPointer<SacredTimeline>& cache,
+    const QSharedPointer<Graph::TemporalLoom>& graphCache,
     const QSharedPointer<GitBase>& git,
     GraphView* view)
     : mCache(cache)
@@ -54,6 +56,9 @@ GraphViewDelegate::GraphViewDelegate(
 
 void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, const QModelIndex& index) const
 {
+    QElapsedTimer rowTimer;
+    rowTimer.start();
+
     if (const auto newTextColor = QPalette().color(QPalette::Base); mCurrentTextColor != newTextColor)
     {
         mCurrentTextColor = newTextColor;
@@ -100,7 +105,7 @@ void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, cons
             color = Colors::BranchColors.at(
                 mView->hasActiveFilter()
                     ? 0
-                    : mGraphCache->getSacredTimeline(commit.sha) % Colors::kBranchColorsCount)();
+                    : mGraphCache->getActiveLaneIndex(commit.sha) % Colors::kBranchColorsCount)();
 
             if (index.column() == static_cast<int>(GraphColumns::Graph))
                 color.setAlpha(90);
@@ -199,6 +204,48 @@ void GraphViewDelegate::paint(QPainter* p, const QStyleOptionViewItem& opt, cons
             p->drawText(newOpt.rect, fm.elidedText(text, Qt::ElideRight, newOpt.rect.width()), textalignment);
         }
     }
+
+    // --- Paint timing ---
+    const auto rowNs = rowTimer.nsecsElapsed();
+
+    if (!mPaintWindowTimer.isValid())
+        mPaintWindowTimer.start();
+
+    mPaintWindowNs += rowNs;
+    mPaintWindowMaxNs = std::max(mPaintWindowMaxNs, rowNs);
+    ++mPaintWindowRows;
+
+    // Warn if a single row takes more than 8 ms (half a 60 fps frame budget).
+    if (rowNs > 8'000'000)
+    {
+        QLog_Warning(
+            "Paint",
+            QString("Slow row paint: %1 ms (row %2, col %3)")
+                .arg(rowNs / 1'000'000.0, 0, 'f', 2)
+                .arg(index.row())
+                .arg(index.column()));
+    }
+
+    // Report aggregate stats every 5 seconds and reset the window.
+    if (mPaintWindowTimer.elapsed() >= 5'000 && mPaintWindowRows > 0)
+    {
+        const auto avgUs = mPaintWindowNs / 1000.0 / mPaintWindowRows;
+        const auto maxMs = mPaintWindowMaxNs / 1'000'000.0;
+        const auto rowsPs = mPaintWindowRows * 1000LL / std::max(1LL, mPaintWindowTimer.elapsed());
+
+        QLog_Info(
+            "Paint",
+            QString("Paint stats [5s window]: %1 rows painted, avg %2 µs/row, max %3 ms/row, %4 rows/s")
+                .arg(mPaintWindowRows)
+                .arg(avgUs, 0, 'f', 1)
+                .arg(maxMs, 0, 'f', 2)
+                .arg(rowsPs));
+
+        mPaintWindowRows = 0;
+        mPaintWindowNs = 0;
+        mPaintWindowMaxNs = 0;
+        mPaintWindowTimer.restart();
+    }
 }
 
 QSize GraphViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const
@@ -290,7 +337,7 @@ void GraphViewDelegate::paintBranchHelper(
 void GraphViewDelegate::paintGraphLane(
     QPainter* p,
     const QStyleOptionViewItem& opt,
-    const State& lane,
+    const Strand& lane,
     bool laneHeadPresent,
     int x1,
     int x2,
@@ -316,31 +363,23 @@ void GraphViewDelegate::paintGraphLane(
     auto foreground = opt.palette.color(QPalette::Text);
     static QPen lanePen(foreground, 2); // fast path here
 
+    const auto laneGlyph = lane.getType();
+    const auto laneType = laneGlyph.type;
+    const auto laneSide = laneGlyph.side;
+
     // arc
     lanePen.setBrush(col);
     p->setPen(lanePen);
 
-    switch (lane.getType())
+    if (laneType == GlyphType::Head || laneType == GlyphType::Join)
     {
-    case StateType::Join:
-    case StateType::JoinRight:
-    case StateType::Head:
-    case StateType::HeadRight: {
-        p->drawArc(m, h, angleWidthRight, angleHeightUp, 0 * 16, spanAngle);
-        break;
+        if (laneSide != GlyphSide::Left)
+            p->drawArc(m, h, angleWidthRight, angleHeightUp, 0 * 16, spanAngle);
+        else
+            p->drawArc(m, h, angleWidthLeft, angleHeightUp, 90 * 16, spanAngle);
     }
-    case StateType::JoinLeft: {
-        p->drawArc(m, h, angleWidthLeft, angleHeightUp, 90 * 16, spanAngle);
-        break;
-    }
-    case StateType::Tail:
-    case StateType::TailRight: {
+    else if (laneType == GlyphType::Tail && laneSide != GlyphSide::Left)
         p->drawArc(m, h, angleWidthRight, angleHeightDown, 270 * 16, spanAngle);
-        break;
-    }
-    default:
-        break;
-    }
 
     if (isWip)
     {
@@ -351,34 +390,17 @@ void GraphViewDelegate::paintGraphLane(
     // vertical line
     if (!(isWip && !hasChilds))
     {
-        if (!isWip && !hasChilds && (lane.getType() == StateType::Head || lane.isActive()))
+        if (!isWip && !hasChilds && (lane == StrandGlyph(GlyphType::Head) || lane.isActive()))
             p->drawLine(m, h, m, 2 * h);
         else
         {
-            switch (lane.getType())
-            {
-            case StateType::Active:
-            case StateType::Inactive:
-            case StateType::MergeFork:
-            case StateType::MergeForkRight:
-            case StateType::MergeForkLeft:
-            case StateType::Join:
-            case StateType::JoinRight:
-            case StateType::JoinLeft:
-            case StateType::Cross:
+            if (laneType == GlyphType::Active || laneType == GlyphType::Inactive || laneType == GlyphType::MergeFork
+                || laneType == GlyphType::Join || laneType == GlyphType::Cross)
                 p->drawLine(m, 0, m, 2 * h);
-                break;
-            case StateType::HeadLeft:
-            case StateType::Branch:
+            else if ((laneType == GlyphType::Head && laneSide == GlyphSide::Left) || laneType == GlyphType::Branch)
                 p->drawLine(m, h, m, 2 * h);
-                break;
-            case StateType::TailLeft:
-            case StateType::Initial:
+            else if ((laneType == GlyphType::Tail && laneSide == GlyphSide::Left) || laneType == GlyphType::Initial)
                 p->drawLine(m, 0, m, h);
-                break;
-            default:
-                break;
-            }
         }
     }
 
@@ -404,33 +426,28 @@ void GraphViewDelegate::paintGraphLane(
     else
     {
         auto background = opt.palette.color(QPalette::Base);
-        switch (lane.getType())
+
+        if ((laneType == GlyphType::Head && laneSide == GlyphSide::Center) || laneType == GlyphType::Initial
+            || laneType == GlyphType::Branch || (laneType == GlyphType::MergeFork && laneSide != GlyphSide::Left))
         {
-        case StateType::Head:
-        case StateType::Initial:
-        case StateType::Branch:
-        case StateType::MergeFork:
-        case StateType::MergeForkRight:
             isCommit = true;
             p->setPen(QPen(col, 2));
             p->setBrush(mergeColor);
             p->drawEllipse(m - r + 2, h - r + 2, 8, 8);
-            break;
-        case StateType::MergeForkLeft:
+        }
+        else if (laneType == GlyphType::MergeFork && laneSide == GlyphSide::Left)
+        {
             isCommit = true;
             p->setPen(QPen(col, 2));
             p->setBrush(laneHeadPresent ? mergeColor : background);
             p->drawEllipse(m - r + 2, h - r + 2, 8, 8);
-            break;
-        case StateType::Active: {
+        }
+        else if (laneType == GlyphType::Active)
+        {
             isCommit = true;
             p->setPen(QPen(col, 2));
             p->setBrush(QColor(isWip ? col : background));
             p->drawEllipse(m - r + 2, h - r + 2, 8, 8);
-        }
-        break;
-        default:
-            break;
         }
     }
 
@@ -438,60 +455,51 @@ void GraphViewDelegate::paintGraphLane(
     p->setPen(lanePen);
 
     // horizontal line
-    switch (lane.getType())
-    {
-    case StateType::MergeFork:
-    case StateType::Join:
-    case StateType::Head:
-    case StateType::Tail:
-    case StateType::Cross:
-    case StateType::CrossEmpty:
+    if ((laneType == GlyphType::MergeFork && laneSide == GlyphSide::Center)
+        || (laneType == GlyphType::Join && laneSide == GlyphSide::Center)
+        || (laneType == GlyphType::Head && laneSide == GlyphSide::Center)
+        || (laneType == GlyphType::Tail && laneSide == GlyphSide::Center) || laneType == GlyphType::Cross
+        || laneType == GlyphType::CrossEmpty)
         p->drawLine(x1 + (isCommit ? 10 : 0), h, x2, h);
-        break;
-    case StateType::MergeForkRight:
+    else if (laneType == GlyphType::MergeFork && laneSide == GlyphSide::Right)
         p->drawLine(x1 + (isCommit ? 0 : 10), h, m - (isCommit ? 6 : 0), h);
-        break;
-    case StateType::MergeForkLeft:
-    case StateType::HeadLeft:
-    case StateType::TailLeft:
+    else if (
+        (laneType == GlyphType::MergeFork && laneSide == GlyphSide::Left)
+        || (laneType == GlyphType::Head && laneSide == GlyphSide::Left)
+        || (laneType == GlyphType::Tail && laneSide == GlyphSide::Left))
         p->drawLine(m + (isCommit ? 6 : 0), h, x2, h);
-        break;
-    default:
-        break;
-    }
 }
 
 QColor GraphViewDelegate::getMergeColor(
-    const State& currentLane, const Commit& commit, int currentLaneIndex, const QColor& defaultColor, bool& isSet) const
+    const Strand& currentLane, const Commit& commit, int currentLaneIndex, const QColor& defaultColor, bool& isSet)
+    const
 {
     auto mergeColor = defaultColor;
-    //= GitQlientStyles::getBranchColorAt((commit.getLanesCount() - 1) % GitQlientStyles::getTotalBranchColors());
 
-    switch (currentLane.getType())
+    const auto laneGlyph = currentLane.getType();
+    const auto laneType = laneGlyph.type;
+    const auto laneSide = laneGlyph.side;
+
+    if (laneType == GlyphType::Head || laneType == GlyphType::Tail
+        || (laneType == GlyphType::MergeFork && laneSide == GlyphSide::Left)
+        || (laneType == GlyphType::Join && laneSide == GlyphSide::Right))
     {
-    case StateType::HeadLeft:
-    case StateType::HeadRight:
-    case StateType::TailLeft:
-    case StateType::TailRight:
-    case StateType::MergeForkLeft:
-    case StateType::JoinRight:
         isSet = true;
         mergeColor = defaultColor;
-        break;
-    case StateType::MergeForkRight:
-    case StateType::JoinLeft:
+    }
+    else if (
+        (laneType == GlyphType::MergeFork && laneSide == GlyphSide::Right)
+        || (laneType == GlyphType::Join && laneSide == GlyphSide::Left))
+    {
         for (auto laneCount = 0; laneCount < currentLaneIndex; ++laneCount)
         {
-            if (mGraphCache->getTimelineAt(commit.sha, laneCount) == StateType::JoinLeft)
+            if (mGraphCache->getTimelineAt(commit.sha, laneCount) == StrandGlyph(GlyphType::Join, GlyphSide::Left))
             {
                 mergeColor = Colors::BranchColors.at(laneCount % Colors::kBranchColorsCount)();
                 isSet = true;
                 break;
             }
         }
-        break;
-    default:
-        break;
     }
 
     return mergeColor;
@@ -573,7 +581,7 @@ QColor GraphViewDelegate::getActiveColor(const Commit& commit) const
 {
     const auto colorIndex = mView->hasActiveFilter() ? 0
         : commit.sha != ZERO_SHA
-        ? mGraphCache->getSacredTimeline(commit.sha) % Colors::kBranchColorsCount
+        ? mGraphCache->getActiveLaneIndex(commit.sha) % Colors::kBranchColorsCount
         : -1;
 
     QColor activeColor;
@@ -596,7 +604,7 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
         paintGraphLane(
             p,
             opt,
-            StateType::Active,
+            StrandGlyph(GlyphType::Active),
             false,
             0,
             LANE_WIDTH,
@@ -619,7 +627,7 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
             paintGraphLane(
                 p,
                 opt,
-                StateType::Branch,
+                StrandGlyph(GlyphType::Branch),
                 false,
                 0,
                 LANE_WIDTH,
@@ -632,7 +640,7 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
         else
         {
             const auto laneNum = mGraphCache->timelinesCount(commit.sha);
-            const auto activeLane = mGraphCache->getSacredTimeline(commit.sha);
+            const auto activeLane = mGraphCache->getActiveLaneIndex(commit.sha);
             const auto activeColor = Colors::BranchColors.at(activeLane % Colors::kBranchColorsCount)();
             auto x1 = 0;
             auto isSet = false;
@@ -648,11 +656,11 @@ void GraphViewDelegate::paintGraph(QPainter* p, const QStyleOptionViewItem& opt,
                 if (!laneHeadPresent && i < laneNum - 1)
                 {
                     auto prevLane = mGraphCache->getTimelineAt(commit.sha, i + 1);
-                    laneHeadPresent = prevLane.isHead() || prevLane == StateType::JoinRight
-                        || prevLane == StateType::JoinLeft;
+                    laneHeadPresent = prevLane.isHead() || prevLane == StrandGlyph(GlyphType::Join, GlyphSide::Right)
+                        || prevLane == StrandGlyph(GlyphType::Join, GlyphSide::Left);
                 }
 
-                if (currentLane != StateType::Empty)
+                if (currentLane != StrandGlyph(GlyphType::Empty))
                 {
                     auto color = activeColor;
 

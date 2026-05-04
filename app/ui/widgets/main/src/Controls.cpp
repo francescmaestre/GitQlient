@@ -5,7 +5,7 @@
 #include <GitRemote.h>
 #include <GitStashes.h>
 #include <QLogger>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <dialogs/BranchDlg.h>
 #include <main-widgets/ConfigWidget.h>
 #include <system/GitQlientUpdater.h>
@@ -23,7 +23,7 @@
 
 using namespace QLogger;
 
-Controls::Controls(const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
+Controls::Controls(const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
     , mCache(cache)
     , mGit(git)
@@ -153,8 +153,9 @@ void Controls::stashPush()
         QMessageBox msgBox(
             QMessageBox::Critical,
             tr("Error while stashing"),
-            QString(tr("There were problems during the stash operation. Please, see the detailed "
-                       "description for more information.")),
+            QString(tr(
+                "There were problems during the stash operation. Please, see the detailed "
+                "description for more information.")),
             QMessageBox::Ok,
             this);
         msgBox.setDetailedText(ret.output);
@@ -198,8 +199,9 @@ void Controls::stashPop()
             QMessageBox msgBox(
                 QMessageBox::Critical,
                 tr("Error while popping stash"),
-                QString(tr("There were problems during the stash pop operation. Please, see the detailed "
-                           "description for more information.")),
+                QString(tr(
+                    "There were problems during the stash pop operation. Please, see the detailed "
+                    "description for more information.")),
                 QMessageBox::Ok,
                 this);
             msgBox.setDetailedText(ret.output);
@@ -234,8 +236,9 @@ void Controls::pullCurrentBranch()
             QMessageBox msgBox(
                 QMessageBox::Critical,
                 tr("Error while pulling"),
-                QString(tr("There were problems during the pull operation. Please, see the detailed "
-                           "description for more information.")),
+                QString(tr(
+                    "There were problems during the pull operation. Please, see the detailed "
+                    "description for more information.")),
                 QMessageBox::Ok,
                 this);
             msgBox.setDetailedText(ret.output);
@@ -309,7 +312,7 @@ void Controls::pushCurrentBranch()
                 oldSha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, currentBranch));
             mCache->insertReference(
                 sha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, currentBranch));
-            emit mCache->signalCacheUpdated();
+            emit mCache->cacheUpdated();
             emit signalRefreshPRsCache();
         }
     }
@@ -318,8 +321,9 @@ void Controls::pushCurrentBranch()
         QMessageBox msgBox(
             QMessageBox::Critical,
             tr("Error while pushing"),
-            QString(tr("There were problems during the push operation. Please, see the detailed description "
-                       "for more information.")),
+            QString(tr(
+                "There were problems during the push operation. Please, see the detailed description "
+                "for more information.")),
             QMessageBox::Ok,
             this);
         msgBox.setDetailedText(ret.output);

@@ -6,9 +6,8 @@
 #include <GitLocal.h>
 #include <GitMerge.h>
 #include <GitWip.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/CheckBox.h>
-#include <graph/WipHelper.h>
 #include <system/SettingsKeys.h>
 
 #include <QLabel>
@@ -20,7 +19,10 @@
 using namespace System;
 
 SquashDlg::SquashDlg(
-    const QSharedPointer<GitBase> git, const QSharedPointer<GitCache>& cache, const QStringList& shas, QWidget* parent)
+    const QSharedPointer<GitBase> git,
+    const QSharedPointer<SacredTimeline>& cache,
+    const QStringList& shas,
+    QWidget* parent)
     : QDialog(parent)
     , mGit(git)
     , mCache(cache)
@@ -76,7 +78,7 @@ void SquashDlg::accept()
     {
         const auto revInfo = mCache->commitInfo(ZERO_SHA);
 
-        WipHelper::update(mGit, mCache);
+        mCache->refreshWip(mGit);
 
         const auto lastChild = mCache->commitInfo(mShas.last());
 
@@ -118,7 +120,7 @@ void SquashDlg::accept()
                 auto ret = gitMerge->squashMerge(mGit->getCurrentBranch(), {auxBranch2}, msg);
 
                 if (ret.success)
-                    WipHelper::update(mGit, mCache);
+                    mCache->refreshWip(mGit);
 
                 gitBranches->removeLocalBranch(auxBranch2);
 
@@ -131,7 +133,7 @@ void SquashDlg::accept()
                 ret = gitMerge->merge(destBranch, {auxBranch3});
 
                 if (ret.success)
-                    WipHelper::update(mGit, mCache);
+                    mCache->refreshWip(mGit);
 
                 gitBranches->removeLocalBranch(auxBranch3);
             }

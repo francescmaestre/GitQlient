@@ -5,7 +5,9 @@ set(PROJECT_NAME "GitQlient")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic-errors -Wno-deprecated -Wno-deprecated-declarations")
 
 execute_process(
@@ -38,7 +40,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QLogger/.git" OR
     endif()
 endif()
 
-find_package(Qt6 COMPONENTS Core Widgets Network Svg REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets Network Svg Concurrent REQUIRED)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
    find_package(Qt6 COMPONENTS DBus REQUIRED)

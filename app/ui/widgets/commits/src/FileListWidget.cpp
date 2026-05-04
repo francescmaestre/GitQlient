@@ -6,7 +6,7 @@
 #include <GitBase.h>
 #include <GitHistory.h>
 #include <RevisionFiles.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <system/Colors.h>
 
 #include <QApplication>
@@ -18,7 +18,7 @@
 #include <QPainter>
 #include <QPalette>
 
-FileListWidget::FileListWidget(const QSharedPointer<GitBase>& git, QSharedPointer<GitCache> cache, QWidget* p)
+FileListWidget::FileListWidget(const QSharedPointer<GitBase>& git, QSharedPointer<SacredTimeline> cache, QWidget* p)
     : QListWidget(p)
     , mGit(git)
     , mCache(std::move(cache))

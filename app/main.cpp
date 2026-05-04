@@ -20,14 +20,17 @@ int main(int argc, char* argv[])
 
     QApplication app(argc, argv);
 
-    QApplication::setOrganizationName("CescSoftware");
-    QApplication::setOrganizationDomain("francescmm.com");
+    QApplication::setOrganizationName("GitQlient");
+    // QApplication::setOrganizationDomain("");
     QApplication::setApplicationName("GitQlient");
     QApplication::setApplicationVersion(VER);
     QApplication::setWindowIcon(QIcon(":/icons/GitQlientLogoIco"));
 
     QFontDatabase::addApplicationFont(":/DejaVuSans");
     QFontDatabase::addApplicationFont(":/DejaVuSansMono");
+
+    if (QSettings settings; settings.value(GlobalKey::SettingsVersion).toString() != VER)
+        settings.setValue(GlobalKey::SettingsVersion, VER);
 
     const auto languageFile = QSettings().value(GlobalKey::UiLanguage, "gitqlient_en").toString();
     QTranslator qtTranslator;

@@ -123,6 +123,9 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent)
 #endif
 
     ui->sbMaxCommits->setValue(settings.value(GlobalKey::MaxCommits, 0).toInt());
+    ui->leGitPath->setText(settings.value(GlobalKey::GitLocation, "").toString());
+    ui->cbDiffView->setCurrentIndex(settings.value(GlobalKey::DefaultDiffView).toInt());
+    ui->cbBranchSeparator->setCurrentText(settings.value(GlobalKey::BranchSeparator, "-").toString());
 
     ui->tabWidget->setCurrentIndex(0);
     connect(ui->pbClearLogs, &ButtonLink::clicked, this, &ConfigWidget::clearLogs);
@@ -133,6 +136,8 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent)
     ui->cbStash->setChecked(settings.value(GlobalKey::References::StashesHeader, true).toBool());
     ui->cbSubmodule->setChecked(settings.value(GlobalKey::References::SubmodulesHeader, true).toBool());
     ui->cbSubtree->setChecked(settings.value(GlobalKey::References::SubtreeHeader, true).toBool());
+
+    ui->autoRefresh->setValue(settings.value(GlobalKey::AutoRefresh, 300).toInt());
 
     QScopedPointer<GitConfig> gitConfig(new GitConfig(mGit));
 
@@ -172,9 +177,6 @@ ConfigWidget::ConfigWidget(const QSharedPointer<GitBase>& git, QWidget* parent)
     connect(ui->cbLanguage, SIGNAL(currentIndexChanged(int)), this, SLOT(saveConfig()));
     connect(ui->leLogsLocation, &QLineEdit::editingFinished, this, &ConfigWidget::saveConfig);
     connect(ui->pbBack, &QPushButton::clicked, this, &ConfigWidget::goBack);
-
-    ui->cbDiffView->setCurrentIndex(settings.value(GlobalKey::DefaultDiffView).toInt());
-    ui->cbBranchSeparator->setCurrentText(settings.value(GlobalKey::BranchSeparator, "-").toString());
 
     auto size = calculateDirSize(ui->leLogsLocation->text());
     ui->lLogsSize->setText(QString("%1 KB").arg(size));

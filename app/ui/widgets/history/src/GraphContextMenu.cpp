@@ -9,12 +9,11 @@
 #include <GitPatches.h>
 #include <GitRemote.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
-#include <cache/GraphCache.h>
+#include <cache/SacredTimeline.h>
 #include <dialogs/BranchDlg.h>
 #include <dialogs/PullDlg.h>
 #include <dialogs/SquashDlg.h>
-#include <graph/WipHelper.h>
+#include <graph/TemporalLoom.h>
 #include <ref-widgets/TagDlg.h>
 #include <system/GitQlientStyles.h>
 
@@ -31,8 +30,8 @@
 using namespace QLogger;
 
 GraphContextMenu::GraphContextMenu(
-    const QSharedPointer<GitCache>& cache,
-    const QSharedPointer<Graph::Cache>& graphCache,
+    const QSharedPointer<SacredTimeline>& cache,
+    const QSharedPointer<Graph::TemporalLoom>& graphCache,
     const QSharedPointer<GitBase>& git,
     const QStringList& shas,
     QWidget* parent)
@@ -207,7 +206,7 @@ void GraphContextMenu::createBranch()
 
 void GraphContextMenu::createTag()
 {
-    TagDlg dlg(QSharedPointer<GitBase>::create(mGit->getWorkingDir()), mShas.first());
+    TagDlg dlg(QSharedPointer<GitBase>::create(mGit->config()), mShas.first());
     const auto ret = dlg.exec();
 
     if (ret == QDialog::Accepted)
@@ -341,7 +340,8 @@ void GraphContextMenu::cherryPickCommit()
             commit.sha = mGit->getLastCommit().output.trimmed();
 
             mCache->insertCommit(commit);
-            mGraphCache->createMultiverse(mCache->getCommits());
+            const auto top = mCache->getCommitBatch(0, 2);
+            mGraphCache->insertTopCommit(top[0], top[1]);
             mCache->deleteReference(lastShaBeforeCommit, References::Type::LocalBranch, mGit->getCurrentBranch());
             mCache->insertReference(commit.sha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -350,7 +350,7 @@ void GraphContextMenu::cherryPickCommit()
 
             mCache->insertRevisionFiles(commit.sha, lastShaBeforeCommit, RevisionFiles(ret.output));
 
-            emit mCache->signalCacheUpdated();
+            emit mCache->cacheUpdated();
             emit logReload();
         }
         else if (!ret.success)
@@ -415,7 +415,7 @@ void GraphContextMenu::rebase()
         }
         else
         {
-            WipHelper::update(mGit, mCache);
+            mCache->refreshWip(mGit);
 
             emit fullReload();
         }
@@ -490,7 +490,7 @@ void GraphContextMenu::push()
                 oldSha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, currentBranch));
             mCache->insertReference(
                 sha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, currentBranch));
-            emit mCache->signalCacheUpdated();
+            emit mCache->cacheUpdated();
             emit signalRefreshPRsCache();
         }
     }
@@ -577,7 +577,8 @@ void GraphContextMenu::revertCommit()
                   .arg(newCommit.shortLog, QString::fromUtf8("This reverts commit"), revertedCommit.sha);
 
         mCache->insertCommit(newCommit);
-        mGraphCache->createMultiverse(mCache->getCommits());
+        const auto top = mCache->getCommitBatch(0, 2);
+        mGraphCache->insertTopCommit(top[0], top[1]);
         mCache->deleteReference(previousSha, References::Type::LocalBranch, mGit->getCurrentBranch());
         mCache->insertReference(currentSha, References::Type::LocalBranch, mGit->getCurrentBranch());
 
@@ -586,9 +587,9 @@ void GraphContextMenu::revertCommit()
 
         mCache->insertRevisionFiles(currentSha, previousSha, RevisionFiles(ret.output));
 
-        WipHelper::update(mGit, mCache);
+        mCache->refreshWip(mGit);
 
-        emit mCache->signalCacheUpdated();
+        emit mCache->cacheUpdated();
         emit logReload();
     }
 }

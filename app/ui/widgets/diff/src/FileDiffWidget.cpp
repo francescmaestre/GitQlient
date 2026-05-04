@@ -7,7 +7,7 @@
 #include <GitLocal.h>
 #include <GitPatches.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/ButtonLink.h>
 #include <custom-widgets/CheckBox.h>
 #include <custom-widgets/DiffHelper.h>
@@ -35,7 +35,8 @@
 
 using namespace System;
 
-FileDiffWidget::FileDiffWidget(const QSharedPointer<GitBase>& git, QSharedPointer<GitCache> cache, QWidget* parent)
+FileDiffWidget::FileDiffWidget(
+    const QSharedPointer<GitBase>& git, QSharedPointer<SacredTimeline> cache, QWidget* parent)
     : IDiffWidget(git, cache, parent)
     , mBack(new QPushButton())
     , mGoPrevious(new QPushButton())

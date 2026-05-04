@@ -4,12 +4,12 @@
 
 #include <GitBase.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 
 #include <QDateTime>
 #include <QLocale>
 
-GraphModel::GraphModel(const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QObject* p)
+GraphModel::GraphModel(const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QObject* p)
     : QAbstractItemModel(p)
     , mCache(cache)
     , mGit(git)
@@ -41,8 +41,11 @@ void GraphModel::onNewRevisions(int totalCommits)
     beginResetModel();
     endResetModel();
 
-    beginInsertRows(QModelIndex(), 0, totalCommits - 2);
-    endInsertRows();
+    if (totalCommits >= 2)
+    {
+        beginInsertRows(QModelIndex(), 0, totalCommits - 2);
+        endInsertRows();
+    }
 }
 
 QVariant GraphModel::headerData(int section, Qt::Orientation orientation, int role) const

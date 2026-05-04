@@ -10,12 +10,11 @@
 #include <GitWip.h>
 #include <QLogger>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
-#include <cache/GraphCache.h>
+#include <cache/SacredTimeline.h>
 #include <dialogs/GitConfigDlg.h>
 #include <dialogs/WaitingDlg.h>
 #include <diff-widgets/DiffWidget.h>
-#include <graph/WipHelper.h>
+#include <graph/TemporalLoom.h>
 #include <history-widgets/BlameWidget.h>
 #include <history-widgets/HistoryWidget.h>
 #include <main-widgets/ConfigWidget.h>
@@ -41,8 +40,8 @@ using namespace System;
 
 GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
-    , mGitQlientCache(new GitCache())
-    , mGraphCache(new Graph::Cache())
+    , mGitQlientCache(new SacredTimeline())
+    , mGraphCache(new Graph::TemporalLoom())
     , mGitBase(git)
     , mGitLoader(new GitRepoLoader(mGitBase, mGitQlientCache, mGraphCache))
     , mAutoFilesUpdate(new QTimer())
@@ -87,7 +86,7 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase>& git, QWidget* parent
     showHistoryView();
 
     QSettings settings;
-    mAutoFilesUpdate->setInterval(settings.value(GlobalKey::AutoRefresh, 60).toInt() * 1000);
+    // mAutoFilesUpdate->setInterval(settings.value(GlobalKey::AutoRefresh, 300).toInt() * 1000);
 
     connect(mAutoFilesUpdate, &QTimer::timeout, this, &GitQlientRepo::updateUiFromWatcher);
 
@@ -125,8 +124,16 @@ GitQlientRepo::GitQlientRepo(const QSharedPointer<GitBase>& git, QWidget* parent
     connect(mMergeWidget, &MergeWidget::signalMergeFinished, mGitLoader.data(), &GitRepoLoader::loadAll);
     connect(mMergeWidget, &MergeWidget::signalMergeFinished, mControls, &Controls::disableMergeWarning);
 
-    connect(mGitLoader.data(), &GitRepoLoader::signalLoadingStarted, this, &GitQlientRepo::createProgressDialog);
-    connect(mGitLoader.data(), &GitRepoLoader::signalLoadingFinished, this, &GitQlientRepo::onRepoLoadFinished);
+    connect(mGitLoader.data(), &GitRepoLoader::loadingStarted, this, &GitQlientRepo::createProgressDialog);
+    connect(mGitLoader.data(), &GitRepoLoader::loadingFinished, this, &GitQlientRepo::onRepoLoadFinished);
+    connect(mGitLoader.data(), &GitRepoLoader::loadingMessage, this, [this](const QString& msg) {
+        if (mWaitDlg)
+            mWaitDlg->updateMessage(msg);
+    });
+    connect(mGitLoader.data(), &GitRepoLoader::loadingProgress, this, [this](int done, int total) {
+        if (mWaitDlg)
+            mWaitDlg->updateProgress(done, total);
+    });
 
     m_loaderThread = new QThread();
     mGitLoader->moveToThread(m_loaderThread);
@@ -156,7 +163,7 @@ void GitQlientRepo::updateUiFromWatcher()
 {
     QLog_Info("UI", QString("Updating the GitQlient UI from watcher"));
 
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     mHistoryWidget->updateUiFromWatcher();
 
@@ -234,13 +241,16 @@ void GitQlientRepo::onRepoLoadFinished()
     if (totalCommits == 0)
     {
         if (mWaitDlg)
+        {
             mWaitDlg->close();
+            mWaitDlg = nullptr;
+        }
 
         return;
     }
 
     // Update WIP information on initial load
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     mHistoryWidget->updateGraphView(totalCommits);
 
@@ -249,7 +259,10 @@ void GitQlientRepo::onRepoLoadFinished()
     mDiffWidget->reload();
 
     if (mWaitDlg)
+    {
         mWaitDlg->close();
+        mWaitDlg = nullptr;
+    }
 
     if (QScopedPointer<GitMerge> gitMerge(new GitMerge(mGitBase)); gitMerge->isInMerge())
     {
@@ -311,7 +324,7 @@ void GitQlientRepo::showWarningMerge()
 
     const auto wipCommit = mGitQlientCache->commitInfo(ZERO_SHA);
 
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     const auto file = mGitQlientCache->revisionFile(ZERO_SHA, wipCommit.firstParent());
 
@@ -325,7 +338,7 @@ void GitQlientRepo::showRebaseConflict()
 
     const auto wipCommit = mGitQlientCache->commitInfo(ZERO_SHA);
 
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     const auto files = mGitQlientCache->revisionFile(ZERO_SHA, wipCommit.firstParent());
 
@@ -340,7 +353,7 @@ void GitQlientRepo::showCherryPickConflict(const QStringList& shas)
 
     const auto wipCommit = mGitQlientCache->commitInfo(ZERO_SHA);
 
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     const auto files = mGitQlientCache->revisionFile(ZERO_SHA, wipCommit.firstParent());
 
@@ -355,7 +368,7 @@ void GitQlientRepo::showPullConflict()
 
     const auto wipCommit = mGitQlientCache->commitInfo(ZERO_SHA);
 
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     const auto files = mGitQlientCache->revisionFile(ZERO_SHA, wipCommit.firstParent());
 
@@ -371,7 +384,7 @@ void GitQlientRepo::updateWip()
 {
     mHistoryWidget->resetWip();
 
-    WipHelper::update(mGitBase, mGitQlientCache);
+    mGitQlientCache->refreshWip(mGitBase);
 
     mHistoryWidget->updateUiFromWatcher();
 }

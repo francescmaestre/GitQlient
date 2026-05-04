@@ -2,8 +2,9 @@
 #include <commit-widgets/CommitInfoWidget.h>
 
 #include <GitExecResult.h>
+#include <GitHistory.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <commit-widgets/FileListWidget.h>
 
 #include <QDateTime>
@@ -15,7 +16,7 @@
 using namespace QLogger;
 
 CommitInfoWidget::CommitInfoWidget(
-    const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
+    const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
     , mCache(cache)
     , mGit(git)
@@ -56,13 +57,25 @@ void CommitInfoWidget::configure(const QString& sha)
 
     if (sha != ZERO_SHA && !sha.isEmpty())
     {
-        const auto commit = mCache->commitInfo(sha);
+        auto commit = mCache->commitInfo(sha);
 
         if (!commit.sha.isEmpty())
         {
             QLog_Info("UI", QString("Loading information of the commit {%1}").arg(sha));
             mCurrentSha = commit.sha;
             mParentSha = commit.firstParent();
+
+            if (commit.longLog.isEmpty())
+            {
+                QScopedPointer<GitHistory> git(new GitHistory(mGit));
+                const auto ret = git->getCommitBody(commit.sha);
+
+                if (ret.success)
+                {
+                    commit.longLog = ret.output.trimmed();
+                    mCache->updateCommitInfo(commit);
+                }
+            }
 
             mInfoPanel->configure(commit);
 

@@ -2,13 +2,20 @@
 
 void References::addReference(Type type, const QString& value)
 {
-    const auto references = mReferences.value(type, QStringList());
-
-    if (!references.contains(value))
-        mReferences[type].append(value);
+    auto& list = mReferences[type];
+    if (!list.contains(value))
+        list.append(value);
 }
 
 QStringList References::getReferences(Type type) const { return mReferences.value(type, QStringList()); }
+
+std::optional<std::reference_wrapper<const QStringList>> References::findReferences(Type type) const
+{
+    const auto it = mReferences.constFind(type);
+    if (it == mReferences.cend())
+        return std::nullopt;
+    return std::cref(*it);
+}
 
 int References::removeReference(References::Type type, const QString& value)
 {

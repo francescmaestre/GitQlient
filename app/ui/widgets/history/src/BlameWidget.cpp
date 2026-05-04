@@ -25,8 +25,8 @@
 using namespace System;
 
 BlameWidget::BlameWidget(
-    const QSharedPointer<GitCache>& cache,
-    const QSharedPointer<Graph::Cache>& graphCache,
+    const QSharedPointer<SacredTimeline>& cache,
+    const QSharedPointer<Graph::TemporalLoom>& graphCache,
     const QSharedPointer<GitBase>& git,
     QWidget* parent)
     : QFrame(parent)

@@ -1,7 +1,7 @@
 #include "HunkWidget.h"
 
 #include <GitPatches.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/FileDiffView.h>
 #include <custom-widgets/LineNumberArea.h>
 #include <system/Colors.h>
@@ -20,7 +20,7 @@ using namespace System;
 
 HunkWidget::HunkWidget(
     QSharedPointer<GitBase> git,
-    QSharedPointer<GitCache> cache,
+    QSharedPointer<SacredTimeline> cache,
     const QString& fileName,
     const QString& header,
     const QString& hunk,

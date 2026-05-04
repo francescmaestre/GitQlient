@@ -4,7 +4,7 @@
 #include <GitBranches.h>
 #include <GitConfig.h>
 #include <GitRemote.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <dialogs/BranchDlg.h>
 #include <dialogs/InputShaDlg.h>
 #include <dialogs/UpstreamDlg.h>
@@ -188,7 +188,7 @@ void BranchContextMenu::push()
                 oldSha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, mConfig.branchSelected));
             mConfig.mCache->insertReference(
                 sha, References::Type::RemoteBranche, QString("%1/%2").arg(remote.output, mConfig.branchSelected));
-            emit mConfig.mCache->signalCacheUpdated();
+            emit mConfig.mCache->cacheUpdated();
         }
 
         emit fullReload();
@@ -304,7 +304,7 @@ void BranchContextMenu::deleteBranch()
             if (ret2.success)
             {
                 mConfig.mCache->deleteReference(sha, type, mConfig.branchSelected);
-                emit mConfig.mCache->signalCacheUpdated();
+                emit mConfig.mCache->cacheUpdated();
             }
             else
                 QMessageBox::critical(

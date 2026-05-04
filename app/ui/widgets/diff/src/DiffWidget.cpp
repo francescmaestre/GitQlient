@@ -3,7 +3,7 @@
 #include <commit-widgets/FileListWidget.h>
 
 #include <GitHistory.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <commit-widgets/CommitInfoPanel.h>
 #include <diff-widgets/FileDiffWidget.h>
 #include <diff-widgets/FullDiffWidget.h>
@@ -16,7 +16,7 @@
 
 using namespace QLogger;
 
-DiffWidget::DiffWidget(const QSharedPointer<GitBase> git, QSharedPointer<GitCache> cache, QWidget* parent)
+DiffWidget::DiffWidget(const QSharedPointer<GitBase> git, QSharedPointer<SacredTimeline> cache, QWidget* parent)
     : QFrame(parent)
     , mGit(git)
     , mCache(cache)

@@ -8,5 +8,5 @@ create_gitqlient_library(diff-widgets
         commit-widgets
         core
         dialogs
-        main-widgets
+        QPinnableTabWidget
 )

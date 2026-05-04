@@ -48,8 +48,9 @@ void PullDlg::accept()
             QMessageBox msgBox(
                 QMessageBox::Critical,
                 tr("Error while pulling"),
-                QString(tr("There were problems during the pull operation. Please, see the detailed "
-                           "description for more information.")),
+                QString(tr(
+                    "There were problems during the pull operation. Please, see the detailed "
+                    "description for more information.")),
                 QMessageBox::Ok,
                 this);
             msgBox.setDetailedText(ret.output);

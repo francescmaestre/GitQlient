@@ -2,7 +2,7 @@
 
 #include <GitHistory.h>
 #include <cache/Commit.h>
-#include <cache/GitCache.h>
+#include <cache/SacredTimeline.h>
 #include <custom-widgets/ButtonLink.h>
 
 #include <QGridLayout>
@@ -31,7 +31,7 @@ namespace
 } // namespace
 
 FileBlameWidget::FileBlameWidget(
-    const QSharedPointer<GitCache>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
+    const QSharedPointer<SacredTimeline>& cache, const QSharedPointer<GitBase>& git, QWidget* parent)
     : QFrame(parent)
     , mCache(cache)
     , mGit(git)
