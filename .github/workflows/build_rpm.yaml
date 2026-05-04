@@ -68,11 +68,11 @@ jobs:
           submodules: recursive
 
       - name: Add safe git directory
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+        run: git config --global --add safe.directory /__w/GitQlient/GitQlient
 
       - name: Generate project
         run: |
-          sudo cmake -S . -B build -G "Ninja" -DVERSION=`git describe --always` -DCMAKE_BUILD_TYPE=Release
+          sudo cmake -S . -B build -G "Ninja" -DVERSION=`git describe --always` -DCMAKE_BUILD_TYPE=Release -DGIT_SUBMODULE=OFF
 
       - name: Compile and deploy
         run: |

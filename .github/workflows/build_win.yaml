@@ -50,6 +50,16 @@ jobs:
           cmake --build build --target GitQlient -j4
           cmake --build build --target install
 
+      - name: Run unit tests
+        run: |
+          cmake --build build --target unit_tests -j4
+          ctest --test-dir build/tests -L unit --output-on-failure
+
+      - name: Run integration tests
+        run: |
+          cmake --build build --target integration_tests -j4
+          ctest --test-dir build/tests -L integration --output-on-failure
+
       - name: Generate installer
         run: |
           windeployqt --release --dir build/install build/install/GitQlient.exe

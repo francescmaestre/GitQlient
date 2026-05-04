@@ -53,7 +53,11 @@ BranchesWidget::BranchesWidget(
 
 void BranchesWidget::setupUI()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
     mMinimize->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoDown, QIcon(":/icons/ahead")));
+#else
+    mMinimize->setIcon(QIcon::fromTheme("go-down", QIcon(":/icons/ahead")));
+#endif
     mMinimize->setToolTip(tr("Show minimalist view"));
     mMinimize->setObjectName("BranchesWidgetOptionsButton");
     mMinimize->setShortcut(Qt::CTRL | Qt::Key_B);

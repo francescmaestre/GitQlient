@@ -29,7 +29,11 @@ BranchesWidgetMinimal::BranchesWidgetMinimal(
     , mSubmodules(new QToolButton())
     , mSubmodulesMenu(new QMenu(mSubmodules))
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
     mBack->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::GoNext, QIcon(":/icons/back")));
+#else
+    mBack->setIcon(QIcon::fromTheme("go-next", QIcon(":/icons/back")));
+#endif
     mBack->setToolTip(tr("Full view"));
     mBack->setShortcut(Qt::CTRL | Qt::Key_B);
     connect(mBack, &QPushButton::clicked, this, &BranchesWidgetMinimal::showFullBranchesView);

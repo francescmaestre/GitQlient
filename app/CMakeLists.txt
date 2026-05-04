@@ -28,15 +28,17 @@ add_compile_definitions(SHA_VER="${GQ_SHA}")
 add_compile_definitions(VER="${VERSION}")
 add_compile_definitions(QT_DEPRECATED_WARNINGS)
 
-if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QLogger/.git" OR
-    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QPinnableTabWidget/.git" OR
-    NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/git/.git")
-    message(STATUS "Submodule update:")
-    execute_process(COMMAND git submodule update --init --recursive
-                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                    RESULT_VARIABLE GIT_SUBMOD_RESULT)
-    if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-        message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+if(GIT_SUBMODULE)
+    if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QLogger/.git" OR
+        NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/QPinnableTabWidget/.git" OR
+        NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/git/.git")
+        message(STATUS "Submodule update:")
+        execute_process(COMMAND git submodule update --init --recursive
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
     endif()
 endif()
 
@@ -95,6 +97,13 @@ target_link_libraries(
    PUBLIC
    ${DEPS}
  )
+
+# MinGW: libmingw32 provides __imp___argc/__imp___argv referenced by Qt6EntryPoint.
+# It must appear before Qt's entry-point library in the link line, so list it here
+# after target_link_libraries has already registered Qt's dependencies.
+if(MINGW)
+    target_link_libraries(${PROJECT_NAME} PRIVATE mingw32)
+endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set_target_properties(${PROJECT_NAME} PROPERTIES

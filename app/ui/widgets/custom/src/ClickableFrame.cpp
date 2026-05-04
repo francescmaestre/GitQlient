@@ -134,8 +134,13 @@ void ClickableFrame::updateArrowIcon()
 {
     if (mArrowLabel && mIsExpandable && mShowArrow)
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
         const auto icon = QIcon(
             mIsExpanded ? QIcon::fromTheme(QIcon::ThemeIcon::GoDown) : QIcon::fromTheme(QIcon::ThemeIcon::GoNext));
+#else
+        const auto icon = QIcon(
+            mIsExpanded ? QIcon::fromTheme("go-down") : QIcon::fromTheme("go-next"));
+#endif
         mArrowLabel->setPixmap(icon.pixmap(QSize(16, 16)));
     }
 }

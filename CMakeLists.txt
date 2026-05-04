@@ -10,6 +10,7 @@ if(USE_NINJA AND NOT CMAKE_GENERATOR MATCHES "Ninja")
 endif()
 
 option(EXCLUDE_TESTS "Exclude the tests from the build" OFF)
+option(GIT_SUBMODULE "Automatically initialise git submodules if missing" ON)
 
 add_subdirectory(app)
 

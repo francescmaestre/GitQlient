@@ -46,6 +46,16 @@ jobs:
         run: |
           cmake --build build --target GitQlient -j4
 
+      - name: Run unit tests
+        run: |
+          cmake --build build --target unit_tests -j4
+          ctest --test-dir build/tests -L unit --output-on-failure
+
+      - name: Run integration tests
+        run: |
+          cmake --build build --target integration_tests -j4
+          ctest --test-dir build/tests -L integration --output-on-failure
+
       - name: Build DMG
         run: |
           macdeployqt build/app/*.app
