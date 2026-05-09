@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QElapsedTimer>
 #include <QEvent>
 #include <QFontDatabase>
 #include <QHeaderView>
@@ -35,11 +36,16 @@ RepositoryViewDelegate::RepositoryViewDelegate(const QSharedPointer<GitCache> &c
    , mGit(git)
    , mGitServerCache(gitServerCache)
    , mView(view)
+   , mTelemetry(PaintTelemetry::isEnabled() ? std::make_unique<PaintTelemetry>() : nullptr)
 {
 }
 
 void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt, const QModelIndex &index) const
 {
+   QElapsedTimer rowTimer;
+   if (mTelemetry)
+      rowTimer.start();
+
    const auto row = mView->hasActiveFilter()
        ? dynamic_cast<QSortFilterProxyModel *>(mView->model())->mapToSource(index).row()
        : index.row();
@@ -154,6 +160,9 @@ void RepositoryViewDelegate::paint(QPainter *p, const QStyleOptionViewItem &opt,
          p->drawText(newOpt.rect, fm.elidedText(text, Qt::ElideRight, newOpt.rect.width()), textalignment);
       }
    }
+
+   if (mTelemetry)
+      mTelemetry->recordRowPaint(rowTimer.nsecsElapsed(), index.row(), index.column());
 }
 
 QSize RepositoryViewDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const

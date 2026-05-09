@@ -9,6 +9,7 @@
 #include <InitScreen.h>
 #include <InitialRepoConfig.h>
 #include <NewVersionInfoDlg.h>
+#include <PaintTelemetry.h>
 #include <ProgressDlg.h>
 #include <QPinnableTabWidget.h>
 
@@ -294,11 +295,17 @@ bool GitQlient::parseArguments(const QStringList &arguments, QStringList *repos)
    const QCommandLineOption logLevelOption("log-level", tr("Sets log level."), tr("level"));
    parser.addOption(logLevelOption);
 
+   const QCommandLineOption benchmarkGraphOption(
+       "benchmark-graph", tr("Enables PaintTelemetry on the history view (logs row-paint timings)."));
+   parser.addOption(benchmarkGraphOption);
+
    parser.process(arguments);
 
    *repos = parser.positionalArguments();
    if (parser.isSet(noLogOption))
       areLogsDisabled = true;
+
+   PaintTelemetry::setEnabled(parser.isSet(benchmarkGraphOption));
 
    if (!areLogsDisabled)
    {
@@ -332,6 +339,9 @@ bool GitQlient::parseArguments(const QStringList &arguments, QStringList *repos)
 
    const auto manager = QLoggerManager::getInstance();
    manager->addDestination("GitQlient.log", { "UI", "Git", "Cache" }, logLevel, {}, LogMode::OnlyFile,
+                           LogFileDisplay::DateTime, LogMessageDisplay::Default, false);
+
+   manager->addDestination("GitQlientPaint.log", "Paint", LogLevel::Debug, {}, LogMode::OnlyFile,
                            LogFileDisplay::DateTime, LogMessageDisplay::Default, false);
 
    return ret;
