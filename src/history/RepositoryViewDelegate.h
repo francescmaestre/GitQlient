@@ -82,6 +82,8 @@ public:
     */
    QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
 
+   const PaintTelemetry *telemetry() const { return mTelemetry.get(); }
+
 protected:
    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                     const QModelIndex &index) override;

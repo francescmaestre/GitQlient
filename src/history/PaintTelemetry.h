@@ -32,7 +32,17 @@
 class PaintTelemetry
 {
 public:
+   struct Stats
+   {
+      qint64 rows = 0;
+      qint64 totalNs = 0;
+      qint64 maxNs = 0;
+      qint64 slowRows = 0;
+   };
+
    void recordRowPaint(qint64 nsecs, int row, int col);
+   Stats snapshot() const;
+   void reset();
 
    static void setEnabled(bool enabled);
    static bool isEnabled();
@@ -42,4 +52,9 @@ private:
    qint64 mWindowRows = 0;
    qint64 mWindowNs = 0;
    qint64 mWindowMaxNs = 0;
+
+   qint64 mTotalRows = 0;
+   qint64 mTotalNs = 0;
+   qint64 mTotalMaxNs = 0;
+   qint64 mTotalSlow = 0;
 };

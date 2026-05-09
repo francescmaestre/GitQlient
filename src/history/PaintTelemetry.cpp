@@ -30,8 +30,13 @@ void PaintTelemetry::recordRowPaint(qint64 nsecs, int row, int col)
    mWindowMaxNs = std::max(mWindowMaxNs, nsecs);
    ++mWindowRows;
 
+   ++mTotalRows;
+   mTotalNs += nsecs;
+   mTotalMaxNs = std::max(mTotalMaxNs, nsecs);
+
    if (nsecs > 8'000'000)
    {
+      ++mTotalSlow;
       QLog_Warning("Paint",
                    QString("Slow row paint: %1 ms (row %2, col %3)")
                        .arg(nsecs / 1'000'000.0, 0, 'f', 2)
@@ -57,4 +62,21 @@ void PaintTelemetry::recordRowPaint(qint64 nsecs, int row, int col)
       mWindowMaxNs = 0;
       mWindowTimer.restart();
    }
+}
+
+PaintTelemetry::Stats PaintTelemetry::snapshot() const
+{
+   return { mTotalRows, mTotalNs, mTotalMaxNs, mTotalSlow };
+}
+
+void PaintTelemetry::reset()
+{
+   mWindowTimer.invalidate();
+   mWindowRows = 0;
+   mWindowNs = 0;
+   mWindowMaxNs = 0;
+   mTotalRows = 0;
+   mTotalNs = 0;
+   mTotalMaxNs = 0;
+   mTotalSlow = 0;
 }

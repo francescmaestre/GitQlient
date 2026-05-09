@@ -1,0 +1,158 @@
+name: Paint bench
+
+# Same-machine sequential runs of master_bin and pr_bin is the entire
+# variance-control story — do not parallelise master/PR runs within a job.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  paint-bench:
+    name: ${{ matrix.config.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ubuntu-22.04,     label: "Linux x86_64",   install: apt }
+          - { os: ubuntu-22.04-arm, label: "Linux arm64",    install: apt }
+          - { os: macos-latest,     label: "macOS arm64",    install: qt-action }
+          - { os: windows-2025,     label: "Windows x86_64", install: qt-action }
+    runs-on: ${{ matrix.config.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          path: pr-src
+          submodules: recursive
+
+      - name: Checkout master (also serves as the painted dataset)
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master-src
+          submodules: recursive
+
+      - name: Install Qt6 (apt)
+        if: matrix.config.install == 'apt'
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -qq install -y \
+            libxkbcommon-x11-0 build-essential libgl1-mesa-dev mesa-common-dev \
+            libgles2-mesa-dev libxcb-icccm4-dev libxcb-xinerama0 libxcb-image0 \
+            libxcb-keysyms1 libxcb-cursor0
+          sudo apt-get -qq install -y qt6-base-dev qt6-tools-dev qmake6 ninja-build cmake
+          QT6_CONFIG_PATH=$(dpkg -L qt6-base-dev | grep 'Qt6Config.cmake' | head -n1)
+          echo "Qt6_DIR=$(dirname "$QT6_CONFIG_PATH")" >> "$GITHUB_ENV"
+
+      - name: Install Qt6 (install-qt-action)
+        if: matrix.config.install == 'qt-action'
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.6.*
+          aqtversion: '==3.1.*'
+
+      - name: Build master
+        run: |
+          cmake -S master-src -B master-build -DCMAKE_BUILD_TYPE=Release ${Qt6_DIR:+-DCMAKE_PREFIX_PATH="$Qt6_DIR"}
+          cmake --build master-build --target GitQlient -j 4
+
+      - name: Build PR
+        run: |
+          cmake -S pr-src -B pr-build -DCMAKE_BUILD_TYPE=Release ${Qt6_DIR:+-DCMAKE_PREFIX_PATH="$Qt6_DIR"}
+          cmake --build pr-build --target GitQlient -j 4
+
+      # macOS bundles the binary inside .app/, Windows under Release/.
+      - name: Locate binaries
+        id: bins
+        run: |
+          case "${{ matrix.config.os }}" in
+            macos-*)
+              echo "master_bin=master-build/GitQlient.app/Contents/MacOS/GitQlient" >> "$GITHUB_OUTPUT"
+              echo "pr_bin=pr-build/GitQlient.app/Contents/MacOS/GitQlient"         >> "$GITHUB_OUTPUT"
+              ;;
+            windows-*)
+              echo "master_bin=master-build/Release/GitQlient.exe" >> "$GITHUB_OUTPUT"
+              echo "pr_bin=pr-build/Release/GitQlient.exe"         >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "master_bin=master-build/GitQlient" >> "$GITHUB_OUTPUT"
+              echo "pr_bin=pr-build/GitQlient"         >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Run benches
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          M="${{ steps.bins.outputs.master_bin }}"
+          P="${{ steps.bins.outputs.pr_bin }}"
+          for i in 1 2 3 4 5; do
+            "$M" --benchmark-graph-run=throughput --benchmark-graph-output "results/master-throughput-$i.json" --no-log master-src
+            "$M" --benchmark-graph-run=scroll     --benchmark-graph-output "results/master-scroll-$i.json"     --no-log master-src
+            "$P" --benchmark-graph-run=throughput --benchmark-graph-output "results/pr-throughput-$i.json"     --no-log master-src
+            "$P" --benchmark-graph-run=scroll     --benchmark-graph-output "results/pr-scroll-$i.json"         --no-log master-src
+          done
+
+      - name: Compare
+        run: |
+          python3 pr-src/.github/scripts/paint_bench_compare.py results/ \
+            --os-label "${{ matrix.config.label }}" > comment.md
+          cat comment.md
+
+      - name: Upload artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paint-bench-${{ matrix.config.os }}
+          path: |
+            results/
+            comment.md
+
+  paint-bench-report:
+    name: Aggregate PR comment
+    needs: paint-bench
+    if: always() && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download all per-OS artefacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artefacts
+
+      - name: Build consolidated comment
+        run: |
+          {
+            echo "<!-- paint-bench-marker -->"
+            echo "## PaintTelemetry comparison (master vs this PR)"
+            echo ""
+            echo "_Sequential runs on the same machine per OS. Advisory only — does not block merge._"
+            echo ""
+            for f in artefacts/paint-bench-*/comment.md; do
+              [ -f "$f" ] && cat "$f" && echo ""
+            done
+          } > comment.md
+          cat comment.md
+
+      - name: Find existing bench comment
+        uses: peter-evans/find-comment@v3
+        id: find
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- paint-bench-marker -->'
+
+      - name: Create or update PR comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: comment.md
+          edit-mode: replace
