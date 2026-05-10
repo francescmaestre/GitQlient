@@ -8,7 +8,9 @@
 #include <GitQlientStyles.h>
 #include <InitScreen.h>
 #include <InitialRepoConfig.h>
+#include <BenchmarkHarness.h>
 #include <NewVersionInfoDlg.h>
+#include <PaintTelemetry.h>
 #include <ProgressDlg.h>
 #include <QPinnableTabWidget.h>
 
@@ -29,6 +31,8 @@
 #include <QToolButton>
 
 #include <QLogger.h>
+
+#include <cstdlib>
 
 using namespace QLogger;
 
@@ -294,11 +298,44 @@ bool GitQlient::parseArguments(const QStringList &arguments, QStringList *repos)
    const QCommandLineOption logLevelOption("log-level", tr("Sets log level."), tr("level"));
    parser.addOption(logLevelOption);
 
+   const QCommandLineOption benchmarkGraphOption(
+       "benchmark-graph", tr("Enables PaintTelemetry on the history view (logs row-paint timings)."));
+   parser.addOption(benchmarkGraphOption);
+
+   const QCommandLineOption benchmarkRunOption(
+       "benchmark-graph-run",
+       tr("Runs a headless paint benchmark and exits. Workload: throughput | scroll."),
+       "workload");
+   parser.addOption(benchmarkRunOption);
+
+   const QCommandLineOption benchmarkOutputOption(
+       "benchmark-graph-output", tr("Path to write JSON results from --benchmark-graph-run."), "path");
+   parser.addOption(benchmarkOutputOption);
+
    parser.process(arguments);
 
    *repos = parser.positionalArguments();
    if (parser.isSet(noLogOption))
       areLogsDisabled = true;
+
+   PaintTelemetry::setEnabled(parser.isSet(benchmarkGraphOption) || parser.isSet(benchmarkRunOption));
+
+   if (parser.isSet(benchmarkRunOption))
+   {
+      const auto wlText = parser.value(benchmarkRunOption);
+      auto wl = BenchmarkHarness::Workload::None;
+      if (wlText == "throughput")
+         wl = BenchmarkHarness::Workload::Throughput;
+      else if (wlText == "scroll")
+         wl = BenchmarkHarness::Workload::Scroll;
+      else
+      {
+         QTextStream(stderr) << "--benchmark-graph-run: unknown workload '" << wlText
+                             << "' (expected 'throughput' or 'scroll')\n";
+         std::exit(1);
+      }
+      BenchmarkHarness::configure(wl, parser.value(benchmarkOutputOption));
+   }
 
    if (!areLogsDisabled)
    {
@@ -332,6 +369,9 @@ bool GitQlient::parseArguments(const QStringList &arguments, QStringList *repos)
 
    const auto manager = QLoggerManager::getInstance();
    manager->addDestination("GitQlient.log", { "UI", "Git", "Cache" }, logLevel, {}, LogMode::OnlyFile,
+                           LogFileDisplay::DateTime, LogMessageDisplay::Default, false);
+
+   manager->addDestination("GitQlientPaint.log", "Paint", LogLevel::Debug, {}, LogMode::OnlyFile,
                            LogFileDisplay::DateTime, LogMessageDisplay::Default, false);
 
    return ret;

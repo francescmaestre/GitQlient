@@ -4,14 +4,34 @@
 #include <QTimer>
 #include <QTranslator>
 
+#include <BenchmarkHarness.h>
 #include <GitQlient.h>
 #include <GitQlientSettings.h>
 #include <QLogger.h>
 
 using namespace QLogger;
 
+namespace
+{
+// QT_QPA_PLATFORM is read at QApplication construction; switching after that
+// is a no-op, so the bench flag has to be detected before parseArguments.
+bool benchmarkRequested(int argc, char *argv[])
+{
+   for (int i = 1; i < argc; ++i)
+   {
+      const auto a = QString::fromLocal8Bit(argv[i]);
+      if (a == "--benchmark-graph-run" || a.startsWith("--benchmark-graph-run="))
+         return true;
+   }
+   return false;
+}
+}
+
 int main(int argc, char *argv[])
 {
+   if (benchmarkRequested(argc, argv) && qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM"))
+      qputenv("QT_QPA_PLATFORM", "offscreen");
+
    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
    QApplication app(argc, argv);
@@ -32,15 +52,23 @@ int main(int argc, char *argv[])
       app.installTranslator(&qtTranslator);
 
    QStringList repos;
-   if (GitQlient::parseArguments(app.arguments(), &repos))
-   {
-      GitQlient mainWin;
-      mainWin.setRepositories(repos);
-      mainWin.restorePinnedRepos();
-      mainWin.show();
+   if (!GitQlient::parseArguments(app.arguments(), &repos))
+      return 0;
 
-      return app.exec();
+   if (BenchmarkHarness::pending())
+   {
+      if (repos.isEmpty())
+      {
+         qWarning("--benchmark-graph-run requires a repository path");
+         return 1;
+      }
+      return BenchmarkHarness::run(repos.first());
    }
 
-   return 0;
+   GitQlient mainWin;
+   mainWin.setRepositories(repos);
+   mainWin.restorePinnedRepos();
+   mainWin.show();
+
+   return app.exec();
 }

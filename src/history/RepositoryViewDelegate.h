@@ -23,8 +23,12 @@
  ** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***************************************************************************************/
 
+#include <PaintTelemetry.h>
+
 #include <QDateTime>
 #include <QStyledItemDelegate>
+
+#include <memory>
 
 class CommitHistoryView;
 class GitCache;
@@ -78,6 +82,8 @@ public:
     */
    QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
 
+   const PaintTelemetry *telemetry() const { return mTelemetry.get(); }
+
 protected:
    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                     const QModelIndex &index) override;
@@ -89,6 +95,7 @@ private:
    CommitHistoryView *mView = nullptr;
    int diffTargetRow = -1;
    int mColumnPressed = -1;
+   std::unique_ptr<PaintTelemetry> mTelemetry;
 
    /**
     * @brief Paints a fine vertical line aimed to help in the visualization of to what branch the commit belongs to.
